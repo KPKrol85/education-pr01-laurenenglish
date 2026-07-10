@@ -1,6 +1,6 @@
 # Lauren – Clean English
 
-Profesjonalna, jednoekranowa strona typu portfolio/landing dla nauczycielki języka angielskiego. Projekt łączy styl edukacyjny inspirowany Khan Academy z nowoczesnym UX i wysoką dostępnością.
+Profesjonalna, wielostronicowa strona edukacyjna dla nauczycielki języka angielskiego. Projekt łączy spójny UX, dostępność, katalog materiałów, śledzenie postępów oraz produkcyjne podstawy SEO i PWA.
 
 ## Funkcje JS
 - Reveal on scroll (IntersectionObserver).
@@ -13,49 +13,42 @@ Profesjonalna, jednoekranowa strona typu portfolio/landing dla nauczycielki jęz
 - Prosty przełącznik motywu (light/dark).
 - Rejestracja Service Worker (PWA).
 
-## Architektura plików
+## Architektura źródeł i build
 ```
-/english-lessons
-  index.html
-  offline.html
-  404.html
-  robots.txt
-  sitemap.xml
-  _redirects
-  manifest.webmanifest
-  service-worker.js
-  /assets
-    /img
-    /fonts
-    /icons
-  /css
-    tokens.css
-    base.css
-    layout.css
-    components.css
-    sections.css
-    style.css
-    style.min.css
-  /js
-    main.js
-    /modules
-      reveal.js
-      headerShrink.js
-      mobileNav.js
-      scrollSpy.js
-      accordion.js
-      resourcesFilter.js
-      progressTracker.js
-  package.json
+index.html + pozostałe pliki HTML       # źródła stron
+css/style.css                           # kanoniczny entry CSS
+css/{tokens,base,utilities,...}/        # modułowe źródła CSS
+js/main.js                              # kanoniczny entry JavaScript
+js/{data,modules,pages,state}/          # modułowe źródła JavaScript
+service-worker.template.js              # kanoniczny Service Worker
+assets/{fonts,icons,img,og}/             # statyczne zasoby źródłowe
+assets/build/style.min.css               # wygenerowany bundle CSS
+assets/build/main.min.js                 # wygenerowany bundle JavaScript
+service-worker.js                        # wygenerowany Service Worker
 ```
 
 ## Build scripts
 - `npm run dev` – lokalny serwer statyczny.
-- `npm run build:css` – PostCSS + cssnano (generuje `css/style.min.css`).
-- `npm run build:js` – Terser (generuje `js/main.min.js`).
+- `npm run build` – pełny build produkcyjny: JavaScript, CSS i Service Worker.
+- `npm run build:css` – PostCSS + `postcss-import` + cssnano; generuje `assets/build/style.min.css`.
+- `npm run build:js` – esbuild; bundluje moduły od `js/main.js` do `assets/build/main.min.js`.
+- `npm run build:sw` – generuje `service-worker.js` z `service-worker.template.js` i ustawia wersję cache zgodną z `package.json`.
 - `npm run images` – optymalizacja obrazów (webp/avif).
 - `npm run lint:js` – ESLint.
 - `npm run format` – Prettier.
+
+Przed pierwszym buildem zainstaluj zadeklarowane zależności przez `npm install`, a następnie uruchom:
+
+```powershell
+npm run build
+```
+
+Każdy skrypt CSS/JS tworzy `assets/build/`, jeżeli katalog nie istnieje. Wszystkie strony produkcyjne ładują wyłącznie:
+
+- `/assets/build/style.min.css`
+- `/assets/build/main.min.js`
+
+Pliki w `assets/build/` oraz `service-worker.js` są wygenerowane i śledzone na potrzeby statycznego wdrożenia. Nie edytuj ich ręcznie — po zmianie źródeł uruchom odpowiedni build. Stary bundle `css/style.min.css` został usunięty i nie należy już do kontraktu produkcyjnego.
 
 ## A11y checklist (WCAG AA+)
 - Skip link do treści.
@@ -72,7 +65,7 @@ Profesjonalna, jednoekranowa strona typu portfolio/landing dla nauczycielki jęz
 - `robots.txt`, `sitemap.xml`, `_redirects`.
 
 ## Uwagi
-Typografia opiera się na fontach systemowych ustawionych w `css/base.css`.
+Typografia używa lokalnych plików Inter z `assets/fonts/`. Kanoniczne deklaracje `@font-face` znajdują się w `css/base/base.css` i korzystają z root-relative URL, dzięki czemu zachowują poprawne ścieżki po wygenerowaniu CSS do `assets/build/`.
 
 ## Materiały (katalog)
 - Dane: `js/data/materials.js` – lista obiektów z polami opisującymi materiały.

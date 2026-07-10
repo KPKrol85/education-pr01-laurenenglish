@@ -56,7 +56,7 @@ The project uses:
 - Vanilla JavaScript
 - modular JavaScript files
 - PostCSS and cssnano
-- Terser
+- esbuild
 - ESLint and Prettier
 - progressive enhancement
 - Service Worker and Web App Manifest

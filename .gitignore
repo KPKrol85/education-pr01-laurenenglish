@@ -1,0 +1,2 @@
+# Local dependency installation. Production assets under assets/build are tracked.
+node_modules/

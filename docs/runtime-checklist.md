@@ -3,6 +3,7 @@
 ## Build
 - Zainstaluj zadeklarowane zależności: `npm install`.
 - Uruchom pełny build: `npm run build`.
+- Sprawdź parity i semantykę wspólnego shellu: `npm run check:html`.
 - Potwierdź, że powstały:
   - `assets/build/style.min.css`
   - `assets/build/main.min.js`

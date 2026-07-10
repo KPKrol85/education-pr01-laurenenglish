@@ -15,7 +15,9 @@ Profesjonalna, wielostronicowa strona edukacyjna dla nauczycielki języka angiel
 
 ## Architektura źródeł i build
 ```
-index.html + pozostałe pliki HTML       # źródła stron
+index.html + pozostałe pliki HTML       # samodzielne, złożone strony
+scripts/shared-shell.mjs                # kanoniczny header/nav/footer
+scripts/build-html.mjs                  # assembler i walidator HTML
 css/style.css                           # kanoniczny entry CSS
 css/{tokens,base,utilities,...}/        # modułowe źródła CSS
 js/main.js                              # kanoniczny entry JavaScript
@@ -28,7 +30,9 @@ service-worker.js                        # wygenerowany Service Worker
 ```
 
 ## Build scripts
-- `npm run dev` – lokalny serwer statyczny.
+- `npm run dev` – składa wspólny shell, a następnie uruchamia watch CSS/JS i lokalny serwer.
+- `npm run build:html` – składa wspólny header, nawigację i footer w pięciu głównych stronach.
+- `npm run check:html` – bez zapisu sprawdza aktualność shelli, semantykę, ID i lokalne linki.
 - `npm run build` – pełny build produkcyjny: JavaScript, CSS i Service Worker.
 - `npm run build:css` – PostCSS + `postcss-import` + cssnano; generuje `assets/build/style.min.css`.
 - `npm run build:js` – esbuild; bundluje moduły od `js/main.js` do `assets/build/main.min.js`.
@@ -49,6 +53,29 @@ Każdy skrypt CSS/JS tworzy `assets/build/`, jeżeli katalog nie istnieje. Wszys
 - `/assets/build/main.min.js`
 
 Pliki w `assets/build/` oraz `service-worker.js` są wygenerowane i śledzone na potrzeby statycznego wdrożenia. Nie edytuj ich ręcznie — po zmianie źródeł uruchom odpowiedni build. Stary bundle `css/style.min.css` został usunięty i nie należy już do kontraktu produkcyjnego.
+
+## Wspólny shell HTML
+
+`scripts/shared-shell.mjs` jest jedynym źródłem wspólnego skip linku, headera, głównej nawigacji, CTA i footera dla:
+
+- `index.html`
+- `uslugi.html`
+- `pakiety.html`
+- `materialy.html`
+- `postepy.html`
+
+Każdy z tych plików pozostaje samodzielnym dokumentem HTML. Jego `<head>` i `<main>` są treścią specyficzną dla strony, natomiast regiony między komentarzami `shared-shell:*:start` i `shared-shell:*:end` są składane automatycznie i nie powinny być edytowane ręcznie.
+
+Po zmianie wspólnego shellu uruchom:
+
+```powershell
+npm run build:html
+npm run check:html
+```
+
+Assembler korzysta z jawnych markerów, zachowuje wartości specyficzne dla stron i przerywa pracę przy nieaktualnym shellu, błędnej liczbie `h1`/`main`, duplikatach ID, niepoprawnym `aria-current="page"`, brakującym celu skip linku lub niedziałającym lokalnym linku shellu.
+
+Każda strona ma dokładnie jeden stan `aria-current="page"`: na stronie głównej otrzymuje go link logo do `/index.html`, a na pozostałych stronach odpowiedni link głównej nawigacji.
 
 ## A11y checklist (WCAG AA+)
 - Skip link do treści.

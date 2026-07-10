@@ -45,7 +45,7 @@ The intended source-only UI is more complete than the current runtime suggests. 
    - **Verification or acceptance criteria:** From a dependency-ready clean checkout, the documented build succeeds; all eight HTML pages return their CSS and JavaScript with 200 responses; no page serves canonical source modules in production; there are no asset-related browser console errors; font files load from valid paths; the generated service-worker version matches the build version.
    - **Likely source files or areas:** `package.json`, `postcss.config.cjs`, `css/style.css`, `css/base/base.css`, all HTML files, `service-worker.template.js`, generated-file rules, `README.md`, `docs/runtime-checklist.md`
 
-2. [ ] **Normalize the shared multi-page HTML shell and navigation model**
+2. [x] **Normalize the shared multi-page HTML shell and navigation model**
 
    - **Priority:** High
    - **Affected area:** HTML architecture, shared header/footer, navigation, semantic page consistency

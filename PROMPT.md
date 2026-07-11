@@ -1,356 +1,361 @@
 PROJECT CONTEXT
 
-You are a senior frontend architect completing roadmap point 5 in the Lauren English project.
+You are a senior content-integrity and accessibility-focused frontend developer working on the Lauren English project.
 
 You are working in the currently opened `education-pr01-laurenenglish` project.
 
-Read and follow the existing project documentation before continuing, especially:
+Read and follow the existing project documentation before editing, especially:
 
 * `CONTEXT-PROJECT.md`
 * `INITIAL-AUDIT.md`
 * `README.md`
 * `docs/pakiety.md`
 * `docs/runtime-checklist.md`
-* relevant package, material, access, filtering, and HTML assembly documentation
+* any existing content, contact, privacy, terms, form, or legal documentation
 
 Treat `CONTEXT-PROJECT.md` as the authoritative project context.
 
-Roadmap point 5 has already been implemented at the canonical source and assembled HTML level.
+Roadmap points 1–5 are complete:
 
-The current implementation reportedly includes:
+* the production asset pipeline is stable
+* shared HTML shell content is generated through the existing Node workflow
+* accessibility contracts are verified
+* progressive enhancement is fail-safe
+* package, material, CTA, and access information is derived from canonical data
 
-* canonical package records using:
+Preserve these completed implementations.
 
-  * `start`
-  * `regular`
-  * `intensive`
-* generated homepage and package-page package views
-* canonical material actions
-* centralized material access resolution
-* pure material filtering
-* generated homepage material panels
-* generated full materials catalogue
-* removal of operational-looking `href="#"`
-* updated package and material documentation
+This task implements roadmap point 6 from `INITIAL-AUDIT.md`:
 
-Completed verification reportedly includes:
+`Replace unsupported public claims and legal placeholders with verified content`
 
-* `npm run check:data`
-* `npm run check:html`
-* changed-source JavaScript syntax checks
-* `git diff --check`
+Known audit findings include:
 
-The previous data checks reported:
+* public-facing navigation, headings, metadata, and copy contain prohibited `demo` language
+* homepage testimonials are presented as real and include unsupported five-star ratings
+* public contact and structured-data content includes an unverified email address
+* public contact and structured-data content includes `+48 600 000 123`
+* opening hours and WhatsApp availability are not supported by approved project documentation
+* social links point to generic platform homepages rather than verified profiles
+* privacy-policy and terms links incorrectly point to `offline.html`
+* the Netlify form collects personal information without an applicable linked privacy policy
+* some identity, availability, price, and commercial claims may lack an approved source
 
-* 15 total materials
-* 6 free materials
-* 9 premium materials
-* 4 featured materials
-* expected category, level, access, and combined-filter counts
+Internal documentation may describe the project as a demo or portfolio project where appropriate. The prohibition applies to customer-facing UI, metadata, structured data, form content, and public destinations.
 
-Roadmap point 5 remains unchecked because the final production build and browser verification were blocked by missing installed dependencies and sandbox approval restrictions.
+Inspect the current implementation before editing because generated pages, shared shell content, package data, material data, and public copy may now be maintained through canonical build-time sources.
 
-An unrelated `PROMPT.md` change exists in the working tree. Preserve it exactly, do not modify it, and do not include it in roadmap point 5 verification or change claims.
-
-The following actions are explicitly approved:
-
-1. Run `npm install --no-package-lock` using only dependencies already declared in `package.json`.
-2. Run the installed Playwright verification workflow outside the repository sandbox when required for local browser execution.
-
-Do not modify dependency manifests and do not create a lockfile.
+Preserve all unrelated user-authored working-tree changes and exclude them from task claims.
 
 TASK OBJECTIVE
 
-Continue roadmap point 5 from the exact current working-tree state.
+Audit every customer-facing claim and destination, then remove, replace, or retain it based only on verified project information.
 
-First inspect and verify everything already implemented before making further changes.
+The final public website must contain no fabricated or unsupported:
 
-Complete the remaining production build, generated-output, no-JavaScript, filtering, CTA, link, accessibility, and browser verification.
+* testimonials
+* star ratings
+* personal or business identity details
+* phone numbers
+* email addresses
+* opening hours
+* WhatsApp availability
+* social profiles
+* prices or commercial claims
+* legal destinations
+* structured-data fields
 
-Do not restart, redesign, or broadly refactor the existing implementation.
+Replace prohibited public `demo` terminology with natural customer-facing language derived from approved existing content.
 
-If verification reveals a defect directly related to roadmap point 5, apply the smallest safe canonical source-level correction, regenerate affected outputs, and rerun every relevant check.
+Ensure social, legal, contact, form, and structured-data behavior accurately reflects the website’s real implementation.
 
-Mark only roadmap point 5 as completed in `INITIAL-AUDIT.md` after every applicable acceptance criterion passes.
+Do not invent missing client or business details.
+
+Where required factual inputs are unavailable:
+
+* remove the unsupported claim or destination
+* use a neutral, non-misleading informational state
+* disable or remove data collection that cannot be supported responsibly
+* do not leave placeholders
+
+After implementation and successful verification, mark only roadmap point 6 as completed in `INITIAL-AUDIT.md`.
 
 IMPLEMENTATION PLAN
 
-1. Inspect the complete current working-tree diff before editing.
+1. Inspect the complete current working-tree diff and preserve unrelated user changes.
+2. Inspect all canonical public-content sources and generated outputs, including:
 
-2. Identify all roadmap-point-5 changes and confirm the implementation is intact.
-
-3. Inspect:
-
-   * `js/data/packages.js`
-   * `js/data/materials.js`
-   * centralized access-resolution helpers
-   * filtering logic
-   * homepage package rendering
-   * package-page rendering
-   * homepage material rendering
-   * full catalogue rendering
+   * all primary HTML pages
+   * utility and status pages
+   * shared header and footer source
    * HTML assembly scripts
-   * related documentation
+   * content renderers
+   * package and material data
+   * homepage metadata and JSON-LD
+   * contact section and form
+   * testimonials or social-proof sections
+   * social links
+   * legal links
+   * relevant documentation
+3. Inventory all public-facing occurrences of:
 
-4. Confirm that the implementation preserves:
+   * `demo`
+   * mockup or portfolio terminology
+   * sample/test-project terminology
+   * testimonials
+   * ratings and star symbols
+   * email addresses
+   * phone numbers
+   * opening hours
+   * WhatsApp references
+   * social-platform links
+   * legal-policy links
+   * business identity claims
+   * experience, result, availability, or commercial claims
+   * structured-data fields
+4. Distinguish public output from internal documentation.
+5. Do not remove accurate internal roadmap or audit wording merely because it contains `demo`.
+6. Identify which public facts have an approved source in:
 
-   * package keys `start`, `regular`, and `intensive`
-   * consistent public labels Start, Regular, and Intensive
-   * no independently maintained Pro package
-   * centralized package details
-   * centralized material metadata
-   * centralized access and CTA rules
-   * build-time package and material output
-   * meaningful no-JavaScript package and catalogue content
+   * `CONTEXT-PROJECT.md`
+   * canonical project data
+   * approved documentation
+   * verified user-authored content already present in the project
+7. Retain only facts that have a defensible source.
+8. Do not infer verification from repetition across files.
+9. Replace prohibited public `demo` language with concise customer-facing wording that describes the actual feature or service.
+10. Do not replace one unsupported claim with another.
+11. Review the homepage progress section and replace labels such as `Demo śledzenia postępów` with factual product language that does not imply a developer preview.
+12. Audit testimonials and ratings:
 
-5. Preserve the unrelated `PROMPT.md` change exactly.
+    * remove unsupported names, quotes, ratings, and claims
+    * do not anonymize fabricated testimonials and keep them
+    * do not create replacement reviews
+13. If removing testimonials leaves a structural gap:
 
-6. Install only existing declared dependencies with:
+    * use only approved factual service-process or learning-method content already supported elsewhere
+    * otherwise remove the section cleanly
+    * do not redesign unrelated sections
+14. Audit public business and contact details:
 
-   `npm install --no-package-lock`
+    * remove unsupported phone numbers
+    * remove unsupported email addresses
+    * remove unsupported opening hours
+    * remove unsupported WhatsApp claims
+    * retain only verified contact methods
+15. If no verified direct contact destination exists:
 
-7. Confirm after installation:
+    * do not invent one
+    * keep only a technically honest contact path that is actually available
+16. Inspect the Netlify form’s real technical behavior:
 
-   * `package.json` is unchanged
-   * no lockfile was created
-   * no dependency versions were intentionally modified
+    * field names
+    * submission target
+    * personal data collected
+    * success destination
+    * consent or disclosure copy
+17. Keep the data-submitting form operational only when the project contains enough verified information to provide an accurate disclosure and applicable privacy destination.
+18. If verified controller/contact/privacy inputs are insufficient:
 
-8. Run:
+    * remove or disable actual personal-data submission
+    * replace it with an honest non-submitting contact-information state
+    * preserve semantic and accessible form presentation only when it remains truthful
+19. Do not claim storage, deletion periods, processors, legal bases, encryption, or data handling that cannot be verified from the actual implementation and approved inputs.
+20. Audit legal links:
 
-   * `npm run check:data`
-   * `npm run build:html`
-   * `npm run check:html`
-   * `npm run build`
-   * JavaScript syntax checks for canonical source files
-   * JavaScript syntax checks for generated bundles
-   * focused package-data checks
-   * focused material-data checks
-   * focused access-resolution checks
-   * focused filter checks
-   * relevant Prettier checks
-   * `git diff --check`
+    * no privacy or terms link may point to `offline.html`
+    * link only to real applicable policy pages
+21. If suitable legal pages already exist:
 
-9. Verify HTML assembly idempotence:
+    * update them conservatively to match actual technical behavior
+    * avoid unsupported legal guarantees
+22. If legal pages do not exist:
 
-   * run assembly more than once
-   * confirm no duplicated package or material output
-   * confirm generated regions remain deterministic
+    * create only the minimal pages required by currently operational behavior and only when the necessary factual inputs are available
+    * use the existing shared-shell and HTML assembly architecture
+23. If the necessary legal or operator information is unavailable:
 
-10. Start the project through the documented local verification server.
+    * do not create placeholder policies
+    * remove or suspend the related data-collection behavior instead
+24. Audit social destinations:
 
-11. Use fresh Playwright Chromium contexts.
+    * remove generic links to social-platform homepages
+    * retain only verified profile URLs
+    * remove associated UI cleanly when no verified profile exists
+25. Audit JSON-LD and other structured data:
 
-12. Clear or isolate:
+    * remove unsupported phone, email, opening hours, social profiles, ratings, reviews, identity, and business fields
+    * retain structured data only when every retained field is supported
+    * remove the schema block entirely if a truthful supported version cannot be produced
+26. Audit public metadata:
 
-* service workers
-* Cache Storage
-* local storage
-* session storage
-* stale page state
+    * titles
+    * descriptions
+    * Open Graph content
+    * visible headings
+    * CTA labels
+27. Remove prohibited portfolio or developer terminology from public metadata and copy.
+28. Review package prices and commercial details:
 
-13. Test:
+    * retain them only when supported by canonical package data and approved documentation
+    * do not invent or rewrite prices during this task
+29. Update canonical sources rather than patching assembled HTML or generated assets manually.
+30. Regenerate shared HTML, assembled pages, CSS, JavaScript, and service-worker output through existing project scripts.
+31. Add focused verification for public-content integrity where practical.
+32. Run repository searches against canonical public sources and generated public output for:
 
-* `index.html`
-* `pakiety.html`
-* `materialy.html`
+    * prohibited public `demo` language
+    * dummy phone number
+    * unsupported email
+    * WhatsApp
+    * unsupported opening hours
+    * generic social-platform URLs
+    * `offline.html` used as a legal destination
+    * unsupported testimonial and rating markup
+    * unsupported structured-data properties
+33. Run:
 
-14. Use at minimum:
+    * `npm run build:html`
+    * `npm run check:html`
+    * `npm run check:data`
+    * `npm run build`
+    * relevant JavaScript syntax checks
+    * relevant Prettier checks
+    * focused link and content-integrity checks
+    * `git diff --check`
+34. Verify generated HTML is reproducible and idempotent.
+35. Start the documented local verification server.
+36. Use fresh Playwright browser contexts and latest generated assets.
+37. Test all primary public pages at:
 
-* desktop: `1440 × 900`
-* mobile: `390 × 844`
+    * desktop: `1440 × 900`
+    * mobile: `390 × 844`
+38. Test any utility or legal pages created or modified during this task.
+39. Verify:
 
-15. Verify the homepage package section:
+    * no prohibited public terminology remains
+    * no unsupported testimonials or ratings remain
+    * no unsupported business details remain
+    * legal destinations resolve to appropriate content
+    * generic social links are absent
+    * contact behavior matches visible copy
+    * form behavior matches its disclosure
+    * structured data matches approved public facts
+    * all local destinations return the expected response
+40. Confirm no console errors, uncaught page errors, failed requests, broken local links, or unexpected HTTP responses.
+41. Confirm previous roadmap guarantees remain intact:
 
-* only Start, Regular, and Intensive appear
-* no Pro package remains
-* labels, prices, benefits, emphasis states, and CTA destinations match canonical data
+    * shared shell
+    * accessibility
+    * progressive enhancement
+    * canonical package and material data
+42. If verification exposes a task-specific defect:
 
-16. Verify the package page:
+    * edit only the canonical source
+    * apply the smallest safe correction
+    * regenerate outputs
+    * rerun every affected check
+43. After all applicable acceptance criteria pass:
 
-* all package cards derive from canonical package data
-* package keys and labels match the homepage
-* CTA links resolve correctly
-* no conflicting or duplicated commercial information remains
-
-17. Verify homepage materials:
-
-* content derives from canonical material data
-* tab panels contain the expected records
-* material content is not independently duplicated manually
-* the existing accessible manual-activation tab behavior remains intact
-
-18. Verify the full materials catalogue:
-
-* all 15 records are present
-* category filters return expected results
-* level filters return expected results
-* access filters return expected results
-* combined filters return expected results
-* reset behavior remains correct
-
-19. Verify material access and CTA states:
-
-* real destinations use valid links
-* premium materials use valid package keys and routes
-* unavailable materials use honest informational or disabled states
-* no operational-looking action uses `href="#"`
-* no visible button or link appears actionable without an observable result
-* accessible names and explanations remain clear
-
-20. Test with JavaScript disabled:
-
-* package information remains visible
-* homepage material information remains visible
-* full catalogue content remains visible
-* links remain usable
-* unavailable actions remain honest
-* essential content does not depend on runtime rendering
-
-21. Test normal JavaScript-enhanced operation:
-
-* tabs work
-* filters work
-* package links work
-* material actions match their resolved access state
-* no duplicated generated content appears
-
-22. Confirm:
-
-* no console errors
-* no uncaught page errors
-* no failed requests
-* no unexpected HTTP error responses
-* no broken local links
-* no accessibility-state contradictions
-
-23. Confirm previous roadmap guarantees remain intact:
-
-* keyboard behavior
-* focus behavior
-* ARIA state
-* progressive enhancement
-* fail-open content
-
-24. If a roadmap-point-5 defect is found:
-
-* edit only the canonical source of truth
-* do not patch generated HTML or minified assets manually
-* rebuild affected outputs
-* rerun every affected static and browser check
-
-25. Attempt `npm run lint:js` only to confirm the existing ESLint 9 missing-configuration blocker.
-26. Do not repair or expand ESLint configuration during this task.
-27. After all applicable acceptance criteria pass:
-
-* change only roadmap point 5 in `INITIAL-AUDIT.md` from `[ ]` to `[x]`
-* confirm roadmap points 6–10 remain unchecked
-
-28. Stop the local verification server after testing.
+    * change only roadmap point 6 in `INITIAL-AUDIT.md` from `[ ]` to `[x]`
+    * confirm roadmap points 7–10 remain unchecked
+44. Stop the local verification server after testing.
 
 CONSTRAINTS
 
-* Do not restart roadmap point 5 from scratch.
-* Do not redesign package cards, material cards, tabs, filters, or layouts.
+* Do not invent client, teacher, company, operator, or business details.
+* Do not invent testimonials, ratings, reviews, social profiles, contact information, opening hours, legal identities, or commercial claims.
+* Do not generate placeholder legal content.
+* Do not present generic social-platform homepages as profiles.
+* Do not route legal links to `offline.html`, `404.html`, or unrelated pages.
+* Do not keep personal-data collection active without an accurate applicable disclosure and destination.
+* Do not claim legal compliance beyond what was actually implemented and verified.
+* Do not add legal guarantees, retention periods, controller identities, or processing bases without approved information.
+* Do not introduce a third-party consent or legal library.
 * Do not introduce Vite.
-* Do not introduce frameworks, template engines, APIs, databases, authentication, payments, or backend logic.
-* Do not introduce new dependencies.
-* Do not modify dependency versions.
-* Do not change `package.json`.
-* Do not create `package-lock.json` or another lockfile.
-* Do not invent package prices, benefits, URLs, downloads, or commercial claims.
-* Do not add fake downloadable files.
-* Do not restore `href="#"` actions.
-* Do not move essential package or material content to JavaScript-only rendering.
-* Do not duplicate canonical package, material, or access data.
-* Do not manually edit assembled HTML, minified CSS, minified JavaScript, or generated service-worker output.
-* Do not modify the unrelated `PROMPT.md` change.
-* Do not perform unrelated legal, SEO, PWA, theme, token, responsive, or visual-polish work.
-* Do not repair the known ESLint 9 configuration blocker.
-* Do not mark roadmap point 5 complete if the production build or browser verification remains blocked.
+* Do not introduce frameworks, APIs, databases, authentication, payments, or backend logic.
+* Do not redesign the site.
+* Do not perform unrelated responsive, token, theme, SEO-routing, or PWA work.
+* Metadata and structured-data corrections directly required by unsupported claims are in scope.
+* Do not modify canonical package or material data unless an unsupported public claim exists there.
+* Do not edit assembled HTML or generated assets manually.
+* Do not overwrite unrelated user-authored changes.
+* Do not remove internal audit or portfolio documentation solely because it uses `demo`.
+* Keep the diff focused, conservative, and review-friendly.
+* Mark roadmap point 6 complete only after implementation and verification pass.
 * Do not mark any other roadmap point complete.
-* Keep any required correction minimal, canonical, and review-friendly.
 
 TECHNICAL RULES
 
-* Canonical package keys must remain:
-
-  * `start`
-  * `regular`
-  * `intensive`
-* Public package labels must remain consistent across all views.
-* Package commercial content must have one source of truth.
-* Material metadata must remain centralized in `js/data/materials.js`.
-* Material access and CTA decisions must remain centralized and deterministic.
-* Build-time renderers must consume canonical data.
-* Runtime JavaScript must enhance existing content rather than provide the only content source.
-* No-JavaScript output must remain meaningful and usable.
-* Real navigation must use links.
-* Real actions must use buttons.
-* Informational availability states must not be presented as fake actions.
-* Disabled states must include understandable accessible explanations.
-* Access-resolution logic must remain independently testable where practical.
-* Filters must operate against canonical material data.
-* Generated HTML must remain reproducible and idempotent.
-* Preserve existing BEM naming, semantic HTML, CSS layers, keyboard behavior, focus behavior, and ARIA contracts.
-* Browser tests must use the latest generated HTML and production assets.
-* Report only checks that were actually performed.
+* Public copy must be realistic, natural, concise, and free from developer terminology.
+* Every retained claim must have an approved source.
+* Absence of verification requires removal or an honest unavailable state.
+* Native links must lead to valid destinations.
+* Buttons must perform real actions.
+* Forms must accurately describe their real technical behavior.
+* Structured data must not contain unsupported fields.
+* Testimonials and ratings require verified provenance.
+* Legal pages must describe only actual technical behavior and approved identities.
+* Semantic HTML, accessible names, heading structure, focus behavior, and keyboard behavior must remain intact.
+* Shared navigation and footer content must remain centralized.
+* Public HTML must remain usable without JavaScript.
+* Canonical sources must remain the only editable source of generated output.
+* Existing BEM naming and CSS layer order must remain intact.
+* Generated HTML must remain deterministic and idempotent.
+* Browser verification must use fresh contexts and current production assets.
+* Report only checks actually performed.
 
 Acceptance criteria:
 
-* existing declared dependencies install without manifest or lockfile changes
-* `npm run build` succeeds
-* production assets regenerate successfully
-* package keys are consistent everywhere
-* Start, Regular, and Intensive are the only intended public package labels
-* no homepage Pro package remains
-* homepage package cards derive from canonical package data
-* package-page cards derive from canonical package data
-* homepage material panels derive from canonical material data
-* full catalogue derives from canonical material data
-* no material content is independently duplicated across tab panels
-* all 15 material records render correctly
-* filter results match canonical data
-* combined filters return expected results
-* every material CTA has a valid, disabled, or clearly explained state
-* no operational-looking CTA uses `href="#"`
-* premium materials reference valid package keys
-* access rules remain centralized
-* no-JavaScript package and material content remains visible and usable
-* enhanced tabs and filters remain functional
-* tested pages have no console errors, page errors, failed requests, broken links, or unexpected HTTP responses
+* no prohibited public `demo`, mockup, fake, test-site, or portfolio-simulation wording remains
+* internal documentation remains accurate and may retain appropriate project terminology
+* no unsupported testimonial remains
+* no unsupported rating or five-star presentation remains
+* no unsupported phone number remains
+* no unsupported email remains
+* no unsupported opening hours remain
+* no unsupported WhatsApp claim remains
+* no generic social-platform homepage is presented as a profile
+* no legal link points to `offline.html` or another unrelated page
+* active form behavior matches its visible disclosure
+* personal-data submission is disabled or removed when an applicable truthful policy cannot be supported
+* retained prices and commercial details have an approved canonical source
+* JSON-LD contains only supported facts or is removed
+* metadata contains no prohibited or unsupported public claims
+* all retained public destinations resolve correctly
+* all modified pages remain accessible and usable without JavaScript
+* HTML assembly and production build pass
 * generated output remains idempotent
-* only roadmap point 5 is marked complete
+* tested pages have no console errors, page errors, failed requests, broken links, or unexpected HTTP responses
+* only roadmap point 6 is marked complete in `INITIAL-AUDIT.md`
 
 OUTPUT EXPECTATION
 
 Return a concise completion report with:
 
-* current diff inspected
-* existing roadmap-point-5 implementation verified
-* canonical package, material, access, filtering, and rendering files identified
-* unrelated `PROMPT.md` change preserved
-* dependency installation command and result
-* confirmation that manifests remained unchanged
-* confirmation that no lockfile was created
-* files changed during final correction, if any
-* production build result
-* HTML assembly and idempotence result
-* final canonical package data contract
-* final canonical material data contract
-* centralized access-rule result
-* package consistency results
-* material catalogue results
-* category, level, access, and combined-filter results
-* CTA and `href="#"` results
-* no-JavaScript result
+* documentation and canonical public-content sources inspected
+* current working-tree diff reviewed
+* unrelated user changes preserved
+* files changed
+* prohibited public terminology removed or replaced
+* testimonial and rating handling
+* business and contact-detail handling
+* social-link handling
+* form and personal-data handling
+* legal-link and policy-page handling
+* structured-data handling
+* metadata handling
+* package-price and commercial-claim verification result
+* repository-wide public-content searches performed
+* HTML assembly and production build results
+* generated-output idempotence result
 * browser tooling used
 * pages and viewport sizes tested
-* keyboard, focus, ARIA, and progressive-enhancement regression results
-* console, page-error, network, HTTP, and link results
-* generated assets rebuilt
-* ESLint blocker status
-* confirmation that roadmap point 5 was marked complete, if all checks passed
-* confirmation that roadmap points 6–10 remain unchecked
-* any remaining blocker if completion was not possible
+* no-JavaScript result
+* contact and form behavior result
+* link, console, page-error, network, and HTTP results
+* confirmation that roadmap point 6 was marked complete in `INITIAL-AUDIT.md`
+* confirmation that roadmap points 7–10 remain unchecked
+* any important limitation or missing verified input
 
 Do not include unrelated recommendations.

@@ -36,6 +36,7 @@ service-worker.js                        # wygenerowany Service Worker
 
 - `npm run dev` – składa wspólny shell, a następnie uruchamia watch CSS/JS i lokalny serwer.
 - `npm run check:data` – sprawdza kanoniczne pakiety, materiały, dostęp i wyniki filtrów.
+- `npm run check:content` – sprawdza publiczne strony pod kątem niezweryfikowanych danych, atrap prawnych, opinii i aktywnego formularza danych osobowych.
 - `npm run build:html` – składa wspólny header, nawigację i footer w pięciu głównych stronach oraz statyczny katalog materiałów.
 - `npm run check:html` – bez zapisu sprawdza aktualność regionów generowanych, semantykę, ID i lokalne linki.
 - `npm run build` – pełny build produkcyjny: JavaScript, CSS i Service Worker.
@@ -119,3 +120,7 @@ Typografia używa lokalnych plików Inter z `assets/fonts/`. Kanoniczne deklarac
 - Dane: `js/data/packages.js` – rekordy `start`, `regular` i `intensive` wraz z opisami, korzyściami, linkami i CTA.
 - Homepage i `pakiety.html` są generowane z tych samych rekordów.
 - Brak zatwierdzonej ceny jest zapisany jako `priceLabel: null`; renderer nie tworzy wtedy publicznej ceny.
+
+## Integralność treści publicznych
+
+Publiczne dane kontaktowe, profile społecznościowe i dokumenty prawne nie są publikowane bez potwierdzonego źródła. Formularz danych osobowych pozostaje wyłączony, a sekcja kontaktowa pokazuje stan informacyjny. Po zmianie treści publicznych uruchom `npm run check:content`.

@@ -242,8 +242,8 @@ const validatePage = async (html, page, assembledPages) => {
   }
 
   assert(
-    (header.match(/class="nav__item"/g) ?? []).length === 9,
-    `${page.file}: expected nine nav items`,
+    (header.match(/class="nav__item"/g) ?? []).length === 8,
+    `${page.file}: expected eight nav items`,
   );
   assert(
     (header.match(/id="nav-drawer" data-drawer/g) ?? []).length === 1,

@@ -89,7 +89,7 @@ The intended source-only UI is more complete than the current runtime suggests. 
    - **Verification or acceptance criteria:** The same three package keys and labels appear everywhere; each material has a valid, intentionally disabled, or clearly explained CTA; category/level/free filters return the expected data; no material card content is duplicated manually across tab panels; access rules remain centralized and unit-testable.
    - **Likely source files or areas:** `index.html`, `pakiety.html`, `materialy.html`, `js/data/packages.js`, `js/data/materials.js`, `js/modules/materialsCatalog.js`, `js/modules/resourcesFilter.js`, `docs/pakiety.md`
 
-6. [ ] **Replace unsupported public claims and legal placeholders with verified content**
+6. [x] **Replace unsupported public claims and legal placeholders with verified content**
 
    - **Priority:** Critical
    - **Affected area:** Brand credibility, public copy, testimonials, business identity, forms, legal and social destinations

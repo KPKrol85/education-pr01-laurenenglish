@@ -7,6 +7,7 @@
     "dev": "npm run build:html && concurrently -k \"npm:watch:js\" \"npm:watch:css\" \"npm:serve\"",
     "serve": "serve .",
     "check:data": "node scripts/check-content-data.mjs",
+    "check:content": "node scripts/check-public-content.mjs",
     "build:html": "node scripts/build-html.mjs",
     "check:html": "node scripts/build-html.mjs --check",
     "build:css": "node -e \"require('fs').mkdirSync('assets/build',{recursive:true})\" && postcss css/style.css -o assets/build/style.min.css",

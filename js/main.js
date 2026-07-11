@@ -13,14 +13,20 @@ import { initProgressPage } from './pages/progress-page.js';
 const initThemeToggle = () => {
   const toggle = document.querySelector('[data-theme-toggle]');
   if (!toggle) return;
-  const saved = localStorage.getItem('theme');
-  if (saved) {
-    document.documentElement.dataset.theme = saved;
-  }
+
+  const applyTheme = (theme) => {
+    const isDark = theme === 'dark';
+    document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+    toggle.setAttribute('aria-pressed', String(isDark));
+  };
+
+  const savedTheme = localStorage.getItem('theme');
+  applyTheme(savedTheme === 'dark' ? 'dark' : 'light');
+
   toggle.addEventListener('click', () => {
-    const current = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-    document.documentElement.dataset.theme = current;
-    localStorage.setItem('theme', current);
+    const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    applyTheme(nextTheme);
+    localStorage.setItem('theme', nextTheme);
   });
 };
 

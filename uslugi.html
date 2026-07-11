@@ -51,9 +51,9 @@
             <span class="nav__toggle-line"></span>
             <span class="nav__toggle-line"></span>
             <span class="nav__toggle-line"></span>
-            <span class="sr-only">Otwórz menu</span>
+            <span class="sr-only" data-nav-toggle-label>Otwórz menu</span>
           </button>
-          <div class="nav__drawer" id="nav-drawer" data-drawer aria-hidden="true">
+          <div class="nav__drawer" id="nav-drawer" data-drawer aria-hidden="true" inert>
             <div class="nav__drawer-header">
               <span class="nav__drawer-title">Menu</span>
               <button class="nav__close" type="button" data-drawer-close>
@@ -94,9 +94,9 @@
           </div>
         </nav>
         <div class="header__actions">
-          <button class="button button--ghost" type="button" data-theme-toggle>
+          <button class="button button--ghost" type="button" aria-pressed="false" data-theme-toggle>
             <span class="button__icon" aria-hidden="true">🌓</span>
-            <span>Motyw</span>
+            <span>Tryb ciemny</span>
           </button>
           <a class="button button--primary header__cta" href="/index.html#contact">Umów lekcję</a>
         </div>
@@ -125,22 +125,22 @@
               <p class="hero__card-text">Diagnoza potrzeb, plan i regularny feedback po każdej lekcji.</p>
               <ul class="progress" role="list">
                 <li class="progress__item">
-                  <button class="progress__toggle" type="button" aria-pressed="true">
-                    <span class="progress__icon">✓</span>
+                  <span class="progress__status is-complete">
+                    <span class="progress__icon" aria-hidden="true">✓</span>
                     <span class="progress__label">Cel językowy na najbliższe 4 tygodnie</span>
-                  </button>
+                  </span>
                 </li>
                 <li class="progress__item">
-                  <button class="progress__toggle" type="button" aria-pressed="false">
-                    <span class="progress__icon">○</span>
+                  <span class="progress__status">
+                    <span class="progress__icon" aria-hidden="true">○</span>
                     <span class="progress__label">Plan lekcji i materiałów</span>
-                  </button>
+                  </span>
                 </li>
                 <li class="progress__item">
-                  <button class="progress__toggle" type="button" aria-pressed="false">
-                    <span class="progress__icon">○</span>
+                  <span class="progress__status">
+                    <span class="progress__icon" aria-hidden="true">○</span>
                     <span class="progress__label">Podsumowanie i rekomendacje</span>
-                  </button>
+                  </span>
                 </li>
               </ul>
             </div>

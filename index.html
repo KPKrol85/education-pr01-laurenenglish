@@ -75,9 +75,9 @@
             <span class="nav__toggle-line"></span>
             <span class="nav__toggle-line"></span>
             <span class="nav__toggle-line"></span>
-            <span class="sr-only">Otwórz menu</span>
+            <span class="sr-only" data-nav-toggle-label>Otwórz menu</span>
           </button>
-          <div class="nav__drawer" id="nav-drawer" data-drawer aria-hidden="true">
+          <div class="nav__drawer" id="nav-drawer" data-drawer aria-hidden="true" inert>
             <div class="nav__drawer-header">
               <span class="nav__drawer-title">Menu</span>
               <button class="nav__close" type="button" data-drawer-close>
@@ -118,9 +118,9 @@
           </div>
         </nav>
         <div class="header__actions">
-          <button class="button button--ghost" type="button" data-theme-toggle>
+          <button class="button button--ghost" type="button" aria-pressed="false" data-theme-toggle>
             <span class="button__icon" aria-hidden="true">🌓</span>
-            <span>Motyw</span>
+            <span>Tryb ciemny</span>
           </button>
           <a class="button button--primary header__cta" href="/index.html#contact">Umów lekcję</a>
         </div>
@@ -164,19 +164,19 @@
               <ul class="progress" role="list" data-progress>
                 <li class="progress__item" data-progress-item>
                   <button class="progress__toggle" type="button" aria-pressed="true">
-                    <span class="progress__icon">✓</span>
+                    <span class="progress__icon" aria-hidden="true">✓</span>
                     <span class="progress__label">Powtórka czasu Present Perfect</span>
                   </button>
                 </li>
                 <li class="progress__item" data-progress-item>
                   <button class="progress__toggle" type="button" aria-pressed="false">
-                    <span class="progress__icon">○</span>
+                    <span class="progress__icon" aria-hidden="true">○</span>
                     <span class="progress__label">Konwersacja: small talk w pracy</span>
                   </button>
                 </li>
                 <li class="progress__item" data-progress-item>
                   <button class="progress__toggle" type="button" aria-pressed="false">
-                    <span class="progress__icon">○</span>
+                    <span class="progress__icon" aria-hidden="true">○</span>
                     <span class="progress__label">Mini test słówek</span>
                   </button>
                 </li>
@@ -335,7 +335,13 @@
                   <span class="badge">PDF</span>
                   <span class="badge">Gramatyka</span>
                 </div>
-                <button class="button button--ghost">Zobacz</button>
+                <a
+                  class="button button--ghost"
+                  href="/materialy.html#materials-catalog"
+                  aria-label="Zobacz materiał: Detoks gramatyczny"
+                >
+                  Zobacz
+                </a>
               </article>
               <article class="card card--resource" data-category="vocabulary" data-reveal>
                 <h3 class="card__title">Sprint ze słownictwem</h3>
@@ -344,7 +350,13 @@
                   <span class="badge">Ebook</span>
                   <span class="badge">Słownictwo</span>
                 </div>
-                <button class="button button--ghost">Zobacz</button>
+                <a
+                  class="button button--ghost"
+                  href="/materialy.html#materials-catalog"
+                  aria-label="Zobacz materiał: Sprint ze słownictwem"
+                >
+                  Zobacz
+                </a>
               </article>
               <article class="card card--resource" data-category="exam" data-reveal>
                 <h3 class="card__title">Pakiet gotowości egzaminacyjnej</h3>
@@ -353,7 +365,13 @@
                   <span class="badge">PDF</span>
                   <span class="badge">Egzaminy</span>
                 </div>
-                <button class="button button--ghost">Zobacz</button>
+                <a
+                  class="button button--ghost"
+                  href="/materialy.html#materials-catalog"
+                  aria-label="Zobacz materiał: Pakiet gotowości egzaminacyjnej"
+                >
+                  Zobacz
+                </a>
               </article>
               <article class="card card--resource" data-category="business" data-reveal>
                 <h3 class="card__title">Notatki z angielskiego biznesowego</h3>
@@ -362,7 +380,13 @@
                   <span class="badge">PDF</span>
                   <span class="badge">Biznes</span>
                 </div>
-                <button class="button button--ghost">Zobacz</button>
+                <a
+                  class="button button--ghost"
+                  href="/materialy.html#materials-catalog"
+                  aria-label="Zobacz materiał: Notatki z angielskiego biznesowego"
+                >
+                  Zobacz
+                </a>
               </article>
             </div>
             <div class="grid grid--resources" data-tab-panel="grammar">
@@ -373,7 +397,13 @@
                   <span class="badge">PDF</span>
                   <span class="badge">Gramatyka</span>
                 </div>
-                <button class="button button--ghost">Zobacz</button>
+                <a
+                  class="button button--ghost"
+                  href="/materialy.html#materials-catalog"
+                  aria-label="Zobacz materiał: Detoks gramatyczny"
+                >
+                  Zobacz
+                </a>
               </article>
             </div>
             <div class="grid grid--resources" data-tab-panel="vocabulary">
@@ -384,7 +414,13 @@
                   <span class="badge">Ebook</span>
                   <span class="badge">Słownictwo</span>
                 </div>
-                <button class="button button--ghost">Zobacz</button>
+                <a
+                  class="button button--ghost"
+                  href="/materialy.html#materials-catalog"
+                  aria-label="Zobacz materiał: Sprint ze słownictwem"
+                >
+                  Zobacz
+                </a>
               </article>
             </div>
             <div class="grid grid--resources" data-tab-panel="exam">
@@ -395,7 +431,13 @@
                   <span class="badge">PDF</span>
                   <span class="badge">Egzaminy</span>
                 </div>
-                <button class="button button--ghost">Zobacz</button>
+                <a
+                  class="button button--ghost"
+                  href="/materialy.html#materials-catalog"
+                  aria-label="Zobacz materiał: Pakiet gotowości egzaminacyjnej"
+                >
+                  Zobacz
+                </a>
               </article>
             </div>
             <div class="grid grid--resources" data-tab-panel="business">
@@ -406,7 +448,13 @@
                   <span class="badge">PDF</span>
                   <span class="badge">Biznes</span>
                 </div>
-                <button class="button button--ghost">Zobacz</button>
+                <a
+                  class="button button--ghost"
+                  href="/materialy.html#materials-catalog"
+                  aria-label="Zobacz materiał: Notatki z angielskiego biznesowego"
+                >
+                  Zobacz
+                </a>
               </article>
             </div>
           </div>
@@ -500,31 +548,76 @@
           <div class="accordion" data-accordion>
             <div class="accordion__item" data-accordion-item>
               <h3 class="accordion__title">
-                <button class="accordion__trigger" type="button" aria-expanded="false" aria-controls="faq-1">
+                <button
+                  class="accordion__trigger"
+                  id="home-faq-trigger-1"
+                  type="button"
+                  aria-expanded="false"
+                  aria-controls="home-faq-panel-1"
+                  data-accordion-trigger
+                >
                   Jak wygląda pierwsza lekcja?
                 </button>
               </h3>
-              <div class="accordion__panel" id="faq-1" role="region" aria-hidden="true">
+              <div
+                class="accordion__panel"
+                id="home-faq-panel-1"
+                role="region"
+                aria-labelledby="home-faq-trigger-1"
+                aria-hidden="true"
+                data-accordion-panel
+                hidden
+              >
                 <p>Rozmawiamy o celach, sprawdzamy poziom i ustalamy plan na kolejne spotkania.</p>
               </div>
             </div>
             <div class="accordion__item" data-accordion-item>
               <h3 class="accordion__title">
-                <button class="accordion__trigger" type="button" aria-expanded="false" aria-controls="faq-2">
+                <button
+                  class="accordion__trigger"
+                  id="home-faq-trigger-2"
+                  type="button"
+                  aria-expanded="false"
+                  aria-controls="home-faq-panel-2"
+                  data-accordion-trigger
+                >
                   Czy dostanę materiały?
                 </button>
               </h3>
-              <div class="accordion__panel" id="faq-2" role="region" aria-hidden="true">
+              <div
+                class="accordion__panel"
+                id="home-faq-panel-2"
+                role="region"
+                aria-labelledby="home-faq-trigger-2"
+                aria-hidden="true"
+                data-accordion-panel
+                hidden
+              >
                 <p>Tak, przygotowuję materiały premium i zadania domowe w formie PDF.</p>
               </div>
             </div>
             <div class="accordion__item" data-accordion-item>
               <h3 class="accordion__title">
-                <button class="accordion__trigger" type="button" aria-expanded="false" aria-controls="faq-3">
+                <button
+                  class="accordion__trigger"
+                  id="home-faq-trigger-3"
+                  type="button"
+                  aria-expanded="false"
+                  aria-controls="home-faq-panel-3"
+                  data-accordion-trigger
+                >
                   Jak mierzymy progres?
                 </button>
               </h3>
-              <div class="accordion__panel" id="faq-3" role="region" aria-hidden="true">
+              <div
+                class="accordion__panel"
+                id="home-faq-panel-3"
+                role="region"
+                aria-labelledby="home-faq-trigger-3"
+                aria-hidden="true"
+                data-accordion-panel
+                hidden
+              >
                 <p>Co miesiąc robimy krótki test i wspólnie aktualizujemy plan.</p>
               </div>
             </div>

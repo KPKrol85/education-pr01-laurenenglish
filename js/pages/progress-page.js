@@ -80,7 +80,7 @@ const renderTracks = ({ container, state, todayKey, weekDates }) => {
           <p class="card__text">${track.description}</p>
         </div>
         <div class="progress-card__controls">
-          <label class="form__label" for="goal-${track.id}">Cel tygodniowy (sesje)</label>
+          <label class="form__label" for="goal-${track.id}">Cel tygodniowy – ${track.label} (sesje)</label>
           <select
             id="goal-${track.id}"
             class="form__input"
@@ -95,6 +95,7 @@ const renderTracks = ({ container, state, todayKey, weekDates }) => {
             <button
               class="button button--ghost progress-card__toggle"
               type="button"
+              aria-label="Dzisiejszy check-in: ${track.label}"
               aria-pressed="${todayDone}"
               data-checkin-toggle
               data-track-id="${track.id}"

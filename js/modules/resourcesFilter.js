@@ -4,26 +4,26 @@ export const initResourcesFilter = () => {
   const panels = Array.from(document.querySelectorAll('[data-tab-panel]'));
   if (!tablist || !tabs.length || !panels.length) return;
 
-  const panelByName = new Map(
-    panels.map((panel) => [panel.dataset.tabPanel, panel]),
-  );
+  const panelByName = new Map(panels.map((panel) => [panel.dataset.tabPanel, panel]));
   const tabNames = tabs.map((tab) => tab.dataset.tab);
   const defaultTabIndex = Math.max(
     tabs.findIndex((tab) => tab.classList.contains('is-active')),
-    0,
+    0
   );
   let activeTabIndex = defaultTabIndex;
+  let focusableTabIndex = defaultTabIndex;
 
   const updateAriaState = () => {
     tabs.forEach((tab, index) => {
       const isActive = index === activeTabIndex;
       tab.classList.toggle('is-active', isActive);
       tab.setAttribute('aria-selected', String(isActive));
-      tab.setAttribute('tabindex', isActive ? '0' : '-1');
+      tab.setAttribute('tabindex', index === focusableTabIndex ? '0' : '-1');
     });
 
-    panels.forEach((panel, index) => {
-      const isActive = index === activeTabIndex;
+    const activeTabName = tabs[activeTabIndex]?.dataset.tab;
+    panels.forEach((panel) => {
+      const isActive = panel.dataset.tabPanel === activeTabName;
       panel.hidden = !isActive;
       panel.setAttribute('aria-hidden', String(!isActive));
     });
@@ -31,10 +31,17 @@ export const initResourcesFilter = () => {
 
   const setActiveTab = (nextIndex, { focus = true } = {}) => {
     activeTabIndex = nextIndex;
+    focusableTabIndex = nextIndex;
     updateAriaState();
     if (focus) {
       tabs[activeTabIndex].focus();
     }
+  };
+
+  const moveFocus = (nextIndex) => {
+    focusableTabIndex = nextIndex;
+    updateAriaState();
+    tabs[focusableTabIndex].focus();
   };
 
   const handleKeyNavigation = (event) => {
@@ -62,7 +69,7 @@ export const initResourcesFilter = () => {
     }
 
     event.preventDefault();
-    tabs[nextIndex].focus();
+    moveFocus(nextIndex);
   };
 
   tablist.setAttribute('role', 'tablist');
@@ -89,9 +96,7 @@ export const initResourcesFilter = () => {
 
   tabs.forEach((tab, index) => {
     tab.addEventListener('click', () => {
-      if (activeTabIndex !== index) {
-        setActiveTab(index, { focus: false });
-      }
+      setActiveTab(index, { focus: false });
     });
   });
 

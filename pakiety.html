@@ -51,9 +51,9 @@
             <span class="nav__toggle-line"></span>
             <span class="nav__toggle-line"></span>
             <span class="nav__toggle-line"></span>
-            <span class="sr-only">Otwórz menu</span>
+            <span class="sr-only" data-nav-toggle-label>Otwórz menu</span>
           </button>
-          <div class="nav__drawer" id="nav-drawer" data-drawer aria-hidden="true">
+          <div class="nav__drawer" id="nav-drawer" data-drawer aria-hidden="true" inert>
             <div class="nav__drawer-header">
               <span class="nav__drawer-title">Menu</span>
               <button class="nav__close" type="button" data-drawer-close>
@@ -94,9 +94,9 @@
           </div>
         </nav>
         <div class="header__actions">
-          <button class="button button--ghost" type="button" data-theme-toggle>
+          <button class="button button--ghost" type="button" aria-pressed="false" data-theme-toggle>
             <span class="button__icon" aria-hidden="true">🌓</span>
-            <span>Motyw</span>
+            <span>Tryb ciemny</span>
           </button>
           <a class="button button--primary header__cta" href="/index.html#contact">Umów lekcję</a>
         </div>
@@ -125,22 +125,22 @@
               <p class="hero__card-text">Jasny plan pracy, materiały i regularny feedback po lekcjach.</p>
               <ul class="progress" role="list">
                 <li class="progress__item">
-                  <button class="progress__toggle" type="button" aria-pressed="true">
-                    <span class="progress__icon">✓</span>
+                  <span class="progress__status is-complete">
+                    <span class="progress__icon" aria-hidden="true">✓</span>
                     <span class="progress__label">Indywidualny plan tematyczny</span>
-                  </button>
+                  </span>
                 </li>
                 <li class="progress__item">
-                  <button class="progress__toggle" type="button" aria-pressed="false">
-                    <span class="progress__icon">○</span>
+                  <span class="progress__status">
+                    <span class="progress__icon" aria-hidden="true">○</span>
                     <span class="progress__label">Materiały po każdej lekcji</span>
-                  </button>
+                  </span>
                 </li>
                 <li class="progress__item">
-                  <button class="progress__toggle" type="button" aria-pressed="false">
-                    <span class="progress__icon">○</span>
+                  <span class="progress__status">
+                    <span class="progress__icon" aria-hidden="true">○</span>
                     <span class="progress__label">Rekomendacje dalszej pracy</span>
-                  </button>
+                  </span>
                 </li>
               </ul>
             </div>
@@ -205,51 +205,153 @@
             <p class="section__subtitle">Krótko i konkretnie o organizacji współpracy.</p>
           </div>
           <div class="accordion" data-accordion>
-            <div class="accordion__item" data-reveal>
-              <button class="accordion__trigger" type="button" data-accordion-trigger>
-                Czy mogę zmienić pakiet w trakcie współpracy?
-              </button>
-              <div class="accordion__panel" data-accordion-panel>
+            <div class="accordion__item" data-accordion-item data-reveal>
+              <h3 class="accordion__title">
+                <button
+                  class="accordion__trigger"
+                  id="packages-faq-trigger-1"
+                  type="button"
+                  aria-expanded="false"
+                  aria-controls="packages-faq-panel-1"
+                  data-accordion-trigger
+                >
+                  Czy mogę zmienić pakiet w trakcie współpracy?
+                </button>
+              </h3>
+              <div
+                class="accordion__panel"
+                id="packages-faq-panel-1"
+                role="region"
+                aria-labelledby="packages-faq-trigger-1"
+                aria-hidden="true"
+                data-accordion-panel
+                hidden
+              >
                 Tak, po wspólnym podsumowaniu dopasowujemy rytm do Twojej sytuacji.
               </div>
             </div>
-            <div class="accordion__item" data-reveal>
-              <button class="accordion__trigger" type="button" data-accordion-trigger>
-                Jak wygląda rozliczenie pakietu?
-              </button>
-              <div class="accordion__panel" data-accordion-panel>
+            <div class="accordion__item" data-accordion-item data-reveal>
+              <h3 class="accordion__title">
+                <button
+                  class="accordion__trigger"
+                  id="packages-faq-trigger-2"
+                  type="button"
+                  aria-expanded="false"
+                  aria-controls="packages-faq-panel-2"
+                  data-accordion-trigger
+                >
+                  Jak wygląda rozliczenie pakietu?
+                </button>
+              </h3>
+              <div
+                class="accordion__panel"
+                id="packages-faq-panel-2"
+                role="region"
+                aria-labelledby="packages-faq-trigger-2"
+                aria-hidden="true"
+                data-accordion-panel
+                hidden
+              >
                 Ustalamy miesięczny plan spotkań i rozliczenie zgodne z wybranym rytmem.
               </div>
             </div>
-            <div class="accordion__item" data-reveal>
-              <button class="accordion__trigger" type="button" data-accordion-trigger>
-                Czy mogę mieć tylko konwersacje?
-              </button>
-              <div class="accordion__panel" data-accordion-panel>
+            <div class="accordion__item" data-accordion-item data-reveal>
+              <h3 class="accordion__title">
+                <button
+                  class="accordion__trigger"
+                  id="packages-faq-trigger-3"
+                  type="button"
+                  aria-expanded="false"
+                  aria-controls="packages-faq-panel-3"
+                  data-accordion-trigger
+                >
+                  Czy mogę mieć tylko konwersacje?
+                </button>
+              </h3>
+              <div
+                class="accordion__panel"
+                id="packages-faq-panel-3"
+                role="region"
+                aria-labelledby="packages-faq-trigger-3"
+                aria-hidden="true"
+                data-accordion-panel
+                hidden
+              >
                 Tak, pakiety można oprzeć wyłącznie na konwersacjach z tematycznym planem.
               </div>
             </div>
-            <div class="accordion__item" data-reveal>
-              <button class="accordion__trigger" type="button" data-accordion-trigger>
-                Czy materiały są w cenie?
-              </button>
-              <div class="accordion__panel" data-accordion-panel>
+            <div class="accordion__item" data-accordion-item data-reveal>
+              <h3 class="accordion__title">
+                <button
+                  class="accordion__trigger"
+                  id="packages-faq-trigger-4"
+                  type="button"
+                  aria-expanded="false"
+                  aria-controls="packages-faq-panel-4"
+                  data-accordion-trigger
+                >
+                  Czy materiały są w cenie?
+                </button>
+              </h3>
+              <div
+                class="accordion__panel"
+                id="packages-faq-panel-4"
+                role="region"
+                aria-labelledby="packages-faq-trigger-4"
+                aria-hidden="true"
+                data-accordion-panel
+                hidden
+              >
                 Materiały i zadania dobieram do pakietu – bez dodatkowych opłat za podstawowe zasoby.
               </div>
             </div>
-            <div class="accordion__item" data-reveal>
-              <button class="accordion__trigger" type="button" data-accordion-trigger>
-                Ile trwa lekcja?
-              </button>
-              <div class="accordion__panel" data-accordion-panel>
+            <div class="accordion__item" data-accordion-item data-reveal>
+              <h3 class="accordion__title">
+                <button
+                  class="accordion__trigger"
+                  id="packages-faq-trigger-5"
+                  type="button"
+                  aria-expanded="false"
+                  aria-controls="packages-faq-panel-5"
+                  data-accordion-trigger
+                >
+                  Ile trwa lekcja?
+                </button>
+              </h3>
+              <div
+                class="accordion__panel"
+                id="packages-faq-panel-5"
+                role="region"
+                aria-labelledby="packages-faq-trigger-5"
+                aria-hidden="true"
+                data-accordion-panel
+                hidden
+              >
                 Długość spotkań ustalamy indywidualnie na podstawie celu i dostępności.
               </div>
             </div>
-            <div class="accordion__item" data-reveal>
-              <button class="accordion__trigger" type="button" data-accordion-trigger>
-                Czy można łączyć pakiet z materiałami do samodzielnej pracy?
-              </button>
-              <div class="accordion__panel" data-accordion-panel>
+            <div class="accordion__item" data-accordion-item data-reveal>
+              <h3 class="accordion__title">
+                <button
+                  class="accordion__trigger"
+                  id="packages-faq-trigger-6"
+                  type="button"
+                  aria-expanded="false"
+                  aria-controls="packages-faq-panel-6"
+                  data-accordion-trigger
+                >
+                  Czy można łączyć pakiet z materiałami do samodzielnej pracy?
+                </button>
+              </h3>
+              <div
+                class="accordion__panel"
+                id="packages-faq-panel-6"
+                role="region"
+                aria-labelledby="packages-faq-trigger-6"
+                aria-hidden="true"
+                data-accordion-panel
+                hidden
+              >
                 Tak, do pakietu mogę dobrać materiały z sekcji Materiały i sklepik.
               </div>
             </div>

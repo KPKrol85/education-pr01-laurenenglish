@@ -1,43 +1,111 @@
-const focusableSelectors = 'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
+const focusableSelectors =
+  'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
+const desktopNavigationQuery = '(min-width: 780px)';
 
 export const initMobileNav = () => {
   const toggle = document.querySelector('.nav__toggle');
   const drawer = document.querySelector('[data-drawer]');
-  const closeBtn = document.querySelector('[data-drawer-close]');
-  if (!toggle || !drawer || !closeBtn) return;
+  const closeButton = document.querySelector('[data-drawer-close]');
+  const toggleLabel = toggle?.querySelector('[data-nav-toggle-label]');
+  const desktopActions = document.querySelector('.header__actions');
+  if (!toggle || !drawer || !closeButton || !toggleLabel) return;
 
+  const desktopQuery = window.matchMedia(desktopNavigationQuery);
   let lastFocused = null;
 
-  const openDrawer = () => {
-    lastFocused = document.activeElement;
-    drawer.classList.add('is-open');
-    toggle.setAttribute('aria-expanded', 'true');
-    drawer.setAttribute('aria-hidden', 'false');
-    const focusable = drawer.querySelectorAll(focusableSelectors);
-    if (focusable.length) {
-      focusable[0].focus();
-    }
-    document.body.style.overflow = 'hidden';
+  const getFocusableElements = () =>
+    Array.from(drawer.querySelectorAll(focusableSelectors)).filter(
+      (element) => element instanceof HTMLElement && element.offsetParent !== null
+    );
+
+  const setToggleState = (isOpen) => {
+    toggle.setAttribute('aria-expanded', String(isOpen));
+    toggleLabel.textContent = isOpen ? 'Zamknij menu' : 'Otwórz menu';
   };
 
-  const closeDrawer = () => {
+  const setMobileDrawerState = (isOpen) => {
+    drawer.classList.toggle('is-open', isOpen);
+    drawer.setAttribute('aria-hidden', String(!isOpen));
+    drawer.inert = !isOpen;
+    document.body.classList.toggle('has-open-navigation', isOpen);
+    setToggleState(isOpen);
+  };
+
+  const openDrawer = () => {
+    if (desktopQuery.matches) return;
+    lastFocused = document.activeElement;
+    setMobileDrawerState(true);
+    getFocusableElements()[0]?.focus();
+  };
+
+  const closeDrawer = ({ restoreFocus = true } = {}) => {
+    const focusTarget =
+      lastFocused instanceof HTMLElement && document.contains(lastFocused) ? lastFocused : toggle;
+
     drawer.classList.remove('is-open');
-    toggle.setAttribute('aria-expanded', 'false');
+    document.body.classList.remove('has-open-navigation');
+    setToggleState(false);
+    if (restoreFocus && !desktopQuery.matches) {
+      focusTarget.focus();
+    }
     drawer.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
-    if (lastFocused) lastFocused.focus();
+    drawer.inert = true;
+    lastFocused = null;
+  };
+
+  const exposeDesktopNavigation = () => {
+    const activeElement = document.activeElement;
+    const mobileOnlyControlHasFocus =
+      activeElement === toggle ||
+      activeElement === closeButton ||
+      activeElement === drawer.querySelector('.nav__cta');
+
+    drawer.classList.remove('is-open');
+    drawer.removeAttribute('aria-hidden');
+    drawer.inert = false;
+    document.body.classList.remove('has-open-navigation');
+    setToggleState(false);
+    lastFocused = null;
+
+    if (mobileOnlyControlHasFocus) {
+      drawer.querySelector('.nav__link')?.focus();
+    }
+  };
+
+  const hideMobileNavigation = () => {
+    const activeElement = document.activeElement;
+    if (drawer.contains(activeElement) || desktopActions?.contains(activeElement)) {
+      toggle.focus();
+    }
+    closeDrawer({ restoreFocus: false });
+  };
+
+  const syncNavigationMode = () => {
+    if (desktopQuery.matches) {
+      exposeDesktopNavigation();
+    } else {
+      hideMobileNavigation();
+    }
   };
 
   const onKeydown = (event) => {
-    if (!drawer.classList.contains('is-open')) return;
+    if (desktopQuery.matches || !drawer.classList.contains('is-open')) return;
     if (event.key === 'Escape') {
+      event.preventDefault();
       closeDrawer();
+      return;
     }
     if (event.key !== 'Tab') return;
-    const focusable = Array.from(drawer.querySelectorAll(focusableSelectors));
+
+    const focusable = getFocusableElements();
     if (!focusable.length) return;
     const first = focusable[0];
     const last = focusable[focusable.length - 1];
+    if (!drawer.contains(document.activeElement)) {
+      event.preventDefault();
+      first.focus();
+      return;
+    }
     if (event.shiftKey && document.activeElement === first) {
       event.preventDefault();
       last.focus();
@@ -56,12 +124,18 @@ export const initMobileNav = () => {
     }
   });
 
-  closeBtn.addEventListener('click', closeDrawer);
+  closeButton.addEventListener('click', () => closeDrawer());
   drawer.addEventListener('click', (event) => {
-    if (event.target.matches('.nav__link')) {
+    if (
+      !desktopQuery.matches &&
+      drawer.classList.contains('is-open') &&
+      event.target.closest('a[href]')
+    ) {
       closeDrawer();
     }
   });
 
   document.addEventListener('keydown', onKeydown);
+  desktopQuery.addEventListener('change', syncNavigationMode);
+  syncNavigationMode();
 };

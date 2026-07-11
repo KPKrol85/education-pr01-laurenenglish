@@ -94,9 +94,9 @@ export const renderSharedHeader = (pageKey) => {
             <span class="nav__toggle-line"></span>
             <span class="nav__toggle-line"></span>
             <span class="nav__toggle-line"></span>
-            <span class="sr-only">Otwórz menu</span>
+            <span class="sr-only" data-nav-toggle-label>Otwórz menu</span>
           </button>
-          <div class="nav__drawer" id="nav-drawer" data-drawer aria-hidden="true">
+          <div class="nav__drawer" id="nav-drawer" data-drawer aria-hidden="true" inert>
             <div class="nav__drawer-header">
               <span class="nav__drawer-title">Menu</span>
               <button class="nav__close" type="button" data-drawer-close>
@@ -111,9 +111,9 @@ ${renderNavItems(pageKey)}
           </div>
         </nav>
         <div class="header__actions">
-          <button class="button button--ghost" type="button" data-theme-toggle>
+          <button class="button button--ghost" type="button" aria-pressed="false" data-theme-toggle>
             <span class="button__icon" aria-hidden="true">🌓</span>
-            <span>Motyw</span>
+            <span>Tryb ciemny</span>
           </button>
           <a class="button button--primary header__cta" href="/index.html#contact">Umów lekcję</a>
         </div>

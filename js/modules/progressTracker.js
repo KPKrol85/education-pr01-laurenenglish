@@ -3,10 +3,13 @@ export const initProgressTracker = () => {
   if (!items.length) return;
 
   items.forEach((button) => {
+    const icon = button.querySelector('.progress__icon');
+    if (!icon) return;
+
     button.addEventListener('click', () => {
       const isPressed = button.getAttribute('aria-pressed') === 'true';
       button.setAttribute('aria-pressed', String(!isPressed));
-      button.querySelector('.progress__icon').textContent = isPressed ? '○' : '✓';
+      icon.textContent = isPressed ? '○' : '✓';
     });
   });
 };

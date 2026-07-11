@@ -189,8 +189,10 @@ const validatePage = async (html, page, assembledPages) => {
     `${page.file}: expected nine nav items`,
   );
   assert(
-    (header.match(/id="nav-drawer" data-drawer aria-hidden="true"/g) ?? [])
-      .length === 1,
+    (
+      header.match(/id="nav-drawer" data-drawer aria-hidden="true" inert/g) ??
+      []
+    ).length === 1,
     `${page.file}: mobile drawer hook changed`,
   );
   assert(
@@ -202,7 +204,12 @@ const validatePage = async (html, page, assembledPages) => {
     `${page.file}: mobile drawer relationship changed`,
   );
   assert(
-    (header.match(/data-theme-toggle/g) ?? []).length === 1,
+    (header.match(/data-nav-toggle-label/g) ?? []).length === 1,
+    `${page.file}: mobile drawer toggle label hook changed`,
+  );
+  assert(
+    (header.match(/aria-pressed="false" data-theme-toggle/g) ?? []).length ===
+      1,
     `${page.file}: theme-toggle hook changed`,
   );
   assert(

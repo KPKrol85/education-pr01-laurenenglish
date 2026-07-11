@@ -6,12 +6,19 @@
   background: color-mix(in srgb, var(--color-bg) 90%, transparent);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid transparent;
-  transition: padding var(--transition-base), box-shadow var(--transition-base), background var(--transition-base);
+  transition:
+    padding var(--transition-base),
+    box-shadow var(--transition-base),
+    background var(--transition-base);
 }
 
 .header--scrolled {
   box-shadow: var(--shadow-sm);
   border-color: var(--color-border);
+}
+
+body.has-open-navigation {
+  overflow: hidden;
 }
 
 .header__inner {

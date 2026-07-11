@@ -27,6 +27,12 @@
   gap: var(--space-xs);
 }
 
+.progress-card__toggle[aria-pressed="true"] {
+  border-color: var(--color-primary);
+  background: var(--color-surface-soft);
+  color: var(--color-primary-dark);
+}
+
 .progress-card__summary {
   margin: 0;
   font-weight: 600;

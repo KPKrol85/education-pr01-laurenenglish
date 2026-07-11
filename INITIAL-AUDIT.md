@@ -56,7 +56,7 @@ The intended source-only UI is more complete than the current runtime suggests. 
    - **Verification or acceptance criteria:** Header/footer parity is mechanically checkable; every page retains one `h1`, unique IDs, a valid `main`, correct skip-link target where applicable, valid local destinations, and exactly one appropriate `aria-current="page"`; no shared-content edit requires independent hand changes across five pages.
    - **Likely source files or areas:** `index.html`, `uslugi.html`, `pakiety.html`, `materialy.html`, `postepy.html`, any approved HTML assembly source, shared-shell verification tooling
 
-3. [ ] **Repair keyboard, focus, and ARIA contracts for interactive components**
+3. [x] **Repair keyboard, focus, and ARIA contracts for interactive components**
 
    - **Priority:** Critical
    - **Affected area:** Mobile navigation, accordions, tabs, theme control, progress controls, accessibility

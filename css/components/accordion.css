@@ -9,6 +9,10 @@
   background: var(--color-surface);
 }
 
+.accordion__title {
+  margin: 0;
+}
+
 .accordion__trigger {
   width: 100%;
   text-align: left;
@@ -26,4 +30,8 @@
 
 .accordion__panel.is-open {
   display: block;
+}
+
+.accordion__panel[hidden] {
+  display: none;
 }

@@ -67,7 +67,7 @@ The intended source-only UI is more complete than the current runtime suggests. 
    - **Verification or acceptance criteria:** Keyboard-only tests confirm logical tab order, no hidden drawer focus, no trap, Escape close, focus return, visible focus, and correct arrow-key behavior where applicable; accordion, tab, theme, and pressed states update their ARIA values; all controls have an observable action; desktop navigation is not marked hidden.
    - **Likely source files or areas:** Shared navigation HTML, `pakiety.html`, `index.html`, secondary-page hero markup, `js/modules/mobileNav.js`, `js/modules/accordion.js`, `js/modules/resourcesFilter.js`, `js/modules/progressTracker.js`, related component CSS
 
-4. [ ] **Make progressive enhancement and JavaScript failure handling genuinely safe**
+4. [x] **Make progressive enhancement and JavaScript failure handling genuinely safe**
 
    - **Priority:** High
    - **Affected area:** Content visibility, feature detection, browser storage, runtime resilience, reduced motion

@@ -2,6 +2,8 @@ import { access, readFile, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { materials } from "../js/data/materials.js";
+import { getMaterialPresentation } from "../js/modules/materialsCatalog.js";
 import {
   PRIMARY_PAGES,
   SHELL_MARKERS,
@@ -11,6 +13,10 @@ import {
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const CHECK_ONLY = process.argv.includes("--check");
+const MATERIALS_CATALOG_MARKERS = Object.freeze({
+  start: "            <!-- materials-catalog:start -->",
+  end: "            <!-- materials-catalog:end -->",
+});
 
 const countOccurrences = (source, value) => source.split(value).length - 1;
 
@@ -43,6 +49,41 @@ const replaceRegion = (source, startMarker, endMarker, replacement, file) => {
   return source.replace(currentRegion, replacement);
 };
 
+const escapeHtml = (value) =>
+  String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
+
+const renderMaterialCard = (item) => {
+  const presentation = getMaterialPresentation(item);
+  const durationBadge = item.duration
+    ? `\n                <span class="badge">${escapeHtml(item.duration)}</span>`
+    : "";
+  const action = presentation.hasCta
+    ? `<a class="button ${presentation.hasAccess ? "button--ghost" : "button--primary"}" href="${escapeHtml(presentation.ctaHref)}">${escapeHtml(item.ctaLabel)}</a>`
+    : '<span class="materials__availability">Obecnie niedostępne</span>';
+
+  return `            <article class="card card--resource materials__card" data-material-id="${escapeHtml(item.id)}">
+              <h3 class="card__title">${escapeHtml(item.title)}</h3>
+              <div class="card__tags materials__meta">
+                <span class="badge">${escapeHtml(presentation.categoryLabel)}</span>
+                <span class="badge">${escapeHtml(presentation.levelLabel)}</span>
+                <span class="badge">${escapeHtml(item.format)}</span>${durationBadge}
+              </div>
+              <p class="card__text">${escapeHtml(item.description)}</p>
+              <div class="materials__footer">
+                <span class="badge badge--access badge--${escapeHtml(item.access)}" aria-label="Dostęp: ${escapeHtml(presentation.accessLabel)}">${escapeHtml(presentation.accessLabel)}</span>
+                ${action}
+              </div>
+            </article>`;
+};
+
+const renderMaterialsCatalog = () => `${MATERIALS_CATALOG_MARKERS.start}
+${materials.map(renderMaterialCard).join("\n")}
+${MATERIALS_CATALOG_MARKERS.end}`;
+
 const assemblePage = (source, page) => {
   const withHeader = replaceRegion(
     source,
@@ -52,11 +93,21 @@ const assemblePage = (source, page) => {
     page.file,
   );
 
-  return replaceRegion(
+  const withShell = replaceRegion(
     withHeader,
     SHELL_MARKERS.footerStart,
     SHELL_MARKERS.footerEnd,
     renderSharedFooter(),
+    page.file,
+  );
+
+  if (page.key !== "materials") return withShell;
+
+  return replaceRegion(
+    withShell,
+    MATERIALS_CATALOG_MARKERS.start,
+    MATERIALS_CATALOG_MARKERS.end,
+    renderMaterialsCatalog(),
     page.file,
   );
 };
@@ -189,15 +240,24 @@ const validatePage = async (html, page, assembledPages) => {
     `${page.file}: expected nine nav items`,
   );
   assert(
-    (
-      header.match(/id="nav-drawer" data-drawer aria-hidden="true" inert/g) ??
-      []
-    ).length === 1,
+    (header.match(/id="nav-drawer" data-drawer/g) ?? []).length === 1,
     `${page.file}: mobile drawer hook changed`,
+  );
+  assert(
+    (
+      header.match(
+        /class="nav__toggle"[\s\S]*?aria-controls="nav-drawer"[\s\S]*?hidden/g,
+      ) ?? []
+    ).length === 1,
+    `${page.file}: mobile drawer toggle baseline changed`,
   );
   assert(
     (header.match(/data-drawer-close/g) ?? []).length === 1,
     `${page.file}: mobile drawer close hook changed`,
+  );
+  assert(
+    (header.match(/data-drawer-close hidden/g) ?? []).length === 1,
+    `${page.file}: mobile drawer close baseline changed`,
   );
   assert(
     (header.match(/aria-controls="nav-drawer"/g) ?? []).length === 1,
@@ -208,14 +268,42 @@ const validatePage = async (html, page, assembledPages) => {
     `${page.file}: mobile drawer toggle label hook changed`,
   );
   assert(
-    (header.match(/aria-pressed="false" data-theme-toggle/g) ?? []).length ===
-      1,
+    (header.match(/aria-pressed="false" data-theme-toggle hidden/g) ?? [])
+      .length === 1,
     `${page.file}: theme-toggle hook changed`,
   );
   assert(
     !`${header}\n${footer}`.includes("Postępy (demo)"),
     `${page.file}: shared shell contains public demo wording`,
   );
+
+  if (page.key === "materials") {
+    const catalog = getRegion(
+      html,
+      MATERIALS_CATALOG_MARKERS.start,
+      MATERIALS_CATALOG_MARKERS.end,
+      page.file,
+    );
+    assert(
+      catalog === renderMaterialsCatalog(),
+      `${page.file}: generated materials catalogue is stale`,
+    );
+    assert(
+      (catalog.match(/data-material-id=/g) ?? []).length === materials.length,
+      `${page.file}: generated materials catalogue is incomplete`,
+    );
+    assert(
+      !catalog.includes('href="#"'),
+      `${page.file}: generated materials catalogue exposes an unavailable link`,
+    );
+
+    const catalogHrefs = [
+      ...catalog.matchAll(/<a\b[^>]*\shref="([^"]+)"/g),
+    ].map((match) => match[1]);
+    for (const href of catalogHrefs) {
+      await validateLocalLink(href, page, assembledPages);
+    }
+  }
 
   const logoHrefs = [
     ...`${header}\n${footer}`.matchAll(
@@ -259,7 +347,7 @@ const run = async () => {
       `Shared shell is stale in: ${stalePages.map(({ file }) => file).join(", ")}. Run npm run build:html.`,
     );
     console.log(
-      `Verified shared-shell parity and HTML invariants for ${PRIMARY_PAGES.length} pages.`,
+      `Verified generated HTML regions and invariants for ${PRIMARY_PAGES.length} pages.`,
     );
     return;
   }
@@ -270,7 +358,7 @@ const run = async () => {
     ),
   );
   console.log(
-    `Assembled shared shell for ${PRIMARY_PAGES.length} pages (${stalePages.length} updated).`,
+    `Assembled generated HTML for ${PRIMARY_PAGES.length} pages (${stalePages.length} updated).`,
   );
 };
 

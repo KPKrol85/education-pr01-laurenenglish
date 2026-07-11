@@ -29,11 +29,13 @@ export const initScrollSpy = () => {
   });
 
   if (!sectionLinks.length) return;
+  if (typeof window.IntersectionObserver !== "function") return;
+
   const linkBySection = new Map(
     sectionLinks.map(({ link, section }) => [section, link]),
   );
 
-  const observer = new IntersectionObserver(
+  const observer = new window.IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {

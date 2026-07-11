@@ -49,6 +49,10 @@
   cursor: pointer;
 }
 
+.progress__toggle:disabled {
+  cursor: default;
+}
+
 .progress__toggle[aria-pressed="true"],
 .progress__status.is-complete {
   border-color: var(--color-primary);

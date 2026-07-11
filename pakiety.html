@@ -47,16 +47,17 @@
             type="button"
             aria-expanded="false"
             aria-controls="nav-drawer"
+            hidden
           >
             <span class="nav__toggle-line"></span>
             <span class="nav__toggle-line"></span>
             <span class="nav__toggle-line"></span>
             <span class="sr-only" data-nav-toggle-label>Otwórz menu</span>
           </button>
-          <div class="nav__drawer" id="nav-drawer" data-drawer aria-hidden="true" inert>
+          <div class="nav__drawer" id="nav-drawer" data-drawer>
             <div class="nav__drawer-header">
               <span class="nav__drawer-title">Menu</span>
-              <button class="nav__close" type="button" data-drawer-close>
+              <button class="nav__close" type="button" data-drawer-close hidden>
                 <span aria-hidden="true">×</span>
                 <span class="sr-only">Zamknij menu</span>
               </button>
@@ -94,7 +95,7 @@
           </div>
         </nav>
         <div class="header__actions">
-          <button class="button button--ghost" type="button" aria-pressed="false" data-theme-toggle>
+          <button class="button button--ghost" type="button" aria-pressed="false" data-theme-toggle hidden>
             <span class="button__icon" aria-hidden="true">🌓</span>
             <span>Tryb ciemny</span>
           </button>
@@ -211,9 +212,10 @@
                   class="accordion__trigger"
                   id="packages-faq-trigger-1"
                   type="button"
-                  aria-expanded="false"
+                  aria-expanded="true"
                   aria-controls="packages-faq-panel-1"
                   data-accordion-trigger
+                  disabled
                 >
                   Czy mogę zmienić pakiet w trakcie współpracy?
                 </button>
@@ -223,9 +225,8 @@
                 id="packages-faq-panel-1"
                 role="region"
                 aria-labelledby="packages-faq-trigger-1"
-                aria-hidden="true"
+                aria-hidden="false"
                 data-accordion-panel
-                hidden
               >
                 Tak, po wspólnym podsumowaniu dopasowujemy rytm do Twojej sytuacji.
               </div>
@@ -236,9 +237,10 @@
                   class="accordion__trigger"
                   id="packages-faq-trigger-2"
                   type="button"
-                  aria-expanded="false"
+                  aria-expanded="true"
                   aria-controls="packages-faq-panel-2"
                   data-accordion-trigger
+                  disabled
                 >
                   Jak wygląda rozliczenie pakietu?
                 </button>
@@ -248,9 +250,8 @@
                 id="packages-faq-panel-2"
                 role="region"
                 aria-labelledby="packages-faq-trigger-2"
-                aria-hidden="true"
+                aria-hidden="false"
                 data-accordion-panel
-                hidden
               >
                 Ustalamy miesięczny plan spotkań i rozliczenie zgodne z wybranym rytmem.
               </div>
@@ -261,9 +262,10 @@
                   class="accordion__trigger"
                   id="packages-faq-trigger-3"
                   type="button"
-                  aria-expanded="false"
+                  aria-expanded="true"
                   aria-controls="packages-faq-panel-3"
                   data-accordion-trigger
+                  disabled
                 >
                   Czy mogę mieć tylko konwersacje?
                 </button>
@@ -273,9 +275,8 @@
                 id="packages-faq-panel-3"
                 role="region"
                 aria-labelledby="packages-faq-trigger-3"
-                aria-hidden="true"
+                aria-hidden="false"
                 data-accordion-panel
-                hidden
               >
                 Tak, pakiety można oprzeć wyłącznie na konwersacjach z tematycznym planem.
               </div>
@@ -286,9 +287,10 @@
                   class="accordion__trigger"
                   id="packages-faq-trigger-4"
                   type="button"
-                  aria-expanded="false"
+                  aria-expanded="true"
                   aria-controls="packages-faq-panel-4"
                   data-accordion-trigger
+                  disabled
                 >
                   Czy materiały są w cenie?
                 </button>
@@ -298,9 +300,8 @@
                 id="packages-faq-panel-4"
                 role="region"
                 aria-labelledby="packages-faq-trigger-4"
-                aria-hidden="true"
+                aria-hidden="false"
                 data-accordion-panel
-                hidden
               >
                 Materiały i zadania dobieram do pakietu – bez dodatkowych opłat za podstawowe zasoby.
               </div>
@@ -311,9 +312,10 @@
                   class="accordion__trigger"
                   id="packages-faq-trigger-5"
                   type="button"
-                  aria-expanded="false"
+                  aria-expanded="true"
                   aria-controls="packages-faq-panel-5"
                   data-accordion-trigger
+                  disabled
                 >
                   Ile trwa lekcja?
                 </button>
@@ -323,9 +325,8 @@
                 id="packages-faq-panel-5"
                 role="region"
                 aria-labelledby="packages-faq-trigger-5"
-                aria-hidden="true"
+                aria-hidden="false"
                 data-accordion-panel
-                hidden
               >
                 Długość spotkań ustalamy indywidualnie na podstawie celu i dostępności.
               </div>
@@ -336,9 +337,10 @@
                   class="accordion__trigger"
                   id="packages-faq-trigger-6"
                   type="button"
-                  aria-expanded="false"
+                  aria-expanded="true"
                   aria-controls="packages-faq-panel-6"
                   data-accordion-trigger
+                  disabled
                 >
                   Czy można łączyć pakiet z materiałami do samodzielnej pracy?
                 </button>
@@ -348,9 +350,8 @@
                 id="packages-faq-panel-6"
                 role="region"
                 aria-labelledby="packages-faq-trigger-6"
-                aria-hidden="true"
+                aria-hidden="false"
                 data-accordion-panel
-                hidden
               >
                 Tak, do pakietu mogę dobrać materiały z sekcji Materiały i sklepik.
               </div>

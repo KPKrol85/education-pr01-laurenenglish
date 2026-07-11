@@ -3,6 +3,7 @@
 Profesjonalna, wielostronicowa strona edukacyjna dla nauczycielki języka angielskiego. Projekt łączy spójny UX, dostępność, katalog materiałów, śledzenie postępów oraz produkcyjne podstawy SEO i PWA.
 
 ## Funkcje JS
+
 - Reveal on scroll (IntersectionObserver).
 - Sticky header z efektem blur i shrink.
 - Mobile nav (drawer) z trapem focusu, zamknięciem ESC i obsługą ARIA.
@@ -14,6 +15,7 @@ Profesjonalna, wielostronicowa strona edukacyjna dla nauczycielki języka angiel
 - Rejestracja Service Worker (PWA).
 
 ## Architektura źródeł i build
+
 ```
 index.html + pozostałe pliki HTML       # samodzielne, złożone strony
 scripts/shared-shell.mjs                # kanoniczny header/nav/footer
@@ -30,9 +32,10 @@ service-worker.js                        # wygenerowany Service Worker
 ```
 
 ## Build scripts
+
 - `npm run dev` – składa wspólny shell, a następnie uruchamia watch CSS/JS i lokalny serwer.
-- `npm run build:html` – składa wspólny header, nawigację i footer w pięciu głównych stronach.
-- `npm run check:html` – bez zapisu sprawdza aktualność shelli, semantykę, ID i lokalne linki.
+- `npm run build:html` – składa wspólny header, nawigację i footer w pięciu głównych stronach oraz statyczny katalog materiałów.
+- `npm run check:html` – bez zapisu sprawdza aktualność regionów generowanych, semantykę, ID i lokalne linki.
 - `npm run build` – pełny build produkcyjny: JavaScript, CSS i Service Worker.
 - `npm run build:css` – PostCSS + `postcss-import` + cssnano; generuje `assets/build/style.min.css`.
 - `npm run build:js` – esbuild; bundluje moduły od `js/main.js` do `assets/build/main.min.js`.
@@ -66,6 +69,8 @@ Pliki w `assets/build/` oraz `service-worker.js` są wygenerowane i śledzone na
 
 Każdy z tych plików pozostaje samodzielnym dokumentem HTML. Jego `<head>` i `<main>` są treścią specyficzną dla strony, natomiast regiony między komentarzami `shared-shell:*:start` i `shared-shell:*:end` są składane automatycznie i nie powinny być edytowane ręcznie.
 
+W `materialy.html` region między komentarzami `materials-catalog:start` i `materials-catalog:end` jest generowany z `js/data/materials.js`. Zmieniaj dane źródłowe, nie gotowe karty w tym regionie.
+
 Po zmianie wspólnego shellu uruchom:
 
 ```powershell
@@ -78,6 +83,7 @@ Assembler korzysta z jawnych markerów, zachowuje wartości specyficzne dla stro
 Każda strona ma dokładnie jeden stan `aria-current="page"`: na stronie głównej otrzymuje go link logo do `/index.html`, a na pozostałych stronach odpowiedni link głównej nawigacji.
 
 ## A11y checklist (WCAG AA+)
+
 - Skip link do treści.
 - Semantyczne sekcje i poprawna hierarchia nagłówków.
 - Wyraźne focus states (`:focus-visible`).
@@ -87,14 +93,18 @@ Każda strona ma dokładnie jeden stan `aria-current="page"`: na stronie główn
 - Kontrast zgodny z AA.
 
 ## PWA
+
 - Manifest i ikony w `/assets/icons/`.
 - Service worker z cache app shell i offline fallback (`offline.html`).
 - `robots.txt`, `sitemap.xml`, `_redirects`.
 
 ## Uwagi
+
 Typografia używa lokalnych plików Inter z `assets/fonts/`. Kanoniczne deklaracje `@font-face` znajdują się w `css/base/base.css` i korzystają z root-relative URL, dzięki czemu zachowują poprawne ścieżki po wygenerowaniu CSS do `assets/build/`.
 
 ## Materiały (katalog)
+
 - Dane: `js/data/materials.js` – lista obiektów z polami opisującymi materiały.
 - Dodanie nowego materiału: dopisz obiekt do tablicy `materials`, uzupełniając `id`, `title`, `category`, `level`, `format`, `description`, `access` oraz `ctaLabel` i `url`.
-- Hook pod gating: funkcja `canAccess(item)` w `js/modules/materialsCatalog.js` (TODO do integracji z logiką dostępu/płatności). 
+- Po zmianie danych uruchom `npm run build:html`, aby odświeżyć dostępny bez JavaScriptu katalog w `materialy.html`.
+- Hook pod gating: funkcja `canAccess(item)` w `js/modules/materialsCatalog.js` (TODO do integracji z logiką dostępu/płatności).

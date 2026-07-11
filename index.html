@@ -263,44 +263,48 @@
       <section class="section pricing" id="pricing">
         <div class="container">
           <div class="section__header" data-reveal>
-            <h2 class="section__title">Pakiety i ceny</h2>
-            <p class="section__subtitle">Przejrzyste plany – bez ukrytych kosztów.</p>
+            <h2 class="section__title">Pakiety nauki</h2>
+            <p class="section__subtitle">Trzy poziomy intensywności – wybierz rytm i zakres wsparcia.</p>
           </div>
           <div class="grid grid--pricing">
-            <article class="card card--pricing" data-reveal>
+            <!-- package-cards:home:start -->
+            <article class="card card--pricing" data-package-key="start" data-reveal>
               <h3 class="card__title">Start</h3>
-              <p class="card__price">od 190 zł</p>
+              <p class="card__text">Rytm: spokojny, regularne spotkania w miesiącu.</p>
               <ul class="list" role="list">
-                <li>4 lekcje / miesiąc</li>
-                <li>Plan nauki</li>
-                <li>Feedback po lekcji</li>
+                <li>Diagnoza potrzeb i plan działania</li>
+                <li>Materiały podstawowe po lekcjach</li>
+                <li>Feedback i rekomendacje</li>
               </ul>
-              <a class="button button--secondary" href="#contact">Wybierz Start</a>
+              <a class="button button--secondary" href="/index.html#contact">Zapytaj o Start</a>
             </article>
-            <article class="card card--pricing card--highlight" data-reveal>
-              <p class="card__eyebrow">Najlepsza wartość</p>
+            <article class="card card--pricing card--highlight" data-package-key="regular" data-reveal>
+              <p class="card__eyebrow">Najczęściej wybierany</p>
               <h3 class="card__title">Regular</h3>
-              <p class="card__price">od 360 zł</p>
+              <p class="card__text">Rytm: stałe spotkania w tygodniu, spójny progres.</p>
               <ul class="list" role="list">
-                <li>8 lekcji / miesiąc</li>
-                <li>Materiały premium</li>
-                <li>Mini testy progresu</li>
+                <li>Plan tematyczny na kilka tygodni</li>
+                <li>Materiały rozszerzone i zadania domowe</li>
+                <li>Mini podsumowania postępów</li>
               </ul>
-              <a class="button button--primary" href="#contact">Wybierz Regular</a>
+              <a class="button button--primary" href="/index.html#contact">Zapytaj o Regular</a>
             </article>
-            <article class="card card--pricing" data-reveal>
-              <h3 class="card__title">Pro</h3>
-              <p class="card__price">od 520 zł</p>
+            <article class="card card--pricing" data-package-key="intensive" data-reveal>
+              <h3 class="card__title">Intensive</h3>
+              <p class="card__text">Rytm: intensywny, częstsze spotkania i wsparcie między lekcjami.</p>
               <ul class="list" role="list">
-                <li>12 lekcji / miesiąc</li>
-                <li>Wsparcie między lekcjami</li>
-                <li>Priorytetowe terminy</li>
+                <li>Priorytetowy plan i szybkie korekty</li>
+                <li>Materiały premium oraz próby egzaminacyjne</li>
+                <li>Kontakt między spotkaniami</li>
               </ul>
-              <a class="button button--secondary" href="#contact">Wybierz Pro</a>
+              <a class="button button--secondary" href="/index.html#contact">Zapytaj o Intensive</a>
             </article>
+            <!-- package-cards:home:end -->
           </div>
           <div class="section__actions" data-reveal>
-            <a class="button button--secondary" href="pakiety.html#pakiety">Zobacz pakiety</a>
+            <!-- package-link:home:start -->
+            <a class="button button--secondary" href="/pakiety.html#pakiety">Zobacz pakiety</a>
+            <!-- package-link:home:end -->
           </div>
         </div>
       </section>
@@ -319,88 +323,98 @@
             <button class="pill pill--filter" type="button" data-tab="business">Biznes</button>
           </div>
           <div class="resources__panels" data-tabpanels>
+            <!-- materials-home:start -->
             <div class="grid grid--resources" data-tab-panel="all">
-              <article class="card card--resource" data-category="grammar" data-reveal>
-                <h3 class="card__title">Detoks gramatyczny</h3>
-                <p class="card__text">45 stron klarownych zasad + ćwiczenia na czasy.</p>
+              <article class="card card--resource" data-material-id="grammar-clarity-pack" data-category="grammar" data-reveal>
+                <h3 class="card__title">Gramatyka bez chaosu – kluczowe czasy</h3>
+                <p class="card__text">Zwięzłe podsumowania czasów z przykładami i checklistą do powtórek.</p>
                 <div class="card__tags">
                   <span class="badge">PDF</span>
                   <span class="badge">Gramatyka</span>
+                  <span class="badge badge--access badge--free" aria-label="Dostęp: Free">Free</span>
                 </div>
-                <a class="button button--ghost" href="/materialy.html#materials-catalog" aria-label="Zobacz materiał: Detoks gramatyczny">Zobacz</a>
+                <span class="materials__availability">Obecnie niedostępne</span>
               </article>
-              <article class="card card--resource" data-category="vocabulary" data-reveal>
-                <h3 class="card__title">Sprint ze słownictwem</h3>
-                <p class="card__text">Tematyczne listy + mini dialogi do codziennej praktyki.</p>
+              <article class="card card--resource" data-material-id="vocab-everyday-routines" data-category="vocabulary" data-reveal>
+                <h3 class="card__title">Słownictwo: rutyny dnia codziennego</h3>
+                <p class="card__text">Karty pracy z obrazkami i krótkimi dialogami do pracy własnej.</p>
                 <div class="card__tags">
-                  <span class="badge">Ebook</span>
+                  <span class="badge">Worksheet</span>
                   <span class="badge">Słownictwo</span>
+                  <span class="badge badge--access badge--free" aria-label="Dostęp: Free">Free</span>
                 </div>
-                <a class="button button--ghost" href="/materialy.html#materials-catalog" aria-label="Zobacz materiał: Sprint ze słownictwem">Zobacz</a>
+                <span class="materials__availability">Obecnie niedostępne</span>
               </article>
-              <article class="card card--resource" data-category="exam" data-reveal>
-                <h3 class="card__title">Pakiet gotowości egzaminacyjnej</h3>
-                <p class="card__text">Strategie, timeboxing i przykładowe arkusze.</p>
+              <article class="card card--resource" data-material-id="exam-strategy-pack" data-category="exam" data-reveal>
+                <h3 class="card__title">Strategie egzaminacyjne krok po kroku</h3>
+                <p class="card__text">Plan działania, timeboxing i wskazówki do najczęstszych zadań.</p>
                 <div class="card__tags">
                   <span class="badge">PDF</span>
                   <span class="badge">Egzaminy</span>
+                  <span class="badge badge--access badge--premium" aria-label="Dostęp: Premium">Premium</span>
                 </div>
-                <a class="button button--ghost" href="/materialy.html#materials-catalog" aria-label="Zobacz materiał: Pakiet gotowości egzaminacyjnej">Zobacz</a>
+                <a class="button button--ghost" href="/pakiety.html#pakiet-intensive" aria-label="Zobacz pakiet Intensive: Strategie egzaminacyjne krok po kroku">Zobacz pakiet Intensive</a>
               </article>
-              <article class="card card--resource" data-category="business" data-reveal>
-                <h3 class="card__title">Notatki z angielskiego biznesowego</h3>
-                <p class="card__text">Słownictwo i zwroty do spotkań oraz maili.</p>
+              <article class="card card--resource" data-material-id="business-meetings" data-category="business" data-reveal>
+                <h3 class="card__title">Meeting toolkit: zwroty do spotkań</h3>
+                <p class="card__text">Zestaw zwrotów do prowadzenia spotkań i prezentowania wniosków.</p>
                 <div class="card__tags">
-                  <span class="badge">PDF</span>
+                  <span class="badge">Worksheet</span>
                   <span class="badge">Biznes</span>
+                  <span class="badge badge--access badge--premium" aria-label="Dostęp: Premium">Premium</span>
                 </div>
-                <a class="button button--ghost" href="/materialy.html#materials-catalog" aria-label="Zobacz materiał: Notatki z angielskiego biznesowego">Zobacz</a>
+                <a class="button button--ghost" href="/pakiety.html#pakiet-regular" aria-label="Zobacz pakiet Regular: Meeting toolkit: zwroty do spotkań">Zobacz pakiet Regular</a>
               </article>
             </div>
             <div class="grid grid--resources" data-tab-panel="grammar" hidden>
-              <article class="card card--resource" data-category="grammar" data-reveal>
-                <h3 class="card__title">Detoks gramatyczny</h3>
-                <p class="card__text">45 stron klarownych zasad + ćwiczenia na czasy.</p>
+              <article class="card card--resource" data-material-id="grammar-clarity-pack" data-category="grammar" data-reveal>
+                <h3 class="card__title">Gramatyka bez chaosu – kluczowe czasy</h3>
+                <p class="card__text">Zwięzłe podsumowania czasów z przykładami i checklistą do powtórek.</p>
                 <div class="card__tags">
                   <span class="badge">PDF</span>
                   <span class="badge">Gramatyka</span>
+                  <span class="badge badge--access badge--free" aria-label="Dostęp: Free">Free</span>
                 </div>
-                <a class="button button--ghost" href="/materialy.html#materials-catalog" aria-label="Zobacz materiał: Detoks gramatyczny">Zobacz</a>
+                <span class="materials__availability">Obecnie niedostępne</span>
               </article>
             </div>
             <div class="grid grid--resources" data-tab-panel="vocabulary" hidden>
-              <article class="card card--resource" data-category="vocabulary" data-reveal>
-                <h3 class="card__title">Sprint ze słownictwem</h3>
-                <p class="card__text">Tematyczne listy + mini dialogi do codziennej praktyki.</p>
+              <article class="card card--resource" data-material-id="vocab-everyday-routines" data-category="vocabulary" data-reveal>
+                <h3 class="card__title">Słownictwo: rutyny dnia codziennego</h3>
+                <p class="card__text">Karty pracy z obrazkami i krótkimi dialogami do pracy własnej.</p>
                 <div class="card__tags">
-                  <span class="badge">Ebook</span>
+                  <span class="badge">Worksheet</span>
                   <span class="badge">Słownictwo</span>
+                  <span class="badge badge--access badge--free" aria-label="Dostęp: Free">Free</span>
                 </div>
-                <a class="button button--ghost" href="/materialy.html#materials-catalog" aria-label="Zobacz materiał: Sprint ze słownictwem">Zobacz</a>
+                <span class="materials__availability">Obecnie niedostępne</span>
               </article>
             </div>
             <div class="grid grid--resources" data-tab-panel="exam" hidden>
-              <article class="card card--resource" data-category="exam" data-reveal>
-                <h3 class="card__title">Pakiet gotowości egzaminacyjnej</h3>
-                <p class="card__text">Strategie, timeboxing i przykładowe arkusze.</p>
+              <article class="card card--resource" data-material-id="exam-strategy-pack" data-category="exam" data-reveal>
+                <h3 class="card__title">Strategie egzaminacyjne krok po kroku</h3>
+                <p class="card__text">Plan działania, timeboxing i wskazówki do najczęstszych zadań.</p>
                 <div class="card__tags">
                   <span class="badge">PDF</span>
                   <span class="badge">Egzaminy</span>
+                  <span class="badge badge--access badge--premium" aria-label="Dostęp: Premium">Premium</span>
                 </div>
-                <a class="button button--ghost" href="/materialy.html#materials-catalog" aria-label="Zobacz materiał: Pakiet gotowości egzaminacyjnej">Zobacz</a>
+                <a class="button button--ghost" href="/pakiety.html#pakiet-intensive" aria-label="Zobacz pakiet Intensive: Strategie egzaminacyjne krok po kroku">Zobacz pakiet Intensive</a>
               </article>
             </div>
             <div class="grid grid--resources" data-tab-panel="business" hidden>
-              <article class="card card--resource" data-category="business" data-reveal>
-                <h3 class="card__title">Notatki z angielskiego biznesowego</h3>
-                <p class="card__text">Słownictwo i zwroty do spotkań oraz maili.</p>
+              <article class="card card--resource" data-material-id="business-meetings" data-category="business" data-reveal>
+                <h3 class="card__title">Meeting toolkit: zwroty do spotkań</h3>
+                <p class="card__text">Zestaw zwrotów do prowadzenia spotkań i prezentowania wniosków.</p>
                 <div class="card__tags">
-                  <span class="badge">PDF</span>
+                  <span class="badge">Worksheet</span>
                   <span class="badge">Biznes</span>
+                  <span class="badge badge--access badge--premium" aria-label="Dostęp: Premium">Premium</span>
                 </div>
-                <a class="button button--ghost" href="/materialy.html#materials-catalog" aria-label="Zobacz materiał: Notatki z angielskiego biznesowego">Zobacz</a>
+                <a class="button button--ghost" href="/pakiety.html#pakiet-regular" aria-label="Zobacz pakiet Regular: Meeting toolkit: zwroty do spotkań">Zobacz pakiet Regular</a>
               </article>
             </div>
+            <!-- materials-home:end -->
           </div>
           <div class="section__actions" data-reveal>
             <a class="button button--secondary" href="materialy.html">Przeglądaj materiały</a>

@@ -78,7 +78,7 @@ The intended source-only UI is more complete than the current runtime suggests. 
    - **Verification or acceptance criteria:** With JavaScript disabled, all essential content is visible, links and the form remain usable, and no control falsely implies unavailable behavior; with storage denied or observers unavailable, initialization completes without uncaught errors; reduced-motion mode removes non-essential motion; normal mode has no console errors.
    - **Likely source files or areas:** `css/sections/reveal.css`, `css/base/base.css`, `js/main.js`, `js/modules/reveal.js`, `js/modules/scrollSpy.js`, `js/modules/mobileNav.js`, `js/state/storage.js`, pages using `data-reveal`
 
-5. [ ] **Unify package, material, and access information behind canonical data**
+5. [x] **Unify package, material, and access information behind canonical data**
 
    - **Priority:** High
    - **Affected area:** Content architecture, catalogue UI, package CTAs, data modules, feature availability

@@ -1,19 +1,6 @@
 import { materials } from "../data/materials.js";
-import { packages, packagesSectionHref } from "../data/packages.js";
-
-const categoryLabels = {
-  grammar: "Gramatyka",
-  vocabulary: "Słownictwo",
-  speaking: "Speaking",
-  writing: "Writing",
-  exam: "Egzaminy",
-  business: "Biznes",
-};
-
-const accessLabels = {
-  free: "Free",
-  premium: "Premium",
-};
+import { getMaterialPresentation } from "../data/materialAccess.js";
+import { filterMaterials } from "../data/materialFilters.js";
 
 const createBadge = (label, className = "") => {
   const badge = document.createElement("span");
@@ -23,10 +10,11 @@ const createBadge = (label, className = "") => {
 };
 
 const createMetaBadges = (item) => {
+  const presentation = getMaterialPresentation(item);
   const fragment = document.createDocumentFragment();
   fragment.append(
-    createBadge(categoryLabels[item.category] || item.category),
-    createBadge(item.level === "All" ? "Wszystkie poziomy" : item.level),
+    createBadge(presentation.categoryLabel),
+    createBadge(presentation.levelLabel),
     createBadge(item.format),
   );
 
@@ -37,55 +25,7 @@ const createMetaBadges = (item) => {
   return fragment;
 };
 
-const canAccess = (item) => {
-  // TODO: integrate with purchase/access logic
-  return item.access === "free";
-};
-
-const getPremiumCtaHref = (item) => {
-  if (item.packageKey && packages[item.packageKey]) {
-    return packages[item.packageKey].href;
-  }
-  return packagesSectionHref;
-};
-
-const getCtaHref = (item) => {
-  if (item.access === "premium") {
-    return getPremiumCtaHref(item);
-  }
-  return item.url || "#";
-};
-
-const getMaterialPresentation = (item) => {
-  const ctaHref = getCtaHref(item);
-
-  return {
-    categoryLabel: categoryLabels[item.category] || item.category,
-    levelLabel: item.level === "All" ? "Wszystkie poziomy" : item.level,
-    accessLabel: accessLabels[item.access] || item.access,
-    hasAccess: canAccess(item),
-    ctaHref,
-    hasCta: Boolean(ctaHref && ctaHref !== "#"),
-  };
-};
-
-const getFilteredMaterials = (filters) =>
-  materials.filter((item) => {
-    if (filters.category !== "all" && item.category !== filters.category) {
-      return false;
-    }
-    if (
-      filters.level !== "all" &&
-      item.level !== filters.level &&
-      item.level !== "All"
-    ) {
-      return false;
-    }
-    if (filters.freeOnly && item.access !== "free") {
-      return false;
-    }
-    return true;
-  });
+const getFilteredMaterials = (filters) => filterMaterials(materials, filters);
 
 const renderMaterials = (list, container, emptyState) => {
   if (!list.length) {
@@ -100,6 +40,7 @@ const renderMaterials = (list, container, emptyState) => {
     const presentation = getMaterialPresentation(item);
     const card = document.createElement("article");
     card.className = "card card--resource materials__card";
+    card.dataset.materialId = item.id;
 
     const title = document.createElement("h3");
     title.className = "card__title";
@@ -123,15 +64,15 @@ const renderMaterials = (list, container, emptyState) => {
     );
 
     let action;
-    if (presentation.hasCta) {
+    if (presentation.action.kind === "link") {
       action = document.createElement("a");
-      action.className = `button ${presentation.hasAccess ? "button--ghost" : "button--primary"}`;
-      action.href = presentation.ctaHref;
-      action.textContent = item.ctaLabel;
+      action.className = `button ${presentation.action.buttonClass}`;
+      action.href = presentation.action.href;
+      action.textContent = presentation.action.label;
     } else {
       action = document.createElement("span");
       action.className = "materials__availability";
-      action.textContent = "Obecnie niedostępne";
+      action.textContent = presentation.action.label;
     }
 
     const footer = document.createElement("div");

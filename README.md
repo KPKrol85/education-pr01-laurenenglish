@@ -24,6 +24,7 @@ css/style.css                           # kanoniczny entry CSS
 css/{tokens,base,utilities,...}/        # modułowe źródła CSS
 js/main.js                              # kanoniczny entry JavaScript
 js/{data,modules,pages,state}/          # modułowe źródła JavaScript
+scripts/content-renderers.mjs           # build-time renderery pakietów i materiałów
 service-worker.template.js              # kanoniczny Service Worker
 assets/{fonts,icons,img,og}/             # statyczne zasoby źródłowe
 assets/build/style.min.css               # wygenerowany bundle CSS
@@ -34,6 +35,7 @@ service-worker.js                        # wygenerowany Service Worker
 ## Build scripts
 
 - `npm run dev` – składa wspólny shell, a następnie uruchamia watch CSS/JS i lokalny serwer.
+- `npm run check:data` – sprawdza kanoniczne pakiety, materiały, dostęp i wyniki filtrów.
 - `npm run build:html` – składa wspólny header, nawigację i footer w pięciu głównych stronach oraz statyczny katalog materiałów.
 - `npm run check:html` – bez zapisu sprawdza aktualność regionów generowanych, semantykę, ID i lokalne linki.
 - `npm run build` – pełny build produkcyjny: JavaScript, CSS i Service Worker.
@@ -71,6 +73,8 @@ Każdy z tych plików pozostaje samodzielnym dokumentem HTML. Jego `<head>` i `<
 
 W `materialy.html` region między komentarzami `materials-catalog:start` i `materials-catalog:end` jest generowany z `js/data/materials.js`. Zmieniaj dane źródłowe, nie gotowe karty w tym regionie.
 
+Regiony `package-cards:*`, `package-link:*` oraz `materials-home:*` są generowane z `js/data/packages.js` i `js/data/materials.js`. Dane handlowe, linki pakietów i treść kart nie powinny być utrzymywane ręcznie w HTML.
+
 Po zmianie wspólnego shellu uruchom:
 
 ```powershell
@@ -105,6 +109,13 @@ Typografia używa lokalnych plików Inter z `assets/fonts/`. Kanoniczne deklarac
 ## Materiały (katalog)
 
 - Dane: `js/data/materials.js` – lista obiektów z polami opisującymi materiały.
-- Dodanie nowego materiału: dopisz obiekt do tablicy `materials`, uzupełniając `id`, `title`, `category`, `level`, `format`, `description`, `access` oraz `ctaLabel` i `url`.
+- Dostęp i CTA: `js/data/materialAccess.js` – wspólne reguły dla linku, pakietu, kontaktu i stanu niedostępnego.
+- Filtrowanie: `js/data/materialFilters.js` – czysta logika kategorii, poziomu, formatu i dostępu.
+- Dodanie nowego materiału: dopisz rekord z metadanymi, `access` i jawnym `action`; materiały premium wymagają obsługiwanego `packageKey`.
 - Po zmianie danych uruchom `npm run build:html`, aby odświeżyć dostępny bez JavaScriptu katalog w `materialy.html`.
-- Hook pod gating: funkcja `canAccess(item)` w `js/modules/materialsCatalog.js` (TODO do integracji z logiką dostępu/płatności).
+
+## Pakiety
+
+- Dane: `js/data/packages.js` – rekordy `start`, `regular` i `intensive` wraz z opisami, korzyściami, linkami i CTA.
+- Homepage i `pakiety.html` są generowane z tych samych rekordów.
+- Brak zatwierdzonej ceny jest zapisany jako `priceLabel: null`; renderer nie tworzy wtedy publicznej ceny.

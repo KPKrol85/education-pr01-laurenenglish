@@ -275,7 +275,7 @@ const validatePage = async (html, page, assembledPages) => {
   );
   assert(
     (header.match(/aria-pressed="false" data-theme-toggle hidden/g) ?? [])
-      .length === 1,
+      .length === 2,
     `${page.file}: theme-toggle hook changed`,
   );
   assert(

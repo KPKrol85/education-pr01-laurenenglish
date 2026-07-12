@@ -100,7 +100,7 @@ The intended source-only UI is more complete than the current runtime suggests. 
    - **Verification or acceptance criteria:** Repository-wide searches find no prohibited public labels; testimonials, ratings, business details, prices, opening hours, and structured data each have an approved source or are absent; no legal link leads to an unrelated page; form disclosure names actual processing behavior and links to applicable policy content; generic social links are removed or replaced with verified profiles.
    - **Likely source files or areas:** All public HTML files, homepage JSON-LD and contact section, shared footer/navigation content, form copy, any approved legal documents, `CONTEXT-PROJECT.md` content rules
 
-7. [ ] **Complete the token-first CSS system and make both themes accessible**
+7. [x] **Complete the token-first CSS system and make both themes accessible**
 
    - **Priority:** High
    - **Affected area:** Design tokens, CSS layers, component reuse, dark theme, contrast, maintainability

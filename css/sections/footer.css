@@ -1,7 +1,7 @@
 .footer {
   padding: var(--space-2xl) 0 var(--space-lg);
   background: var(--color-surface);
-  border-top: 1px solid var(--color-border);
+  border-top: var(--size-1px) solid var(--color-border);
 }
 
 .footer__grid {
@@ -23,7 +23,7 @@
 }
 
 .footer__bottom {
-  border-top: 1px solid var(--color-border);
+  border-top: var(--size-1px) solid var(--color-border);
   margin-top: var(--space-xl);
   padding-top: var(--space-md);
   text-align: center;

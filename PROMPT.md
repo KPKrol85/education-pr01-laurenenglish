@@ -1,361 +1,307 @@
 PROJECT CONTEXT
 
-You are a senior content-integrity and accessibility-focused frontend developer working on the Lauren English project.
+You are a senior design-systems and accessibility-focused frontend developer completing roadmap point 7 in the Lauren English project.
 
 You are working in the currently opened `education-pr01-laurenenglish` project.
 
-Read and follow the existing project documentation before editing, especially:
+Read and follow the existing project documentation before continuing, especially:
 
 * `CONTEXT-PROJECT.md`
 * `INITIAL-AUDIT.md`
 * `README.md`
-* `docs/pakiety.md`
+* `docs/css-architecture.md`
 * `docs/runtime-checklist.md`
-* any existing content, contact, privacy, terms, form, or legal documentation
+* any focused token, theme, CSS-quality, or accessibility documentation already present
 
 Treat `CONTEXT-PROJECT.md` as the authoritative project context.
 
-Roadmap points 1–5 are complete:
+Roadmap point 7 has already been implemented at canonical source level.
 
-* the production asset pipeline is stable
-* shared HTML shell content is generated through the existing Node workflow
-* accessibility contracts are verified
-* progressive enhancement is fail-safe
-* package, material, CTA, and access information is derived from canonical data
+The current implementation reportedly includes:
 
-Preserve these completed implementations.
+* explicit light- and dark-theme semantic tokens for:
 
-This task implements roadmap point 6 from `INITIAL-AUDIT.md`:
+  * surfaces
+  * controls
+  * disabled states
+  * success and premium states
+  * focus rings
+  * primary text
+* removal of repeated raw component colors
+* consolidation of duplicate accessibility utilities
+* removal of avoidable contextual selectors
+* improved focus, disabled, navigation, form, badge, progress, card, hero, and accordion states
+* deterministic CSS architecture and WCAG contrast checks
+* regenerated `assets/build/style.min.css`
+* updated CSS architecture, runtime, and README documentation
 
-`Replace unsupported public claims and legal placeholders with verified content`
+Completed verification reportedly includes:
 
-Known audit findings include:
+* `npm run check:css`
+* 25 CSS files inspected
+* 18 dual-theme semantic tokens validated
+* 40 contrast pairs validated
+* minimum `4.04:1` contrast for tested non-text boundaries
+* `npm run build`
+* `npm run check:data`
+* `npm run check:content`
+* `npm run check:html`
+* generated HTML idempotence across all five primary pages
+* generated JavaScript syntax checks
+* relevant Prettier checks
+* `git diff --check`
 
-* public-facing navigation, headings, metadata, and copy contain prohibited `demo` language
-* homepage testimonials are presented as real and include unsupported five-star ratings
-* public contact and structured-data content includes an unverified email address
-* public contact and structured-data content includes `+48 600 000 123`
-* opening hours and WhatsApp availability are not supported by approved project documentation
-* social links point to generic platform homepages rather than verified profiles
-* privacy-policy and terms links incorrectly point to `offline.html`
-* the Netlify form collects personal information without an applicable linked privacy policy
-* some identity, availability, price, and commercial claims may lack an approved source
+Roadmap point 7 remains unchecked only because the required Playwright light/dark browser matrix and screenshot inspection could not run after the previous Codex usage allowance was exhausted.
 
-Internal documentation may describe the project as a demo or portfolio project where appropriate. The prohibition applies to customer-facing UI, metadata, structured data, form content, and public destinations.
-
-Inspect the current implementation before editing because generated pages, shared shell content, package data, material data, and public copy may now be maintained through canonical build-time sources.
-
-Preserve all unrelated user-authored working-tree changes and exclude them from task claims.
+The unrelated user-authored `PROMPT.md` modification must remain unchanged and must not be included in roadmap point 7 verification or change claims.
 
 TASK OBJECTIVE
 
-Audit every customer-facing claim and destination, then remove, replace, or retain it based only on verified project information.
+Continue roadmap point 7 from the exact current working-tree state.
 
-The final public website must contain no fabricated or unsupported:
+First inspect and verify the existing implementation and complete diff.
 
-* testimonials
-* star ratings
-* personal or business identity details
-* phone numbers
-* email addresses
-* opening hours
-* WhatsApp availability
-* social profiles
-* prices or commercial claims
-* legal destinations
-* structured-data fields
+Do not restart, redesign, or broadly refactor the token and theme work.
 
-Replace prohibited public `demo` terminology with natural customer-facing language derived from approved existing content.
+Complete the missing real-browser verification for both themes across representative viewport sizes.
 
-Ensure social, legal, contact, form, and structured-data behavior accurately reflects the website’s real implementation.
+If browser verification exposes a defect directly related to roadmap point 7, apply the smallest safe canonical source-level correction, rebuild affected outputs, and rerun every affected check.
 
-Do not invent missing client or business details.
-
-Where required factual inputs are unavailable:
-
-* remove the unsupported claim or destination
-* use a neutral, non-misleading informational state
-* disable or remove data collection that cannot be supported responsibly
-* do not leave placeholders
-
-After implementation and successful verification, mark only roadmap point 6 as completed in `INITIAL-AUDIT.md`.
+Mark only roadmap point 7 as completed in `INITIAL-AUDIT.md` after every applicable static and browser acceptance criterion passes.
 
 IMPLEMENTATION PLAN
 
-1. Inspect the complete current working-tree diff and preserve unrelated user changes.
-2. Inspect all canonical public-content sources and generated outputs, including:
+1. Inspect the complete current working-tree diff before editing.
+2. Identify all roadmap-point-7 source and documentation changes.
+3. Confirm that the current implementation preserves:
 
-   * all primary HTML pages
-   * utility and status pages
-   * shared header and footer source
-   * HTML assembly scripts
-   * content renderers
-   * package and material data
-   * homepage metadata and JSON-LD
-   * contact section and form
-   * testimonials or social-proof sections
-   * social links
-   * legal links
-   * relevant documentation
-3. Inventory all public-facing occurrences of:
+   * the CSS layer order
+   * token-first architecture
+   * semantic light- and dark-theme values
+   * low-specificity selectors
+   * BEM-compatible component naming
+   * consolidated accessibility utilities
+   * theme-aware hero and progress-hero surfaces
+4. Preserve the unrelated `PROMPT.md` modification exactly.
+5. Do not modify unrelated user-authored changes.
+6. Re-run the existing static verification:
 
-   * `demo`
-   * mockup or portfolio terminology
-   * sample/test-project terminology
-   * testimonials
-   * ratings and star symbols
-   * email addresses
-   * phone numbers
-   * opening hours
-   * WhatsApp references
-   * social-platform links
-   * legal-policy links
-   * business identity claims
-   * experience, result, availability, or commercial claims
-   * structured-data fields
-4. Distinguish public output from internal documentation.
-5. Do not remove accurate internal roadmap or audit wording merely because it contains `demo`.
-6. Identify which public facts have an approved source in:
+   * `npm run check:css`
+   * `npm run check:data`
+   * `npm run check:content`
+   * `npm run build:html`
+   * `npm run check:html`
+   * `npm run build`
+   * relevant generated JavaScript syntax checks
+   * relevant Prettier checks
+   * `git diff --check`
+7. Confirm HTML assembly remains deterministic and idempotent.
+8. Start the project using the documented local verification server.
+9. Use fresh Playwright Chromium contexts and the latest generated assets.
+10. Clear or isolate:
 
-   * `CONTEXT-PROJECT.md`
-   * canonical project data
-   * approved documentation
-   * verified user-authored content already present in the project
-7. Retain only facts that have a defensible source.
-8. Do not infer verification from repetition across files.
-9. Replace prohibited public `demo` language with concise customer-facing wording that describes the actual feature or service.
-10. Do not replace one unsupported claim with another.
-11. Review the homepage progress section and replace labels such as `Demo śledzenia postępów` with factual product language that does not imply a developer preview.
-12. Audit testimonials and ratings:
+    * service workers
+    * Cache Storage
+    * local storage
+    * session storage
+    * stale theme state
+11. Test all five primary pages:
 
-    * remove unsupported names, quotes, ratings, and claims
-    * do not anonymize fabricated testimonials and keep them
-    * do not create replacement reviews
-13. If removing testimonials leaves a structural gap:
-
-    * use only approved factual service-process or learning-method content already supported elsewhere
-    * otherwise remove the section cleanly
-    * do not redesign unrelated sections
-14. Audit public business and contact details:
-
-    * remove unsupported phone numbers
-    * remove unsupported email addresses
-    * remove unsupported opening hours
-    * remove unsupported WhatsApp claims
-    * retain only verified contact methods
-15. If no verified direct contact destination exists:
-
-    * do not invent one
-    * keep only a technically honest contact path that is actually available
-16. Inspect the Netlify form’s real technical behavior:
-
-    * field names
-    * submission target
-    * personal data collected
-    * success destination
-    * consent or disclosure copy
-17. Keep the data-submitting form operational only when the project contains enough verified information to provide an accurate disclosure and applicable privacy destination.
-18. If verified controller/contact/privacy inputs are insufficient:
-
-    * remove or disable actual personal-data submission
-    * replace it with an honest non-submitting contact-information state
-    * preserve semantic and accessible form presentation only when it remains truthful
-19. Do not claim storage, deletion periods, processors, legal bases, encryption, or data handling that cannot be verified from the actual implementation and approved inputs.
-20. Audit legal links:
-
-    * no privacy or terms link may point to `offline.html`
-    * link only to real applicable policy pages
-21. If suitable legal pages already exist:
-
-    * update them conservatively to match actual technical behavior
-    * avoid unsupported legal guarantees
-22. If legal pages do not exist:
-
-    * create only the minimal pages required by currently operational behavior and only when the necessary factual inputs are available
-    * use the existing shared-shell and HTML assembly architecture
-23. If the necessary legal or operator information is unavailable:
-
-    * do not create placeholder policies
-    * remove or suspend the related data-collection behavior instead
-24. Audit social destinations:
-
-    * remove generic links to social-platform homepages
-    * retain only verified profile URLs
-    * remove associated UI cleanly when no verified profile exists
-25. Audit JSON-LD and other structured data:
-
-    * remove unsupported phone, email, opening hours, social profiles, ratings, reviews, identity, and business fields
-    * retain structured data only when every retained field is supported
-    * remove the schema block entirely if a truthful supported version cannot be produced
-26. Audit public metadata:
-
-    * titles
-    * descriptions
-    * Open Graph content
-    * visible headings
-    * CTA labels
-27. Remove prohibited portfolio or developer terminology from public metadata and copy.
-28. Review package prices and commercial details:
-
-    * retain them only when supported by canonical package data and approved documentation
-    * do not invent or rewrite prices during this task
-29. Update canonical sources rather than patching assembled HTML or generated assets manually.
-30. Regenerate shared HTML, assembled pages, CSS, JavaScript, and service-worker output through existing project scripts.
-31. Add focused verification for public-content integrity where practical.
-32. Run repository searches against canonical public sources and generated public output for:
-
-    * prohibited public `demo` language
-    * dummy phone number
-    * unsupported email
-    * WhatsApp
-    * unsupported opening hours
-    * generic social-platform URLs
-    * `offline.html` used as a legal destination
-    * unsupported testimonial and rating markup
-    * unsupported structured-data properties
-33. Run:
-
-    * `npm run build:html`
-    * `npm run check:html`
-    * `npm run check:data`
-    * `npm run build`
-    * relevant JavaScript syntax checks
-    * relevant Prettier checks
-    * focused link and content-integrity checks
-    * `git diff --check`
-34. Verify generated HTML is reproducible and idempotent.
-35. Start the documented local verification server.
-36. Use fresh Playwright browser contexts and latest generated assets.
-37. Test all primary public pages at:
+    * `index.html`
+    * `uslugi.html`
+    * `pakiety.html`
+    * `materialy.html`
+    * `postepy.html`
+12. Test these viewport sizes:
 
     * desktop: `1440 × 900`
+    * compact desktop/tablet: `1024 × 768`
     * mobile: `390 × 844`
-38. Test any utility or legal pages created or modified during this task.
-39. Verify:
+13. Test both:
 
-    * no prohibited public terminology remains
-    * no unsupported testimonials or ratings remain
-    * no unsupported business details remain
-    * legal destinations resolve to appropriate content
-    * generic social links are absent
-    * contact behavior matches visible copy
-    * form behavior matches its disclosure
-    * structured data matches approved public facts
-    * all local destinations return the expected response
-40. Confirm no console errors, uncaught page errors, failed requests, broken local links, or unexpected HTTP responses.
-41. Confirm previous roadmap guarantees remain intact:
+    * light theme
+    * dark theme
+14. Verify theme initialization:
 
-    * shared shell
-    * accessibility
+    * default theme loads consistently
+    * theme toggle updates the document state
+    * `aria-pressed` remains accurate
+    * persisted theme restores correctly
+    * no visible flash leaves text unreadable against the wrong surface
+15. Inspect representative screenshots for:
+
+    * homepage hero
+    * progress-page hero
+    * desktop and mobile navigation
+    * package cards
+    * material cards
+    * contact unavailable state and form-related surfaces
+    * badges and access labels
+    * accordions
+    * homepage tabs
+    * focus-visible states
+16. Verify the homepage hero in both themes:
+
+    * background and gradient use theme-aware semantic values
+    * heading and supporting text remain readable
+    * hero image, media frame, cards, and overlays remain visually distinct
+    * no light-on-light or dark-on-dark text combination occurs
+17. Verify the progress hero in both themes:
+
+    * background and text remain readable
+    * status and progress surfaces remain distinguishable
+18. Verify navigation states:
+
+    * default
+    * hover
+    * focus-visible
+    * active
+    * current page
+    * mobile drawer
+    * theme control
+19. Verify forms and unavailable-contact states:
+
+    * surface
+    * text
+    * muted text
+    * border
+    * disabled state
+    * focus indicator
+20. Verify component states:
+
+    * cards
+    * badges
+    * premium and free access states
+    * progress controls
+    * accordion controls
+    * tabs
+    * disabled controls
+21. Verify status and access meaning is not communicated by color alone.
+22. Re-run or confirm deterministic contrast calculations for all affected semantic pairs.
+23. Confirm applicable text and control-state contrast meets WCAG AA.
+24. Confirm focus indicators remain clearly visible against all tested light and dark surfaces.
+25. Confirm raw colors outside the token layer are:
+
+    * intentional
+    * rare
+    * documented by the existing CSS-quality rules
+26. Confirm:
+
+    * no new ID selectors
+    * no unnecessary `!important`
+    * no deep selector chains
+    * no new arbitrary breakpoints
+    * no duplicated visually-hidden or skip-link implementations
+27. Confirm previous roadmap guarantees remain intact:
+
+    * keyboard navigation
+    * focus containment and return
+    * ARIA synchronization
     * progressive enhancement
-    * canonical package and material data
-42. If verification exposes a task-specific defect:
+    * no-JavaScript content visibility
+    * canonical package and material rendering
+    * public-content integrity
+28. Record:
 
-    * edit only the canonical source
-    * apply the smallest safe correction
-    * regenerate outputs
-    * rerun every affected check
-43. After all applicable acceptance criteria pass:
+    * console errors
+    * uncaught page errors
+    * failed requests
+    * unexpected HTTP responses
+    * broken local links
+    * visual regressions directly caused by point 7
+29. If browser verification exposes a roadmap-point-7 defect:
 
-    * change only roadmap point 6 in `INITIAL-AUDIT.md` from `[ ]` to `[x]`
-    * confirm roadmap points 7–10 remain unchecked
-44. Stop the local verification server after testing.
+    * identify the canonical CSS or minimal HTML source
+    * apply only the smallest safe correction
+    * do not redesign the component
+    * rebuild generated output
+    * rerun every affected theme, viewport, contrast, and regression check
+30. Attempt `npm run lint:js` only to confirm the existing ESLint 9 missing-configuration blocker.
+31. Do not repair or expand ESLint configuration during this task.
+32. After all applicable acceptance criteria pass:
+
+    * change only roadmap point 7 in `INITIAL-AUDIT.md` from `[ ]` to `[x]`
+    * confirm roadmap points 8–10 remain unchecked
+33. Stop the local verification server after testing.
 
 CONSTRAINTS
 
-* Do not invent client, teacher, company, operator, or business details.
-* Do not invent testimonials, ratings, reviews, social profiles, contact information, opening hours, legal identities, or commercial claims.
-* Do not generate placeholder legal content.
-* Do not present generic social-platform homepages as profiles.
-* Do not route legal links to `offline.html`, `404.html`, or unrelated pages.
-* Do not keep personal-data collection active without an accurate applicable disclosure and destination.
-* Do not claim legal compliance beyond what was actually implemented and verified.
-* Do not add legal guarantees, retention periods, controller identities, or processing bases without approved information.
-* Do not introduce a third-party consent or legal library.
+* Do not restart roadmap point 7 from scratch.
+* Do not redesign the Lauren English brand.
+* Do not replace the established color palette.
+* Do not perform broad visual polish.
+* Do not perform the responsive-layout work assigned to roadmap point 8.
 * Do not introduce Vite.
-* Do not introduce frameworks, APIs, databases, authentication, payments, or backend logic.
-* Do not redesign the site.
-* Do not perform unrelated responsive, token, theme, SEO-routing, or PWA work.
-* Metadata and structured-data corrections directly required by unsupported claims are in scope.
-* Do not modify canonical package or material data unless an unsupported public claim exists there.
-* Do not edit assembled HTML or generated assets manually.
-* Do not overwrite unrelated user-authored changes.
-* Do not remove internal audit or portfolio documentation solely because it uses `demo`.
-* Keep the diff focused, conservative, and review-friendly.
-* Mark roadmap point 6 complete only after implementation and verification pass.
+* Do not introduce dependencies, CSS frameworks, preprocessors, or design-system libraries.
+* Do not create unnecessary tokens for isolated values.
+* Do not rename the complete existing token API.
+* Do not introduce arbitrary breakpoints.
+* Do not add ID selectors for styling.
+* Do not add unnecessary `!important`.
+* Do not add deep descendant selectors.
+* Do not undo completed accessibility utility consolidation.
+* Do not modify canonical package, material, access, legal, or public-content data.
+* Do not manually edit generated HTML, minified CSS, minified JavaScript, or generated service-worker output.
+* Do not modify the unrelated `PROMPT.md` change.
+* Do not repair the existing ESLint 9 configuration blocker.
+* Do not mark roadmap point 7 complete if required browser or screenshot verification remains blocked.
 * Do not mark any other roadmap point complete.
+* Keep any required correction minimal, canonical, and review-friendly.
 
 TECHNICAL RULES
 
-* Public copy must be realistic, natural, concise, and free from developer terminology.
-* Every retained claim must have an approved source.
-* Absence of verification requires removal or an honest unavailable state.
-* Native links must lead to valid destinations.
-* Buttons must perform real actions.
-* Forms must accurately describe their real technical behavior.
-* Structured data must not contain unsupported fields.
-* Testimonials and ratings require verified provenance.
-* Legal pages must describe only actual technical behavior and approved identities.
-* Semantic HTML, accessible names, heading structure, focus behavior, and keyboard behavior must remain intact.
-* Shared navigation and footer content must remain centralized.
-* Public HTML must remain usable without JavaScript.
-* Canonical sources must remain the only editable source of generated output.
-* Existing BEM naming and CSS layer order must remain intact.
-* Generated HTML must remain deterministic and idempotent.
-* Browser verification must use fresh contexts and current production assets.
-* Report only checks actually performed.
+* Preserve the CSS layer order:
 
-Acceptance criteria:
-
-* no prohibited public `demo`, mockup, fake, test-site, or portfolio-simulation wording remains
-* internal documentation remains accurate and may retain appropriate project terminology
-* no unsupported testimonial remains
-* no unsupported rating or five-star presentation remains
-* no unsupported phone number remains
-* no unsupported email remains
-* no unsupported opening hours remain
-* no unsupported WhatsApp claim remains
-* no generic social-platform homepage is presented as a profile
-* no legal link points to `offline.html` or another unrelated page
-* active form behavior matches its visible disclosure
-* personal-data submission is disabled or removed when an applicable truthful policy cannot be supported
-* retained prices and commercial details have an approved canonical source
-* JSON-LD contains only supported facts or is removed
-* metadata contains no prohibited or unsupported public claims
-* all retained public destinations resolve correctly
-* all modified pages remain accessible and usable without JavaScript
-* HTML assembly and production build pass
-* generated output remains idempotent
-* tested pages have no console errors, page errors, failed requests, broken links, or unexpected HTTP responses
-* only roadmap point 6 is marked complete in `INITIAL-AUDIT.md`
+  * tokens
+  * base
+  * utilities
+  * components
+  * sections
+  * pages
+* Use existing semantic tokens whenever they already express the intended role.
+* Every themed semantic surface must have intentional light and dark values.
+* Components must consume semantic tokens instead of fixed theme-specific colors where practical.
+* Raw colors outside the token layer must remain documented exceptions.
+* Preserve BEM-style naming.
+* Preserve low selector specificity.
+* Preserve mobile-first CSS.
+* Preserve existing breakpoint values.
+* Use existing state classes and `:focus-visible` behavior.
+* Normal text must meet WCAG AA contrast where applicable.
+* Large text must meet WCAG AA contrast where applicable.
+* Interactive boundaries and focus states must remain perceptible.
+* Disabled states must remain understandable without appearing active.
+* Status and access meaning must not rely on color alone.
+* Browser verification must use current generated assets and fresh contexts.
+* Report only verification actually performed.
 
 OUTPUT EXPECTATION
 
 Return a concise completion report with:
 
-* documentation and canonical public-content sources inspected
-* current working-tree diff reviewed
-* unrelated user changes preserved
-* files changed
-* prohibited public terminology removed or replaced
-* testimonial and rating handling
-* business and contact-detail handling
-* social-link handling
-* form and personal-data handling
-* legal-link and policy-page handling
-* structured-data handling
-* metadata handling
-* package-price and commercial-claim verification result
-* repository-wide public-content searches performed
-* HTML assembly and production build results
+* current diff inspected
+* existing roadmap-point-7 implementation verified
+* documentation and CSS files inspected
+* unrelated `PROMPT.md` change preserved
+* files changed during final correction, if any
+* static commands executed
+* `check:css` and contrast results
+* production build result
 * generated-output idempotence result
 * browser tooling used
-* pages and viewport sizes tested
-* no-JavaScript result
-* contact and form behavior result
-* link, console, page-error, network, and HTTP results
-* confirmation that roadmap point 6 was marked complete in `INITIAL-AUDIT.md`
-* confirmation that roadmap points 7–10 remain unchecked
-* any important limitation or missing verified input
+* pages, viewport sizes, and themes tested
+* homepage hero light/dark result
+* progress-hero light/dark result
+* navigation, card, form, badge, access, disabled, and focus-state results
+* screenshot or visual-regression result
+* WCAG contrast verification method and result
+* raw-color exception result
+* selector, utility, layer-order, and BEM checks
+* keyboard, focus, ARIA, and progressive-enhancement regression results
+* console, page-error, network, HTTP, and link results
+* ESLint blocker status
+* confirmation that roadmap point 7 was marked complete, if all checks passed
+* confirmation that roadmap points 8–10 remain unchecked
+* any remaining blocker or unresolved contrast case
 
 Do not include unrelated recommendations.

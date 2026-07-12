@@ -95,6 +95,10 @@ export const renderSharedHeader = (pageKey) => {
             <ul class="nav__list" role="list">
 ${renderNavItems(pageKey)}
             </ul>
+            <button class="button button--ghost nav__theme" type="button" aria-pressed="false" data-theme-toggle hidden>
+              <span class="button__icon" aria-hidden="true">🌓</span>
+              <span>Tryb ciemny</span>
+            </button>
             <a class="button button--primary nav__cta" href="/index.html#contact">Informacje o zapisach</a>
           </div>
         </nav>

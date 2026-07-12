@@ -1,5 +1,9 @@
 .hero {
-  background: linear-gradient(180deg, #f6f7f9 0%, #eef7f4 100%);
+  background: linear-gradient(
+    180deg,
+    var(--color-hero-surface-start) 0%,
+    var(--color-hero-surface-end) 100%
+  );
 }
 
 .hero__grid {
@@ -65,11 +69,12 @@
 }
 
 .hero__card {
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--color-surface-overlay);
+  color: var(--color-text);
+  border: var(--size-1px) solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: var(--space-lg);
   box-shadow: var(--shadow-md);
-  backdrop-filter: blur(10px);
 }
 
 @media (min-width: 480px) {

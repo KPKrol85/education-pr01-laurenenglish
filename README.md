@@ -37,6 +37,7 @@ service-worker.js                        # wygenerowany Service Worker
 - `npm run dev` – składa wspólny shell, a następnie uruchamia watch CSS/JS i lokalny serwer.
 - `npm run check:data` – sprawdza kanoniczne pakiety, materiały, dostęp i wyniki filtrów.
 - `npm run check:content` – sprawdza publiczne strony pod kątem niezweryfikowanych danych, atrap prawnych, opinii i aktywnego formularza danych osobowych.
+- `npm run check:css` – sprawdza kolejność warstw, semantyczne tokeny obu motywów, surowe kolory, selektory, duplikaty utilities i kontrast WCAG.
 - `npm run build:html` – składa wspólny header, nawigację i footer w pięciu głównych stronach oraz statyczny katalog materiałów.
 - `npm run check:html` – bez zapisu sprawdza aktualność regionów generowanych, semantykę, ID i lokalne linki.
 - `npm run build` – pełny build produkcyjny: JavaScript, CSS i Service Worker.

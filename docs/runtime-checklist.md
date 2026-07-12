@@ -5,6 +5,7 @@
 - Uruchom pełny build: `npm run build`.
 - Sprawdź parity i semantykę wspólnego shellu: `npm run check:html`.
 - Sprawdź integralność publicznych treści i destinations: `npm run check:content`.
+- Sprawdź tokeny, selektory i kontrast obu motywów: `npm run check:css`.
 - Potwierdź, że powstały:
   - `assets/build/style.min.css`
   - `assets/build/main.min.js`

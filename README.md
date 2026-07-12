@@ -38,6 +38,7 @@ service-worker.js                        # wygenerowany Service Worker
 - `npm run check:data` – sprawdza kanoniczne pakiety, materiały, dostęp i wyniki filtrów.
 - `npm run check:content` – sprawdza publiczne strony pod kątem niezweryfikowanych danych, atrap prawnych, opinii i aktywnego formularza danych osobowych.
 - `npm run check:css` – sprawdza kolejność warstw, semantyczne tokeny obu motywów, surowe kolory, selektory, duplikaty utilities i kontrast WCAG.
+- `npm run test:e2e` – buduje produkcyjne pliki, uruchamia lokalny serwer i pełny zestaw testów Chromium w widokach desktop oraz mobile.
 - `npm run build:html` – składa wspólny header, nawigację i footer w pięciu głównych stronach oraz statyczny katalog materiałów.
 - `npm run check:html` – bez zapisu sprawdza aktualność regionów generowanych, semantykę, ID i lokalne linki.
 - `npm run build` – pełny build produkcyjny: JavaScript, CSS i Service Worker.
@@ -60,6 +61,35 @@ Każdy skrypt CSS/JS tworzy `assets/build/`, jeżeli katalog nie istnieje. Wszys
 - `/assets/build/main.min.js`
 
 Pliki w `assets/build/` oraz `service-worker.js` są wygenerowane i śledzone na potrzeby statycznego wdrożenia. Nie edytuj ich ręcznie — po zmianie źródeł uruchom odpowiedni build. Stary bundle `css/style.min.css` został usunięty i nie należy już do kontraktu produkcyjnego.
+
+## Browser E2E (Playwright)
+
+Po instalacji zależności zainstaluj jedyną wymaganą przeglądarkę:
+
+```powershell
+npm install --no-package-lock
+npx playwright install chromium
+```
+
+Pełna weryfikacja automatycznie wykonuje build, uruchamia istniejący serwer statyczny na `http://127.0.0.1:4173`, testuje wygenerowane strony, a następnie zatrzymuje serwer, jeżeli Playwright uruchomił go sam:
+
+```powershell
+npm run test:e2e
+```
+
+Dostępne polecenia skupione:
+
+- `npm run test:e2e:smoke` – pięć głównych stron, wygenerowane CSS/JS, fonty i diagnostyka runtime.
+- `npm run test:e2e:interactions` – nawigacja, drawer, focus, accordion i tabs.
+- `npm run test:e2e:theme` – light/dark, synchronizacja kontrolek i przywracanie zapisanego motywu.
+- `npm run test:e2e:responsive` – szerokości 320, 390, 768, 1024 i 1440 px, overflow i containment.
+- `npm run test:e2e:headed` – pełny zestaw w widocznym Chromium.
+- `npm run test:e2e:ui` – interaktywny tryb Playwright UI.
+- `npm run test:e2e:report` – otwiera ostatni raport HTML.
+
+Konfiguracja używa projektów Chromium `1440 × 900` i `390 × 844`, pojedynczego workera, izolowanych kontekstów oraz zablokowanych Service Workerów. Screenshoty i trace są zapisywane tylko dla nieudanych testów; video jest wyłączone. `playwright-report/`, `test-results/` i `blob-report/` są lokalnymi artefaktami ignorowanymi przez Git.
+
+Skrypty `check:*` wykonują deterministyczną walidację źródeł i danych bez przeglądarki. Playwright weryfikuje zachowanie wygenerowanych stron w prawdziwym Chromium; oba rodzaje kontroli są wymagane przed przekazaniem zmian.
 
 ## Wspólny shell HTML
 

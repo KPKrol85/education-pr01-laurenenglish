@@ -1,0 +1,154 @@
+import { expect } from "@playwright/test";
+
+export const PRIMARY_PAGES = Object.freeze([
+  { path: "/index.html", name: "Strona główna" },
+  { path: "/uslugi.html", name: "Usługi" },
+  { path: "/pakiety.html", name: "Pakiety" },
+  { path: "/materialy.html", name: "Materiały" },
+  { path: "/postepy.html", name: "Postępy" },
+]);
+
+const isLocalUrl = (url) => {
+  try {
+    const parsed = new URL(url);
+    return parsed.hostname === "127.0.0.1" && parsed.port === "4173";
+  } catch {
+    return false;
+  }
+};
+
+export const collectRuntimeDiagnostics = (page) => {
+  const diagnostics = {
+    consoleErrors: [],
+    pageErrors: [],
+    requestFailures: [],
+    httpErrors: [],
+  };
+
+  page.on("console", (message) => {
+    if (message.type() === "error") {
+      diagnostics.consoleErrors.push(message.text());
+    }
+  });
+  page.on("pageerror", (error) => {
+    diagnostics.pageErrors.push(error.message);
+  });
+  page.on("requestfailed", (request) => {
+    if (isLocalUrl(request.url())) {
+      diagnostics.requestFailures.push(
+        `${request.failure()?.errorText ?? "unknown"} ${request.url()}`,
+      );
+    }
+  });
+  page.on("response", (response) => {
+    if (isLocalUrl(response.url()) && response.status() >= 400) {
+      diagnostics.httpErrors.push(`${response.status()} ${response.url()}`);
+    }
+  });
+
+  return diagnostics;
+};
+
+export const expectCleanDiagnostics = (diagnostics) => {
+  const entries = Object.entries(diagnostics).flatMap(([type, messages]) =>
+    messages.map((message) => `${type}: ${message}`),
+  );
+  expect(entries, entries.join("\n")).toEqual([]);
+};
+
+export const clearRuntimeState = async (page) => {
+  await page.goto("/index.html", { waitUntil: "domcontentloaded" });
+  await page.evaluate(async () => {
+    localStorage.clear();
+    sessionStorage.clear();
+    if ("caches" in window) {
+      await Promise.all(
+        (await caches.keys()).map((name) => caches.delete(name)),
+      );
+    }
+    if ("serviceWorker" in navigator) {
+      await Promise.all(
+        (await navigator.serviceWorker.getRegistrations()).map((registration) =>
+          registration.unregister(),
+        ),
+      );
+    }
+  });
+};
+
+export const getVisibleThemeToggle = async (page) => {
+  const mobileNavigationToggle = page.getByRole("button", {
+    name: "Otwórz menu",
+  });
+  if (await mobileNavigationToggle.isVisible()) {
+    await mobileNavigationToggle.click();
+    const mobileThemeToggle = page.locator(".nav__theme");
+    await expect(mobileThemeToggle).toBeVisible();
+    return mobileThemeToggle;
+  }
+  const desktopThemeToggle = page.locator(
+    ".header__actions [data-theme-toggle]",
+  );
+  await expect(desktopThemeToggle).toBeVisible();
+  return desktopThemeToggle;
+};
+
+export const expectThemeControls = async (page, pressed) => {
+  const controls = page.locator("[data-theme-toggle]");
+  await expect(controls).toHaveCount(2);
+  expect(
+    await controls.evaluateAll(
+      (elements, expected) =>
+        elements.every(
+          (element) => element.getAttribute("aria-pressed") === expected,
+        ),
+      String(pressed),
+    ),
+  ).toBe(true);
+};
+
+export const expectNoDocumentOverflow = async (page) => {
+  const metrics = await page.evaluate(async () => {
+    const startX = scrollX;
+    const startY = scrollY;
+    const documentWidth = Math.max(
+      document.documentElement.scrollWidth,
+      document.body.scrollWidth,
+    );
+    scrollTo({ left: documentWidth, top: startY, behavior: "instant" });
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+    const reachableX = scrollX;
+    scrollTo({ left: startX, top: startY, behavior: "instant" });
+    return {
+      documentWidth,
+      reachableX,
+      viewportWidth: document.documentElement.clientWidth,
+    };
+  });
+  expect(metrics.reachableX, JSON.stringify(metrics)).toBeLessThanOrEqual(0.5);
+};
+
+export const expectElementsContained = async (locator) => {
+  const boxes = await locator.evaluateAll((elements) =>
+    elements
+      .filter((element) => {
+        const style = getComputedStyle(element);
+        return style.display !== "none" && style.visibility !== "hidden";
+      })
+      .map((element) => {
+        const rect = element.getBoundingClientRect();
+        return {
+          left: rect.left,
+          right: rect.right,
+          width: rect.width,
+          viewportWidth: document.documentElement.clientWidth,
+        };
+      }),
+  );
+
+  for (const box of boxes) {
+    expect(box.width).toBeGreaterThan(0);
+    expect(box.left).toBeGreaterThanOrEqual(-0.5);
+    expect(box.right).toBeLessThanOrEqual(box.viewportWidth + 0.5);
+  }
+};

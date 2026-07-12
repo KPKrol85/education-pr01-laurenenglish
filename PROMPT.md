@@ -1,307 +1,270 @@
-PROJECT CONTEXT
+You are a senior frontend test-automation developer working on the Lauren English project.
 
-You are a senior design-systems and accessibility-focused frontend developer completing roadmap point 7 in the Lauren English project.
+PROJECT CONTEXT
 
 You are working in the currently opened `education-pr01-laurenenglish` project.
 
-Read and follow the existing project documentation before continuing, especially:
+Read and follow the current project documentation and repository state before editing, especially:
 
 * `CONTEXT-PROJECT.md`
-* `INITIAL-AUDIT.md`
 * `README.md`
-* `docs/css-architecture.md`
+* `INITIAL-AUDIT.md`
+* `package.json`
+* `.gitignore`
 * `docs/runtime-checklist.md`
-* any focused token, theme, CSS-quality, or accessibility documentation already present
+* existing build, HTML assembly, and verification scripts
 
-Treat `CONTEXT-PROJECT.md` as the authoritative project context.
+Treat canonical source files as the source of truth. Do not manually edit generated HTML fragments, minified assets, or generated service-worker output.
 
-Roadmap point 7 has already been implemented at canonical source level.
+Roadmap points 1–7 are complete.
 
-The current implementation reportedly includes:
+Roadmap point 8 is currently blocked because the required permanent project-local Playwright workflow does not exist. The previous inspection confirmed there is no Playwright configuration, E2E test directory, Playwright npm script, or reusable browser-test workflow in the project.
 
-* explicit light- and dark-theme semantic tokens for:
-
-  * surfaces
-  * controls
-  * disabled states
-  * success and premium states
-  * focus rings
-  * primary text
-* removal of repeated raw component colors
-* consolidation of duplicate accessibility utilities
-* removal of avoidable contextual selectors
-* improved focus, disabled, navigation, form, badge, progress, card, hero, and accordion states
-* deterministic CSS architecture and WCAG contrast checks
-* regenerated `assets/build/style.min.css`
-* updated CSS architecture, runtime, and README documentation
-
-Completed verification reportedly includes:
-
-* `npm run check:css`
-* 25 CSS files inspected
-* 18 dual-theme semantic tokens validated
-* 40 contrast pairs validated
-* minimum `4.04:1` contrast for tested non-text boundaries
-* `npm run build`
-* `npm run check:data`
-* `npm run check:content`
-* `npm run check:html`
-* generated HTML idempotence across all five primary pages
-* generated JavaScript syntax checks
-* relevant Prettier checks
-* `git diff --check`
-
-Roadmap point 7 remains unchecked only because the required Playwright light/dark browser matrix and screenshot inspection could not run after the previous Codex usage allowance was exhausted.
-
-The unrelated user-authored `PROMPT.md` modification must remain unchanged and must not be included in roadmap point 7 verification or change claims.
+This task establishes that missing workflow only. Do not implement roadmap point 8 during this task.
 
 TASK OBJECTIVE
 
-Continue roadmap point 7 from the exact current working-tree state.
+Add a permanent, reusable, project-local Playwright E2E workflow using the official `@playwright/test` runner.
 
-First inspect and verify the existing implementation and complete diff.
+The finished workflow must allow the project to run browser verification with:
 
-Do not restart, redesign, or broadly refactor the token and theme work.
+`npm run test:e2e`
 
-Complete the missing real-browser verification for both themes across representative viewport sizes.
+It must:
 
-If browser verification exposes a defect directly related to roadmap point 7, apply the smallest safe canonical source-level correction, rebuild affected outputs, and rerun every affected check.
-
-Mark only roadmap point 7 as completed in `INITIAL-AUDIT.md` after every applicable static and browser acceptance criterion passes.
+* automatically build the production output
+* automatically start the existing local static server
+* test the generated production pages
+* use Chromium only
+* include desktop and mobile coverage
+* preserve reusable smoke, interaction, theme, and responsive checks
+* use isolated browser contexts
+* avoid stale service-worker and storage state
+* keep reports and failure artifacts outside Git
+* require no temporary scripts under `C:\tmp`
+* require no `.codex`, `.agents`, external skill runner, or machine-specific absolute path
 
 IMPLEMENTATION PLAN
 
-1. Inspect the complete current working-tree diff before editing.
-2. Identify all roadmap-point-7 source and documentation changes.
-3. Confirm that the current implementation preserves:
+1. Inspect the current package scripts, build pipeline, static server command, generated output paths, and existing verification scripts.
+2. Confirm that no project-local Playwright workflow currently exists.
+3. Inspect the current no-lockfile policy and preserve it.
+4. Add `@playwright/test` as a development dependency without creating `package-lock.json`.
+5. Install only the Chromium browser required by the project.
+6. Create a minimal permanent structure such as:
 
-   * the CSS layer order
-   * token-first architecture
-   * semantic light- and dark-theme values
-   * low-specificity selectors
-   * BEM-compatible component naming
-   * consolidated accessibility utilities
-   * theme-aware hero and progress-hero surfaces
-4. Preserve the unrelated `PROMPT.md` modification exactly.
-5. Do not modify unrelated user-authored changes.
-6. Re-run the existing static verification:
+   * `playwright.config.mjs`
+   * `tests/e2e/smoke.spec.mjs`
+   * `tests/e2e/interactions.spec.mjs`
+   * `tests/e2e/theme.spec.mjs`
+   * `tests/e2e/responsive.spec.mjs`
+   * a small shared helper module only when it removes real duplication
+7. Configure Playwright from the project root.
+8. Use the existing production static server command through Playwright `webServer`.
+9. Use a stable local test URL such as `http://127.0.0.1:4173`, unless the current project already defines another verified test port.
+10. Configure Playwright to:
 
-   * `npm run check:css`
-   * `npm run check:data`
-   * `npm run check:content`
-   * `npm run build:html`
-   * `npm run check:html`
-   * `npm run build`
-   * relevant generated JavaScript syntax checks
-   * relevant Prettier checks
-   * `git diff --check`
-7. Confirm HTML assembly remains deterministic and idempotent.
-8. Start the project using the documented local verification server.
-9. Use fresh Playwright Chromium contexts and the latest generated assets.
-10. Clear or isolate:
+    * start the server automatically
+    * wait for a valid project page
+    * reuse a compatible existing server where safe
+    * stop the server when Playwright started it
+11. Configure Chromium projects for:
 
-    * service workers
-    * Cache Storage
-    * local storage
-    * session storage
-    * stale theme state
-11. Test all five primary pages:
+    * desktop: `1440 × 900`
+    * mobile: `390 × 844`
+12. Keep the default run deterministic:
+
+    * no unnecessary full parallelism
+    * predictable worker count
+    * no arbitrary fixed delays
+    * observable state-based waits
+13. Configure artifacts:
+
+    * screenshot only on failure
+    * trace retained on failure or first retry
+    * video disabled
+    * HTML report generated without automatically opening
+14. Prevent stale runtime state:
+
+    * use isolated contexts
+    * clear relevant local storage and Cache Storage where needed
+    * block or unregister service workers during normal E2E verification
+15. Add smoke coverage for all five primary pages:
 
     * `index.html`
     * `uslugi.html`
     * `pakiety.html`
     * `materialy.html`
     * `postepy.html`
-12. Test these viewport sizes:
+16. Smoke tests must verify:
 
-    * desktop: `1440 × 900`
-    * compact desktop/tablet: `1024 × 768`
-    * mobile: `390 × 844`
-13. Test both:
+    * page loads successfully
+    * generated production CSS loads
+    * generated production JavaScript loads
+    * local fonts load
+    * no unexpected console errors
+    * no uncaught page errors
+    * no failed local requests
+    * no unexpected HTTP responses
+17. Add focused interaction coverage for established contracts:
 
-    * light theme
-    * dark theme
-14. Verify theme initialization:
+    * desktop navigation visibility
+    * mobile drawer open and close
+    * closed drawer content cannot receive focus
+    * Escape closes the drawer
+    * focus returns to the trigger
+    * theme controls remain synchronized
+    * accordions update expanded and hidden state
+    * tabs preserve the established keyboard model
+18. Add focused theme coverage for:
 
-    * default theme loads consistently
-    * theme toggle updates the document state
-    * `aria-pressed` remains accurate
-    * persisted theme restores correctly
-    * no visible flash leaves text unreadable against the wrong surface
-15. Inspect representative screenshots for:
+    * light theme activation
+    * dark theme activation
+    * persisted theme restoration
+    * synchronized desktop and mobile controls
+19. Add focused responsive coverage for:
 
-    * homepage hero
-    * progress-page hero
-    * desktop and mobile navigation
-    * package cards
-    * material cards
-    * contact unavailable state and form-related surfaces
-    * badges and access labels
-    * accordions
-    * homepage tabs
-    * focus-visible states
-16. Verify the homepage hero in both themes:
+    * no document-level horizontal overflow
+    * representative checks at 320, 390, 768, 1024, and 1440px
+    * mobile drawer containment
+    * header control visibility
+    * representative CTA and card containment
+20. Do not recreate the previous temporary 30-case audit harness line by line.
+21. Keep browser tests focused on reusable product contracts.
+22. Do not duplicate complete data, content, HTML, or CSS validation already handled by existing Node scripts.
+23. Add npm scripts appropriate to the implemented structure:
 
-    * background and gradient use theme-aware semantic values
-    * heading and supporting text remain readable
-    * hero image, media frame, cards, and overlays remain visually distinct
-    * no light-on-light or dark-on-dark text combination occurs
-17. Verify the progress hero in both themes:
+    * `test:e2e`
+    * `test:e2e:smoke`
+    * `test:e2e:interactions`
+    * `test:e2e:theme`
+    * `test:e2e:responsive`
+    * `test:e2e:headed`
+    * `test:e2e:ui`
+    * `test:e2e:report`
+24. Ensure `npm run test:e2e` performs the required production build before running Playwright.
+25. Do not rebuild inside individual spec files.
+26. Add Playwright artifacts to `.gitignore`, including where applicable:
 
-    * background and text remain readable
-    * status and progress surfaces remain distinguishable
-18. Verify navigation states:
+    * `playwright-report/`
+    * `test-results/`
+    * `blob-report/`
+27. Keep configuration and test source files tracked.
+28. Update README and runtime documentation with:
 
-    * default
-    * hover
-    * focus-visible
-    * active
-    * current page
-    * mobile drawer
-    * theme control
-19. Verify forms and unavailable-contact states:
+    * dependency installation
+    * Chromium installation
+    * complete E2E command
+    * focused commands
+    * headed and UI modes
+    * report command
+    * tested viewport coverage
+    * artifact locations
+    * distinction between static checks and browser E2E checks
+29. Run the complete verification:
 
-    * surface
-    * text
-    * muted text
-    * border
-    * disabled state
-    * focus indicator
-20. Verify component states:
-
-    * cards
-    * badges
-    * premium and free access states
-    * progress controls
-    * accordion controls
-    * tabs
-    * disabled controls
-21. Verify status and access meaning is not communicated by color alone.
-22. Re-run or confirm deterministic contrast calculations for all affected semantic pairs.
-23. Confirm applicable text and control-state contrast meets WCAG AA.
-24. Confirm focus indicators remain clearly visible against all tested light and dark surfaces.
-25. Confirm raw colors outside the token layer are:
-
-    * intentional
-    * rare
-    * documented by the existing CSS-quality rules
-26. Confirm:
-
-    * no new ID selectors
-    * no unnecessary `!important`
-    * no deep selector chains
-    * no new arbitrary breakpoints
-    * no duplicated visually-hidden or skip-link implementations
-27. Confirm previous roadmap guarantees remain intact:
-
-    * keyboard navigation
-    * focus containment and return
-    * ARIA synchronization
-    * progressive enhancement
-    * no-JavaScript content visibility
-    * canonical package and material rendering
-    * public-content integrity
-28. Record:
-
-    * console errors
-    * uncaught page errors
-    * failed requests
-    * unexpected HTTP responses
-    * broken local links
-    * visual regressions directly caused by point 7
-29. If browser verification exposes a roadmap-point-7 defect:
-
-    * identify the canonical CSS or minimal HTML source
-    * apply only the smallest safe correction
-    * do not redesign the component
-    * rebuild generated output
-    * rerun every affected theme, viewport, contrast, and regression check
-30. Attempt `npm run lint:js` only to confirm the existing ESLint 9 missing-configuration blocker.
-31. Do not repair or expand ESLint configuration during this task.
-32. After all applicable acceptance criteria pass:
-
-    * change only roadmap point 7 in `INITIAL-AUDIT.md` from `[ ]` to `[x]`
-    * confirm roadmap points 8–10 remain unchecked
-33. Stop the local verification server after testing.
+    * production build
+    * existing data checks
+    * existing content checks
+    * existing HTML checks
+    * existing CSS quality and contrast checks
+    * relevant JavaScript syntax checks
+    * `npm run test:e2e`
+    * focused smoke, interaction, theme, and responsive commands
+    * relevant Prettier checks
+    * `git diff --check`
+30. Confirm the E2E workflow works when no server is already running.
+31. Confirm compatible server reuse works where configured.
+32. Confirm test reports and failure artifacts remain untracked.
+33. Do not change `INITIAL-AUDIT.md`.
+34. Do not mark roadmap point 8 complete.
 
 CONSTRAINTS
 
-* Do not restart roadmap point 7 from scratch.
-* Do not redesign the Lauren English brand.
-* Do not replace the established color palette.
-* Do not perform broad visual polish.
-* Do not perform the responsive-layout work assigned to roadmap point 8.
+* Do not implement roadmap point 8.
+* Do not change application UI, content, layout, themes, or product behavior.
 * Do not introduce Vite.
-* Do not introduce dependencies, CSS frameworks, preprocessors, or design-system libraries.
-* Do not create unnecessary tokens for isolated values.
-* Do not rename the complete existing token API.
-* Do not introduce arbitrary breakpoints.
-* Do not add ID selectors for styling.
-* Do not add unnecessary `!important`.
-* Do not add deep descendant selectors.
-* Do not undo completed accessibility utility consolidation.
-* Do not modify canonical package, material, access, legal, or public-content data.
-* Do not manually edit generated HTML, minified CSS, minified JavaScript, or generated service-worker output.
-* Do not modify the unrelated `PROMPT.md` change.
-* Do not repair the existing ESLint 9 configuration blocker.
-* Do not mark roadmap point 7 complete if required browser or screenshot verification remains blocked.
-* Do not mark any other roadmap point complete.
-* Keep any required correction minimal, canonical, and review-friendly.
+* Do not replace the existing production build pipeline.
+* Do not implement the separate localhost `8181` source-preview workflow.
+* Do not add browsers other than Chromium.
+* Do not add Axe or another accessibility-testing dependency.
+* Do not add visual snapshot baselines.
+* Do not add pixel-perfect screenshot testing.
+* Do not add GitHub Actions or another CI workflow.
+* Do not create temporary browser scripts under `C:\tmp`.
+* Do not depend on `.codex`, `.agents`, external skills, or absolute machine paths.
+* Do not create a lockfile.
+* Do not modify unrelated dependency versions.
+* Do not manually edit generated or minified files.
+* Do not over-abstract the test architecture.
+* Do not create one oversized specification file.
+* Preserve unrelated working-tree changes.
+* Keep the implementation minimal, permanent, and review-friendly.
 
 TECHNICAL RULES
 
-* Preserve the CSS layer order:
+* Use the official `@playwright/test` package.
+* Use ES modules consistently with the existing project.
+* Use semantic locators based on roles, accessible names, labels, and stable existing hooks.
+* Avoid selectors tied to incidental layout structure.
+* Use isolated browser contexts.
+* Use state-based waits instead of arbitrary delays.
+* Collect console errors, page errors, failed requests, and unexpected HTTP responses consistently.
+* Distinguish expected injected failures from unexpected diagnostics.
+* Test observable behavior rather than private implementation details.
+* Keep shared helpers small and deterministic.
+* Clean up state modified by each test.
+* Use the same canonical test sources for desktop and mobile projects.
+* Commands must return a non-zero exit code when assertions fail.
+* Documentation must match the actual implemented scripts.
+* Report only checks that were genuinely executed.
+* If the Playwright infrastructure fails twice for the same environment reason, stop and report the blocker instead of creating a replacement temporary harness.
 
-  * tokens
-  * base
-  * utilities
-  * components
-  * sections
-  * pages
-* Use existing semantic tokens whenever they already express the intended role.
-* Every themed semantic surface must have intentional light and dark values.
-* Components must consume semantic tokens instead of fixed theme-specific colors where practical.
-* Raw colors outside the token layer must remain documented exceptions.
-* Preserve BEM-style naming.
-* Preserve low selector specificity.
-* Preserve mobile-first CSS.
-* Preserve existing breakpoint values.
-* Use existing state classes and `:focus-visible` behavior.
-* Normal text must meet WCAG AA contrast where applicable.
-* Large text must meet WCAG AA contrast where applicable.
-* Interactive boundaries and focus states must remain perceptible.
-* Disabled states must remain understandable without appearing active.
-* Status and access meaning must not rely on color alone.
-* Browser verification must use current generated assets and fresh contexts.
-* Report only verification actually performed.
+Acceptance criteria:
+
+* `@playwright/test` exists as a development dependency
+* no `package-lock.json` is created
+* Chromium is the only configured browser
+* `playwright.config.mjs` exists
+* Playwright automatically manages the project server
+* desktop and mobile Chromium projects exist
+* `npm run test:e2e` builds and runs the complete suite
+* focused smoke, interaction, theme, and responsive commands exist and pass
+* all five primary pages receive smoke coverage
+* reports and artifacts are ignored by Git
+* service-worker and storage isolation is deterministic
+* no machine-specific path exists
+* no temporary external harness is required
+* existing production and static checks continue to pass
+* documentation describes the real workflow
+* `INITIAL-AUDIT.md` remains unchanged
+* roadmap point 8 remains unchecked
 
 OUTPUT EXPECTATION
 
-Return a concise completion report with:
+Return a concise summary with:
 
-* current diff inspected
-* existing roadmap-point-7 implementation verified
-* documentation and CSS files inspected
-* unrelated `PROMPT.md` change preserved
-* files changed during final correction, if any
-* static commands executed
-* `check:css` and contrast results
-* production build result
-* generated-output idempotence result
-* browser tooling used
-* pages, viewport sizes, and themes tested
-* homepage hero light/dark result
-* progress-hero light/dark result
-* navigation, card, form, badge, access, disabled, and focus-state results
-* screenshot or visual-regression result
-* WCAG contrast verification method and result
-* raw-color exception result
-* selector, utility, layer-order, and BEM checks
-* keyboard, focus, ARIA, and progressive-enhancement regression results
-* console, page-error, network, HTTP, and link results
-* ESLint blocker status
-* confirmation that roadmap point 7 was marked complete, if all checks passed
-* confirmation that roadmap points 8–10 remain unchecked
-* any remaining blocker or unresolved contrast case
-
-Do not include unrelated recommendations.
+* documentation and tooling inspected
+* existing Playwright files found
+* files created
+* files changed
+* dependency installation command and result
+* confirmation that no lockfile was created
+* Playwright configuration implemented
+* server integration and port
+* Chromium projects and viewport sizes
+* test suites and helpers added
+* npm scripts added
+* service-worker and storage isolation behavior
+* artifact and report policy
+* `.gitignore` changes
+* documentation changes
+* build and static checks executed
+* complete E2E result
+* focused test results
+* pages and scenarios tested
+* console, page-error, request, and HTTP results
+* confirmation that no temporary external harness is required
+* confirmation that `INITIAL-AUDIT.md` was not changed
+* confirmation that point 8 remains unchecked
+* any blocker encountered

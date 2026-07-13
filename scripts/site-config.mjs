@@ -3,6 +3,13 @@ export const SITE = Object.freeze({
   name: "Lauren – Clean English",
   language: "pl-PL",
   locale: "pl_PL",
+  manifest: Object.freeze({
+    path: "/site.webmanifest",
+  }),
+  favicon: Object.freeze({
+    path: "/assets/favicon/favicon.svg",
+    type: "image/svg+xml",
+  }),
   brandLogo: Object.freeze({
     path: "/assets/img/logo/logo.svg",
     width: 512,
@@ -13,7 +20,7 @@ export const SITE = Object.freeze({
     type: "font/woff2",
   }),
   socialImage: Object.freeze({
-    path: "/assets/og/og-default.png",
+    path: "/assets/og/og.png",
     type: "image/png",
     width: 1200,
     height: 630,
@@ -151,6 +158,8 @@ const renderIndexableHead = (page) => {
     <title>${page.title}</title>
     <meta name="description" content="${page.description}" />
     <link rel="canonical" href="${canonical}" />
+    <link rel="manifest" href="${SITE.manifest.path}" />
+    <link rel="icon" href="${SITE.favicon.path}" type="${SITE.favicon.type}" />
     <link rel="preload" href="${SITE.headingFont.path}" as="font" type="${SITE.headingFont.type}" crossorigin />
     <meta property="og:title" content="${page.title}" />
     <meta property="og:description" content="${page.description}" />
@@ -178,6 +187,8 @@ ${SEO_MARKERS.end}`;
 const renderUtilityHead = (page) => `${SEO_MARKERS.start}
     <title>${page.title}</title>
     <meta name="robots" content="noindex, nofollow" />
+    <link rel="manifest" href="${SITE.manifest.path}" />
+    <link rel="icon" href="${SITE.favicon.path}" type="${SITE.favicon.type}" />
     <link rel="preload" href="${SITE.headingFont.path}" as="font" type="${SITE.headingFont.type}" crossorigin />
 ${SEO_MARKERS.end}`;
 

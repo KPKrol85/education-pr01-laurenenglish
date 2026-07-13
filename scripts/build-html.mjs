@@ -61,9 +61,18 @@ const replaceRegion = (source, startMarker, endMarker, replacement, file) => {
   return source.replace(currentRegion, replacement);
 };
 
+const removeGeneratedHeadAssets = (source) =>
+  source.replace(
+    /^[\t ]*<link\s+rel="(?:manifest|icon)"[^>]*\/>[\t ]*(?:\n|$)/gim,
+    "",
+  );
+
 const assemblePage = (source, page) => {
+  const normalizedSource = removeGeneratedHeadAssets(
+    source.replace(/\r\n?/g, "\n"),
+  );
   const withSeo = replaceRegion(
-    source,
+    normalizedSource,
     SEO_MARKERS.start,
     SEO_MARKERS.end,
     renderSeoHead(page),

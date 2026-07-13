@@ -100,6 +100,13 @@ const visitSchema = (value, path = "jsonLd") => {
 
 const titles = new Set();
 const descriptions = new Set();
+const EXPECTED_SOCIAL_IMAGE_PATH = "/assets/og/og.png";
+
+assert(
+  SITE.socialImage.path === EXPECTED_SOCIAL_IMAGE_PATH,
+  `Social-preview image must use ${EXPECTED_SOCIAL_IMAGE_PATH}`,
+);
+assertAbsoluteHttps(absoluteUrl(SITE.socialImage.path), "Social-preview image");
 
 for (const page of INDEXABLE_PAGES) {
   const html = await readFile(resolve(ROOT, page.file), "utf8");
@@ -242,7 +249,6 @@ assert(
     socialImage.readUInt32BE(20) === SITE.socialImage.height,
   "Social-preview image dimensions do not match metadata",
 );
-await readFile(resolve(ROOT, "assets/og/og-default.svg"));
 
 const sitemap = await readFile(resolve(ROOT, "sitemap.xml"), "utf8");
 assert(sitemap === renderSitemap(), "sitemap.xml is stale");

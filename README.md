@@ -27,7 +27,7 @@ js/main.js                              # kanoniczny entry JavaScript
 js/{data,modules,pages,state}/          # modułowe źródła JavaScript
 scripts/content-renderers.mjs           # build-time renderery pakietów i materiałów
 service-worker.template.js              # kanoniczny Service Worker
-assets/{fonts,icons,img,og}/             # statyczne zasoby źródłowe
+assets/{favicon,fonts,img,og,pwa}/       # statyczne zasoby źródłowe
 assets/build/style.min.css               # wygenerowany bundle CSS
 assets/build/main.min.js                 # wygenerowany bundle JavaScript
 service-worker.js                        # wygenerowany Service Worker
@@ -48,6 +48,7 @@ service-worker.js                        # wygenerowany Service Worker
 - `npm run build:css` – PostCSS + `postcss-import` + cssnano; generuje `assets/build/style.min.css`.
 - `npm run build:js` – esbuild; bundluje moduły od `js/main.js` do `assets/build/main.min.js`.
 - `npm run build:sw` – waliduje precache i generuje `service-worker.js` z wersji pakietu oraz deterministycznego fingerprintu szablonu i zawartości cache.
+- `npm run build:pwa-screenshots` – uruchamia lokalny serwer i projektowy Chromium, a następnie odtwarza screenshoty manifestu `1280 × 720` oraz `720 × 1280` z aktualnej produkcyjnej strony głównej.
 - `npm run images` – optymalizacja obrazów (webp/avif).
 - `npm run lint:js` – ESLint.
 - `npm run format` – Prettier.
@@ -87,7 +88,7 @@ Dostępne polecenia skupione:
 - `npm run test:e2e:theme` – light/dark, synchronizacja kontrolek i przywracanie zapisanego motywu.
 - `npm run test:e2e:responsive` – szerokości 320, 390, 768, 1024 i 1440 px, oba motywy, współdzielone logo, kontrakt typografii z polskimi znakami, layout shift, overflow i containment.
 - `npm run test:e2e:seo` – statusy tras i zasobów, prawdziwe 404, metadane runtime, sitemapę i robots.
-- `npm run test:e2e:pwa` – instalacja i aktywacja SW, cache cleanup, manifest, online 404, offline, odpowiedzi niedozwolone i budżet krytycznych requestów.
+- `npm run test:e2e:pwa` – instalacja i aktywacja SW, cache cleanup, manifest, skróty, ikony, screenshoty, online 404, offline, odpowiedzi niedozwolone i budżet krytycznych requestów.
 - `npm run test:e2e:headed` – pełny zestaw w widocznym Chromium.
 - `npm run test:e2e:ui` – interaktywny tryb Playwright UI.
 - `npm run test:e2e:report` – otwiera ostatni raport HTML.
@@ -138,16 +139,17 @@ Każda strona ma dokładnie jeden stan `aria-current="page"`: na stronie główn
 - `service-worker.template.js` pozostaje jedynym źródłem Service Workera. `scripts/pwa-config.mjs` definiuje kontrakt assetów, a `scripts/build-service-worker.mjs` sprawdza istnienie i unikalność ścieżek przed wygenerowaniem `service-worker.js`.
 - Cache używa stałego prefiksu `clean-english-v` oraz rewizji `<package version>-<12 znaków SHA-256>`. Fingerprint obejmuje szablon, konfigurację i treść każdego precachowanego pliku, więc identyczne wejścia dają identyczną nazwę, a zmiana wejścia tworzy nową.
 - Instalacja kończy się dopiero po pełnym `cache.addAll`; nieudana instalacja usuwa wyłącznie niekompletny bieżący cache. Po udanej instalacji worker wywołuje `skipWaiting`, a aktywacja usuwa wyłącznie starsze cache z prefiksem Lauren English i wykonuje `clients.claim`.
-- Precache obejmuje pięć głównych dokumentów, `offline.html`, produkcyjne CSS/JS, Inter 400/600/700, Literata 700, ikony 192/512, współdzielone logo, dwa obrazy używane na homepage (hero i portret) oraz manifest. Nie zawiera stron błędów, formularzy, źródłowych `css/`/`js/` ani katalogu materiałów.
+- Precache obejmuje pięć głównych dokumentów, `offline.html`, produkcyjne CSS/JS, Inter 400/600/700, Literata 700, ikony instalacyjne 192/512, trzy ikony skrótów, współdzielone logo, dwa obrazy używane na homepage (hero i portret) oraz `site.webmanifest`. Nie zawiera screenshotów instalacyjnych, stron błędów, formularzy, źródłowych `css/`/`js/` ani katalogu materiałów.
 - Nawigacja online jest network-first: prawdziwy `404` pozostaje `404` i nie trafia do cache. Przy awarii sieci główna znana trasa otrzymuje swoją kopię, a inna nawigacja otrzymuje `offline.html`; homepage nie jest fallbackiem ogólnym.
 - Cache przyjmuje tylko pełne odpowiedzi `200` dla zamierzonych, same-origin żądań `GET` HTTP(S). Odpowiedzi przekierowane, opaque, częściowe, nieudane, cross-origin i inne metody nie są zapisywane. Statyczny runtime jest ograniczony do jawnej listy precache, a query string nie tworzy dodatkowych wpisów.
-- Manifest deklaruje `id`, `start_url`, `scope`, `lang`, kolory, tryb standalone i zweryfikowane SVG `192 × 192` oraz `512 × 512`. Nie deklaruje `maskable`, ponieważ nie ma osobnego assetu ze zweryfikowaną strefą bezpieczną.
+- `site.webmanifest` deklaruje pełny kontrakt instalacyjny, zweryfikowane PNG `192 × 192` i `512 × 512`, dokładnie trzy skróty do pakietów, materiałów i postępów oraz aktualne screenshoty `1280 × 720` (`wide`) i `720 × 1280` (`narrow`). Nie deklaruje `maskable`, ponieważ nie ma osobnego assetu ze zweryfikowaną strefą bezpieczną.
 - Hero używa jednego JPEG `1600 × 1200`, jawnych wymiarów, `loading="eager"`, `fetchpriority="high"` i `decoding="async"`. Budżet homepage to 1 CSS, 1 JS, 4 początkowe fonty (łącznie maks. 185 kB), 1 request współdzielonego logo oraz 1 request hero (maks. 1,1 MB), bez requestów źródłowych i duplikatów.
 
 Weryfikacja lokalna:
 
 ```powershell
 npm run build
+npm run build:pwa-screenshots
 npm run check:pwa
 npm run test:e2e:pwa
 ```
@@ -166,7 +168,7 @@ Indeksowane trasy to:
 
 Strony `/404.html`, `/offline.html` i `/thank-you.html` są dostępne technicznie, ale mają `noindex, nofollow`, bez canonical, Open Graph, Twitter Cards i JSON-LD. Każda indeksowana strona ma jeden absolutny canonical zgodny z `og:url`, unikalny tytuł i opis oraz minimalne dane `WebSite` albo `WebPage` bez niezweryfikowanych danych firmy.
 
-Edytowalnym źródłem grafiki społecznościowej jest `assets/og/og-default.svg`, a metadane crawlerów wskazują na śledzony raster `assets/og/og-default.png` o rozmiarze `1200 × 630`. `npm run build:html` generuje metadane w oznaczonych regionach oraz odświeża `sitemap.xml`, `robots.txt` i `_redirects` z rejestru. Sitemapa zawiera wyłącznie pięć indeksowanych canonicali i nie publikuje niewiarygodnych dat `lastmod`.
+Kanonicznym zasobem grafiki społecznościowej jest istniejący raster `assets/og/og.png` o rozmiarze `1200 × 630`. Metadane Open Graph i Twitter wskazują na jego bezwzględny adres HTTPS. `npm run build:html` generuje metadane w oznaczonych regionach oraz odświeża `sitemap.xml`, `robots.txt` i `_redirects` z rejestru. Sitemapa zawiera wyłącznie pięć indeksowanych canonicali i nie publikuje niewiarygodnych dat `lastmod`.
 
 `_redirects` nie zawiera fallbacku SPA do strony głównej. Na Netlify obecność głównego `404.html` zapewnia dedykowaną odpowiedź dla nieznanych tras z prawdziwym statusem `404`; lokalny serwer testowy zachowuje tę samą semantykę. `serve.json` wyłącza lokalne przepisywanie adresów `.html`, aby testy odwzorowywały udokumentowany styl canonical. Weryfikacja:
 

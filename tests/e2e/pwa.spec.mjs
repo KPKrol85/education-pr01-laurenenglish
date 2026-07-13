@@ -8,9 +8,12 @@ import {
   FONT_PATHS,
   HERO_IMAGE_PATH,
   MANIFEST_ICON_PATHS,
+  MANIFEST_PATH,
+  MANIFEST_SCREENSHOT_PATHS,
   OFFLINE_PATH,
   PRECACHE_PATHS,
   PRIMARY_DOCUMENT_PATHS,
+  SHORTCUT_ICON_PATHS,
 } from "../../scripts/pwa-config.mjs";
 import {
   collectRuntimeDiagnostics,
@@ -95,6 +98,34 @@ const getCurrentCachePaths = (page) =>
       .sort();
   }, CURRENT_CACHE_NAME);
 
+const getImageResults = (page, assets) =>
+  page.evaluate(async (imageAssets) => {
+    const loadImage = (src) =>
+      new Promise((resolve, reject) => {
+        const image = new Image();
+        image.addEventListener("load", () =>
+          resolve({
+            height: image.naturalHeight,
+            path: src,
+            width: image.naturalWidth,
+          }),
+        );
+        image.addEventListener("error", reject);
+        image.src = src;
+      });
+
+    return Promise.all(
+      imageAssets.map(async ({ src }) => {
+        const response = await fetch(src);
+        return {
+          ...(await loadImage(src)),
+          contentType: response.headers.get("Content-Type"),
+          status: response.status,
+        };
+      }),
+    );
+  }, assets);
+
 test.afterEach(async ({ page, context }) => {
   await cleanPwaState(page, context);
 });
@@ -103,7 +134,7 @@ test("installs, controls the page, validates install metadata, and preserves unr
   page,
 }) => {
   const diagnostics = collectRuntimeDiagnostics(page);
-  const manifestResponse = await page.goto("/manifest.webmanifest", {
+  const manifestResponse = await page.goto(MANIFEST_PATH, {
     waitUntil: "domcontentloaded",
   });
   expect(manifestResponse?.status()).toBe(200);
@@ -131,66 +162,92 @@ test("installs, controls the page, validates install metadata, and preserves unr
   ).toEqual([CURRENT_CACHE_NAME]);
   expect(await getCurrentCachePaths(page)).toEqual([...PRECACHE_PATHS].sort());
 
-  const manifestResult = await page.evaluate(async () => {
-    const response = await fetch("/manifest.webmanifest");
+  const manifestResult = await page.evaluate(async (manifestPath) => {
+    const response = await fetch(manifestPath);
     return {
       contentType: response.headers.get("Content-Type"),
       manifest: await response.json(),
       status: response.status,
     };
-  });
+  }, MANIFEST_PATH);
   expect(manifestResult.status).toBe(200);
   expect(manifestResult.contentType).toContain("application/manifest+json");
   expect(manifestResult.manifest).toMatchObject({
+    name: "Lauren – Clean English",
+    short_name: "Clean English",
     id: "/",
     start_url: "/index.html",
     scope: "/",
     display: "standalone",
     lang: "pl",
   });
-
-  const iconResults = await page.evaluate(async (paths) => {
-    const loadImage = (src) =>
-      new Promise((resolve, reject) => {
-        const image = new Image();
-        image.addEventListener("load", () =>
-          resolve({
-            height: image.naturalHeight,
-            path: src,
-            width: image.naturalWidth,
-          }),
-        );
-        image.addEventListener("error", reject);
-        image.src = src;
-      });
-
-    return Promise.all(
-      paths.map(async (path) => {
-        const response = await fetch(path);
-        return {
-          ...(await loadImage(path)),
-          contentType: response.headers.get("Content-Type"),
-          status: response.status,
-        };
-      }),
-    );
-  }, MANIFEST_ICON_PATHS);
-  expect(iconResults).toEqual([
+  expect(manifestResult.manifest.shortcuts).toHaveLength(3);
+  expect(
+    manifestResult.manifest.shortcuts.map(
+      ({ name, short_name: shortName, url }) => ({ name, shortName, url }),
+    ),
+  ).toEqual([
     {
-      path: "/assets/icons/icon-192.svg",
-      status: 200,
-      contentType: "image/svg+xml",
-      width: 192,
-      height: 192,
+      name: "Pakiety nauki",
+      shortName: "Pakiety",
+      url: "/pakiety.html",
     },
     {
-      path: "/assets/icons/icon-512.svg",
-      status: 200,
-      contentType: "image/svg+xml",
-      width: 512,
-      height: 512,
+      name: "Materiały do nauki",
+      shortName: "Materiały",
+      url: "/materialy.html",
+    },
+    {
+      name: "Dziennik postępów",
+      shortName: "Postępy",
+      url: "/postepy.html",
     },
   ]);
+  expect(manifestResult.manifest.screenshots).toHaveLength(2);
+
+  const shortcutStatuses = await page.evaluate(
+    async (shortcuts) =>
+      Promise.all(
+        shortcuts.map(async ({ url }) => ({
+          status: (await fetch(url)).status,
+          url,
+        })),
+      ),
+    manifestResult.manifest.shortcuts,
+  );
+  expect(shortcutStatuses).toEqual([
+    { status: 200, url: "/pakiety.html" },
+    { status: 200, url: "/materialy.html" },
+    { status: 200, url: "/postepy.html" },
+  ]);
+
+  const manifestAssets = [
+    ...manifestResult.manifest.icons,
+    ...manifestResult.manifest.shortcuts.flatMap(({ icons }) => icons),
+    ...manifestResult.manifest.screenshots,
+  ];
+  expect(manifestResult.manifest.icons.map(({ src }) => src)).toEqual([
+    ...MANIFEST_ICON_PATHS,
+  ]);
+  expect(
+    manifestResult.manifest.shortcuts.flatMap(({ icons }) =>
+      icons.map(({ src }) => src),
+    ),
+  ).toEqual([...SHORTCUT_ICON_PATHS]);
+  expect(manifestResult.manifest.screenshots.map(({ src }) => src)).toEqual([
+    ...MANIFEST_SCREENSHOT_PATHS,
+  ]);
+  const imageResults = await getImageResults(page, manifestAssets);
+  for (const asset of manifestAssets) {
+    const [width, height] = asset.sizes.split("x").map(Number);
+    expect(imageResults.find(({ path }) => path === asset.src)).toMatchObject({
+      contentType: expect.stringContaining(asset.type),
+      height,
+      path: asset.src,
+      status: 200,
+      width,
+    });
+  }
   expectCleanDiagnostics(diagnostics);
 });
 
@@ -198,7 +255,7 @@ test("keeps online routing real and never stores failed or partial responses", a
   page,
 }) => {
   const diagnostics = collectRuntimeDiagnostics(page);
-  await page.goto("/manifest.webmanifest", { waitUntil: "domcontentloaded" });
+  await page.goto(MANIFEST_PATH, { waitUntil: "domcontentloaded" });
   await registerAndControl(page);
 
   for (const path of PRIMARY_DOCUMENT_PATHS) {
@@ -213,7 +270,7 @@ test("keeps online routing real and never stores failed or partial responses", a
   expect(unknownResponse?.status()).toBe(404);
   await expect(page.getByRole("heading", { level: 1 })).toContainText("404");
 
-  const failedAssetPath = "/assets/icons/not-a-real-icon.svg";
+  const failedAssetPath = "/assets/pwa/shortcuts/not-a-real-icon.png";
   const failedAssetStatus = await page.evaluate(async (path) => {
     const response = await fetch(path);
     return response.status;
@@ -292,7 +349,7 @@ test("serves exact primary documents offline and uses offline.html for unknown n
   context,
 }) => {
   const diagnostics = collectRuntimeDiagnostics(page);
-  await page.goto("/manifest.webmanifest", { waitUntil: "domcontentloaded" });
+  await page.goto(MANIFEST_PATH, { waitUntil: "domcontentloaded" });
   await registerAndControl(page);
   await context.setOffline(true);
 
@@ -323,7 +380,7 @@ test("meets the critical request budget without duplicate or source asset reques
   page,
 }) => {
   const diagnostics = collectRuntimeDiagnostics(page);
-  await page.goto("/manifest.webmanifest", { waitUntil: "domcontentloaded" });
+  await page.goto(MANIFEST_PATH, { waitUntil: "domcontentloaded" });
   await registerAndControl(page);
   await page.reload({ waitUntil: "networkidle" });
   await page.evaluate(() => document.fonts.ready.then(() => true));

@@ -2,6 +2,7 @@ import { INDEXABLE_PAGES, SITE } from "./site-config.mjs";
 
 export const CACHE_PREFIX = "clean-english-v";
 export const OFFLINE_PATH = "/offline.html";
+export const MANIFEST_PATH = SITE.manifest.path;
 
 export const PRIMARY_DOCUMENT_PATHS = Object.freeze(
   INDEXABLE_PAGES.map(({ file }) => `/${file}`),
@@ -39,8 +40,19 @@ export const FONT_ASSETS = Object.freeze(
 export const FONT_PATHS = Object.freeze(FONT_ASSETS.map(({ path }) => path));
 
 export const MANIFEST_ICON_PATHS = Object.freeze([
-  "/assets/icons/icon-192.svg",
-  "/assets/icons/icon-512.svg",
+  "/assets/favicon/web-app-manifest-192x192.png",
+  "/assets/favicon/web-app-manifest-512x512.png",
+]);
+
+export const SHORTCUT_ICON_PATHS = Object.freeze([
+  "/assets/pwa/shortcuts/packages-192.png",
+  "/assets/pwa/shortcuts/materials-192.png",
+  "/assets/pwa/shortcuts/progress-192.png",
+]);
+
+export const MANIFEST_SCREENSHOT_PATHS = Object.freeze([
+  "/assets/pwa/screenshots/home-desktop-1280x720.png",
+  "/assets/pwa/screenshots/home-mobile-720x1280.png",
 ]);
 
 export const HERO_IMAGE_PATH = "/assets/img/hero/hero-01.jpg";
@@ -57,9 +69,10 @@ export const PRECACHE_PATHS = Object.freeze([
   "/assets/build/main.min.js",
   ...FONT_PATHS,
   ...MANIFEST_ICON_PATHS,
+  ...SHORTCUT_ICON_PATHS,
   BRAND_LOGO_PATH,
   ...OFFLINE_PAGE_IMAGE_PATHS,
-  "/manifest.webmanifest",
+  MANIFEST_PATH,
 ]);
 
 export const CRITICAL_ASSET_BUDGET = Object.freeze({

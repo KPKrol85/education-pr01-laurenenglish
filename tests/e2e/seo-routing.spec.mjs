@@ -11,10 +11,11 @@ import {
   expectCleanDiagnostics,
 } from "./helpers/runtime.mjs";
 
+const EXPECTED_SOCIAL_IMAGE_PATH = "/assets/og/og.png";
 const EXPECTED_ASSETS = Object.freeze([
   "/assets/build/style.min.css",
   "/assets/build/main.min.js",
-  SITE.socialImage.path,
+  EXPECTED_SOCIAL_IMAGE_PATH,
 ]);
 
 const expectSingleMeta = async (page, selector, expected) => {
@@ -27,6 +28,8 @@ test.describe("SEO metadata and static routing", () => {
   test("known routes and required assets return 200 while unknown routes return the project 404", async ({
     request,
   }) => {
+    expect(SITE.socialImage.path).toBe(EXPECTED_SOCIAL_IMAGE_PATH);
+
     for (const publicPage of INDEXABLE_PAGES) {
       const response = await request.get(publicPage.path, { maxRedirects: 0 });
       expect(response.status(), publicPage.path).toBe(200);
@@ -42,8 +45,12 @@ test.describe("SEO metadata and static routing", () => {
     for (const asset of EXPECTED_ASSETS) {
       const response = await request.get(asset, { maxRedirects: 0 });
       expect(response.status(), asset).toBe(200);
-      if (asset === SITE.socialImage.path) {
+      if (asset === EXPECTED_SOCIAL_IMAGE_PATH) {
         expect(response.headers()["content-type"]).toContain("image/png");
+        const image = await response.body();
+        expect(image.subarray(0, 8).toString("hex")).toBe("89504e470d0a1a0a");
+        expect(image.readUInt32BE(16)).toBe(1200);
+        expect(image.readUInt32BE(20)).toBe(630);
       }
     }
 
@@ -65,7 +72,8 @@ test.describe("SEO metadata and static routing", () => {
 
     for (const publicPage of INDEXABLE_PAGES) {
       const canonical = absoluteUrl(publicPage.path);
-      const imageUrl = absoluteUrl(SITE.socialImage.path);
+      const imageUrl = absoluteUrl(EXPECTED_SOCIAL_IMAGE_PATH);
+      expect(imageUrl).toMatch(/^https:\/\//u);
       const response = await page.goto(publicPage.path, {
         waitUntil: "domcontentloaded",
       });
@@ -92,6 +100,11 @@ test.describe("SEO metadata and static routing", () => {
         publicPage.description,
       );
       await expectSingleMeta(page, 'meta[property="og:image"]', imageUrl);
+      await expectSingleMeta(
+        page,
+        'meta[property="og:image:secure_url"]',
+        imageUrl,
+      );
       await expectSingleMeta(
         page,
         'meta[property="og:image:type"]',
@@ -125,7 +138,7 @@ test.describe("SEO metadata and static routing", () => {
       expect(structuredData.description).toBe(publicPage.description);
       expect(structuredData.inLanguage).toBe(SITE.language);
 
-      const imageResponse = await request.get(SITE.socialImage.path);
+      const imageResponse = await request.get(EXPECTED_SOCIAL_IMAGE_PATH);
       expect(imageResponse.status()).toBe(200);
       expect(imageResponse.headers()["content-type"]).toContain("image/png");
     }

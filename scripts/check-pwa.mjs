@@ -17,11 +17,14 @@ import {
   FONT_PATHS,
   HERO_IMAGE_PATH,
   MANIFEST_ICON_PATHS,
+  MANIFEST_PATH,
+  MANIFEST_SCREENSHOT_PATHS,
   OFFLINE_PATH,
   PRECACHE_PATHS,
   PRIMARY_DOCUMENT_PATHS,
+  SHORTCUT_ICON_PATHS,
 } from "./pwa-config.mjs";
-import { ALL_PAGES, INDEXABLE_PAGES } from "./site-config.mjs";
+import { ALL_PAGES, INDEXABLE_PAGES, SITE } from "./site-config.mjs";
 
 const assert = (condition, message) => {
   if (!condition) throw new Error(message);
@@ -74,6 +77,60 @@ const getJpegDimensions = (buffer) => {
   }
 
   throw new Error(`Could not read JPEG dimensions for ${HERO_IMAGE_PATH}`);
+};
+
+const getPngDimensions = (buffer, path) => {
+  const pngSignature = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
+  assert(
+    buffer.length >= 24 && buffer.subarray(0, 8).equals(pngSignature),
+    `${path} is not a PNG file`,
+  );
+  assert(
+    buffer.subarray(12, 16).toString("ascii") === "IHDR",
+    `${path} does not begin with a PNG IHDR chunk`,
+  );
+  return {
+    width: buffer.readUInt32BE(16),
+    height: buffer.readUInt32BE(20),
+  };
+};
+
+const getDeclaredDimensions = (asset, label) => {
+  const sizeMatch = asset.sizes?.match(/^(\d+)x(\d+)$/);
+  assert(sizeMatch, `${label} has an invalid sizes value: ${asset.src}`);
+  return { width: Number(sizeMatch[1]), height: Number(sizeMatch[2]) };
+};
+
+const verifyPngAsset = async (asset, label) => {
+  assert(
+    typeof asset.src === "string" &&
+      asset.src.startsWith("/") &&
+      !asset.src.includes("?") &&
+      !asset.src.includes("#"),
+    `${label} path must be root-relative and normalized: ${asset.src}`,
+  );
+  assert(
+    asset.type === "image/png" && extname(asset.src) === ".png",
+    `${label} type does not match its PNG file: ${asset.src}`,
+  );
+  const declared = getDeclaredDimensions(asset, label);
+  const buffer = await readFile(publicFile(asset.src));
+  const actual = getPngDimensions(buffer, asset.src);
+  assert(
+    actual.width === declared.width && actual.height === declared.height,
+    `${label} dimensions do not match ${asset.src}`,
+  );
+  return actual;
+};
+
+const assertUniquePaths = (paths, label) => {
+  const duplicates = paths.filter(
+    (path, index) => paths.indexOf(path) !== index,
+  );
+  assert(
+    duplicates.length === 0,
+    `${label} contains duplicate paths: ${[...new Set(duplicates)].join(", ")}`,
+  );
 };
 
 const getCssFiles = async (directory) => {
@@ -172,12 +229,11 @@ const verifyServiceWorker = async () => {
 };
 
 const verifyManifestAndIcons = async () => {
-  const manifest = JSON.parse(
-    await readText(resolve(ROOT, "manifest.webmanifest")),
-  );
+  const manifest = JSON.parse(await readText(publicFile(MANIFEST_PATH)));
   const requiredFields = [
     "name",
     "short_name",
+    "description",
     "id",
     "start_url",
     "scope",
@@ -186,10 +242,21 @@ const verifyManifestAndIcons = async () => {
     "background_color",
     "lang",
     "icons",
+    "shortcuts",
+    "screenshots",
   ];
   for (const field of requiredFields) {
     assert(manifest[field], `Manifest field is missing: ${field}`);
   }
+  assert(manifest.name === SITE.name, "Manifest name must match the site name");
+  assert(
+    manifest.short_name === "Clean English",
+    "Manifest short_name must match the visible short brand name",
+  );
+  assert(
+    typeof manifest.description === "string" && manifest.description.length > 0,
+    "Manifest description must be useful and non-empty",
+  );
   assert(manifest.id === "/", "Manifest id must identify the root application");
   assert(
     manifest.start_url === PRIMARY_DOCUMENT_PATHS[0],
@@ -202,9 +269,9 @@ const verifyManifestAndIcons = async () => {
   );
   assert(manifest.lang === "pl", "Manifest language must be Polish");
   assert(
-    /^#[0-9a-f]{6}$/i.test(manifest.theme_color) &&
-      /^#[0-9a-f]{6}$/i.test(manifest.background_color),
-    "Manifest theme colors must be six-digit hex values",
+    manifest.theme_color === "#1b7f6c" &&
+      manifest.background_color === "#f6f7f9",
+    "Manifest colors must match the light-theme brand and page background",
   );
 
   const declaredSizes = new Set();
@@ -214,35 +281,117 @@ const verifyManifestAndIcons = async () => {
       `Unexpected manifest icon path: ${icon.src}`,
     );
     assert(
-      icon.type === "image/svg+xml" && extname(icon.src) === ".svg",
-      `Manifest icon type does not match its file: ${icon.src}`,
-    );
-    assert(
       !icon.purpose?.split(/\s+/).includes("maskable"),
       `Maskable purpose requires a separately verified safe-zone icon: ${icon.src}`,
     );
-
-    const sizeMatch = icon.sizes?.match(/^(\d+)x(\d+)$/);
-    assert(sizeMatch, `Manifest icon has an invalid sizes value: ${icon.src}`);
-    const declaredWidth = Number(sizeMatch[1]);
-    const declaredHeight = Number(sizeMatch[2]);
-    const svg = await readText(publicFile(icon.src));
-    const actualWidth = Number(svg.match(/<svg\b[^>]*\bwidth="(\d+)"/)?.[1]);
-    const actualHeight = Number(svg.match(/<svg\b[^>]*\bheight="(\d+)"/)?.[1]);
-    assert(
-      actualWidth === declaredWidth && actualHeight === declaredHeight,
-      `Manifest icon dimensions do not match ${icon.src}`,
-    );
-    assert(
-      svg.includes(`viewBox="0 0 ${declaredWidth} ${declaredHeight}"`),
-      `Manifest icon viewBox does not match ${icon.src}`,
-    );
-    declaredSizes.add(`${declaredWidth}x${declaredHeight}`);
+    const dimensions = await verifyPngAsset(icon, "Manifest icon");
+    declaredSizes.add(`${dimensions.width}x${dimensions.height}`);
   }
   assert(
     declaredSizes.has("192x192") && declaredSizes.has("512x512"),
     "Manifest requires verified 192x192 and 512x512 icons",
   );
+
+  assert(
+    manifest.shortcuts.length === 3,
+    "Manifest must contain exactly three shortcuts",
+  );
+  const expectedShortcuts = [
+    { key: "packages", name: "Pakiety nauki", shortName: "Pakiety" },
+    {
+      key: "materials",
+      name: "Materiały do nauki",
+      shortName: "Materiały",
+    },
+    {
+      key: "progress",
+      name: "Dziennik postępów",
+      shortName: "Postępy",
+    },
+  ].map((expected) => ({
+    ...expected,
+    url: INDEXABLE_PAGES.find(({ key }) => key === expected.key)?.runtimePath,
+  }));
+  const shortcutIconPaths = [];
+  const shortcutUrls = [];
+  for (const shortcut of manifest.shortcuts) {
+    const expected = expectedShortcuts.find(({ url }) => url === shortcut.url);
+    assert(expected, `Unexpected manifest shortcut URL: ${shortcut.url}`);
+    assert(
+      shortcut.name === expected.name &&
+        shortcut.short_name === expected.shortName,
+      `Shortcut labels do not match ${shortcut.url}`,
+    );
+    assert(
+      typeof shortcut.description === "string" &&
+        shortcut.description.length > 0 &&
+        shortcut.description.length <= 80,
+      `Shortcut description must be concise and useful: ${shortcut.url}`,
+    );
+    assert(
+      shortcut.icons?.length === 1,
+      `Shortcut must declare one dedicated icon: ${shortcut.url}`,
+    );
+    const [icon] = shortcut.icons;
+    const dimensions = await verifyPngAsset(icon, "Shortcut icon");
+    assert(
+      dimensions.width === dimensions.height && dimensions.width >= 192,
+      `Shortcut icon must be square and at least 192px: ${icon.src}`,
+    );
+    await stat(publicFile(shortcut.url));
+    shortcutIconPaths.push(icon.src);
+    shortcutUrls.push(shortcut.url);
+  }
+  assertUniquePaths(shortcutUrls, "Manifest shortcuts");
+  assert(
+    shortcutIconPaths.sort().join(",") ===
+      [...SHORTCUT_ICON_PATHS].sort().join(","),
+    "Manifest shortcut icons must match the PWA asset contract",
+  );
+
+  assert(
+    manifest.screenshots.length === 2,
+    "Manifest must contain one wide and one narrow screenshot",
+  );
+  const screenshotPaths = [];
+  const formFactors = new Set();
+  for (const screenshot of manifest.screenshots) {
+    const dimensions = await verifyPngAsset(screenshot, "Manifest screenshot");
+    assert(
+      typeof screenshot.label === "string" && screenshot.label.length > 0,
+      `Manifest screenshot needs a concise label: ${screenshot.src}`,
+    );
+    assert(
+      ["wide", "narrow"].includes(screenshot.form_factor),
+      `Unexpected screenshot form_factor: ${screenshot.form_factor}`,
+    );
+    assert(
+      screenshot.form_factor === "wide"
+        ? dimensions.width > dimensions.height
+        : dimensions.height > dimensions.width,
+      `Screenshot orientation does not match ${screenshot.form_factor}: ${screenshot.src}`,
+    );
+    screenshotPaths.push(screenshot.src);
+    formFactors.add(screenshot.form_factor);
+  }
+  assert(
+    formFactors.size === 2 &&
+      formFactors.has("wide") &&
+      formFactors.has("narrow"),
+    "Manifest screenshots require wide and narrow form factors",
+  );
+  assert(
+    screenshotPaths.sort().join(",") ===
+      [...MANIFEST_SCREENSHOT_PATHS].sort().join(","),
+    "Manifest screenshots must match the PWA asset contract",
+  );
+
+  const manifestAssetPaths = [
+    ...manifest.icons.map(({ src }) => src),
+    ...shortcutIconPaths,
+    ...screenshotPaths,
+  ];
+  assertUniquePaths(manifestAssetPaths, "Manifest assets");
 
   return manifest;
 };
@@ -421,6 +570,13 @@ const verifyProductionAssetContract = async () => {
   );
   assert(criticalHeadingFont, "A configured Literata heading font is required");
   for (const { page, html } of pageSources) {
+    const manifestLinks =
+      html.match(/<link\b(?=[^>]*\brel="manifest")[^>]*>/gi) ?? [];
+    assert(
+      manifestLinks.length === 1 &&
+        getAttribute(manifestLinks[0], "href") === MANIFEST_PATH,
+      `${page.file} must link exactly once to ${MANIFEST_PATH}`,
+    );
     assert(
       countOccurrences(html, 'href="/assets/build/style.min.css"') === 1,
       `${page.file} must request one production CSS bundle`,
@@ -495,12 +651,22 @@ const run = async () => {
     "Precache must contain the shared brand logo",
   );
   assert(
+    PRECACHE_PATHS.includes(MANIFEST_PATH) &&
+      MANIFEST_ICON_PATHS.every((path) => PRECACHE_PATHS.includes(path)) &&
+      SHORTCUT_ICON_PATHS.every((path) => PRECACHE_PATHS.includes(path)),
+    "Precache must contain the manifest and all install and shortcut icons",
+  );
+  assert(
+    MANIFEST_SCREENSHOT_PATHS.every((path) => !PRECACHE_PATHS.includes(path)),
+    "Install screenshots must remain outside the offline runtime precache",
+  );
+  assert(
     INDEXABLE_PAGES.length === PRIMARY_DOCUMENT_PATHS.length,
     "PWA primary-document policy must match the site route registry",
   );
 
   console.log(
-    `Verified PWA cache ${build.cacheName}, ${PRECACHE_PATHS.length} precache entries, ${manifest.icons.length} manifest icons, hero ${criticalAssets.heroBytes} bytes, and ${FONT_PATHS.length} fonts totaling ${criticalAssets.fontBytes} bytes.`,
+    `Verified PWA cache ${build.cacheName}, ${PRECACHE_PATHS.length} precache entries, ${manifest.icons.length} install icons, ${manifest.shortcuts.length} shortcuts, ${manifest.screenshots.length} screenshots, hero ${criticalAssets.heroBytes} bytes, and ${FONT_PATHS.length} fonts totaling ${criticalAssets.fontBytes} bytes.`,
   );
 };
 

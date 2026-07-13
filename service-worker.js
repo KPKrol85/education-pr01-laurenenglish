@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "clean-english-v";
-const CACHE_REVISION = "1.0.0-3adcec7f3151";
+const CACHE_REVISION = "1.0.0-f3eec03b648f";
 const CACHE_NAME = `${CACHE_PREFIX}${CACHE_REVISION}`;
 const OFFLINE_PATH = "/offline.html";
 const PRECACHE_PATHS = [
@@ -14,12 +14,16 @@ const PRECACHE_PATHS = [
   "/assets/fonts/inter-400.woff2",
   "/assets/fonts/inter-600.woff2",
   "/assets/fonts/inter-700.woff2",
-  "/assets/icons/icon-192.svg",
-  "/assets/icons/icon-512.svg",
+  "/assets/fonts/literata-700.woff2",
+  "/assets/favicon/web-app-manifest-192x192.png",
+  "/assets/favicon/web-app-manifest-512x512.png",
+  "/assets/pwa/shortcuts/packages-192.png",
+  "/assets/pwa/shortcuts/materials-192.png",
+  "/assets/pwa/shortcuts/progress-192.png",
   "/assets/img/logo/logo.svg",
   "/assets/img/hero/hero-01.jpg",
   "/assets/img/about/lauren.jpg",
-  "/manifest.webmanifest",
+  "/site.webmanifest",
 ];
 const PRIMARY_DOCUMENT_PATHS = [
   "/index.html",

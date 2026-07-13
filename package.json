@@ -28,6 +28,7 @@
     "build:js": "node -e \"require('fs').mkdirSync('assets/build',{recursive:true})\" && esbuild js/main.js --bundle --minify --outfile=assets/build/main.min.js",
     "watch:js": "node -e \"require('fs').mkdirSync('assets/build',{recursive:true})\" && esbuild js/main.js --bundle --sourcemap=inline --watch --outfile=assets/build/main.min.js",
     "build:sw": "node scripts/build-service-worker.mjs",
+    "build:pwa-screenshots": "node scripts/capture-pwa-screenshots.mjs",
     "build": "npm run build:html && npm run build:js && npm run build:css && npm run build:sw",
     "images": "imagemin assets/img/* --out-dir=assets/img --plugin=webp --plugin=avif",
     "lint:js": "eslint js --ext .js",

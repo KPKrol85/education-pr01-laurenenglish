@@ -5,8 +5,11 @@ import {
   collectRuntimeDiagnostics,
   expectCleanDiagnostics,
   expectElementsContained,
+  expectFocusDoesNotMoveViewport,
   expectNoDocumentOverflow,
 } from "./helpers/runtime.mjs";
+
+const DESKTOP_NAV_MIN_WIDTH = 1280;
 
 const VIEWPORTS = Object.freeze([
   { width: 320, height: 844 },
@@ -34,26 +37,35 @@ test.describe("responsive production contracts", () => {
         });
         expect(response?.ok()).toBe(true);
         await expectNoDocumentOverflow(page);
+        await expectElementsContained(
+          page.locator(".button:visible, .card:visible"),
+        );
+        await expectFocusDoesNotMoveViewport(page);
       }
 
       await page.goto("/index.html", { waitUntil: "networkidle" });
-      const usesMobileNavigation = viewport.width < 780;
+      const usesMobileNavigation = viewport.width < DESKTOP_NAV_MIN_WIDTH;
       const navToggle = page.getByRole("button", { name: "Otwórz menu" });
       const desktopTheme = page.locator(".header__actions [data-theme-toggle]");
+
+      await expectElementsContained(
+        page.locator(
+          ".header__logo, .nav__toggle:visible, .header__actions:visible",
+        ),
+      );
 
       if (usesMobileNavigation) {
         await expect(navToggle).toBeVisible();
         await expect(desktopTheme).toBeHidden();
+        if (viewport.width === 320) {
+          await page.locator("html").evaluate((element) => {
+            element.style.fontSize = "125%";
+          });
+          await expectNoDocumentOverflow(page);
+        }
         await navToggle.click();
         const drawer = page.locator("[data-drawer]");
-        await page.waitForFunction(() => {
-          const element = document.querySelector("[data-drawer]");
-          const transform = getComputedStyle(element).transform;
-          return (
-            element.classList.contains("is-open") &&
-            (transform === "none" || transform === "matrix(1, 0, 0, 1, 0, 0)")
-          );
-        });
+        await expect(drawer).toBeVisible();
         const box = await drawer.boundingBox();
         expect(box).not.toBeNull();
         expect(box.x).toBeGreaterThanOrEqual(-0.5);
@@ -65,6 +77,35 @@ test.describe("responsive production contracts", () => {
       } else {
         await expect(navToggle).toBeHidden();
         await expect(desktopTheme).toBeVisible();
+        const navigationMetrics = await page
+          .locator(".header__inner")
+          .evaluate((header) => {
+            const links = [...header.querySelectorAll(".nav__link")];
+            return {
+              fits: header.scrollWidth <= header.clientWidth,
+              links: links.map((link) => {
+                const rect = link.getBoundingClientRect();
+                const style = getComputedStyle(link);
+                return {
+                  height: rect.height,
+                  lineHeight: Number.parseFloat(style.lineHeight),
+                  paddingBlock:
+                    Number.parseFloat(style.paddingTop) +
+                    Number.parseFloat(style.paddingBottom),
+                  whiteSpace: style.whiteSpace,
+                  width: rect.width,
+                };
+              }),
+            };
+          });
+        expect(navigationMetrics.fits).toBe(true);
+        for (const link of navigationMetrics.links) {
+          expect(link.width).toBeGreaterThan(0);
+          expect(link.whiteSpace).toBe("nowrap");
+          expect(link.height).toBeLessThanOrEqual(
+            link.lineHeight + link.paddingBlock + 1,
+          );
+        }
       }
 
       await expectElementsContained(
@@ -73,32 +114,18 @@ test.describe("responsive production contracts", () => {
         ),
       );
 
-      const focusResult = await page.evaluate(async () => {
-        const selectors =
-          'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
-        const candidates = [...document.querySelectorAll(selectors)].filter(
-          (element) =>
-            element instanceof HTMLElement &&
-            element.offsetParent !== null &&
-            !element.closest("[inert]"),
-        );
-        const shifted = [];
-        for (const element of candidates) {
-          element.focus();
-          await new Promise((resolve) => requestAnimationFrame(resolve));
-          if (Math.abs(scrollX) > 0.5) {
-            shifted.push({
-              label:
-                element.getAttribute("aria-label") ||
-                element.textContent?.trim().slice(0, 60) ||
-                element.tagName,
-              scrollX,
-            });
-          }
-        }
-        return shifted;
+      await page.evaluate(() => {
+        document.documentElement.style.fontSize = "";
+        localStorage.setItem("theme", "dark");
       });
-      expect(focusResult).toEqual([]);
+      await page.goto("/pakiety.html", { waitUntil: "networkidle" });
+      await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+      await expectNoDocumentOverflow(page);
+      await expectElementsContained(
+        page.locator(".button:visible, .card:visible"),
+      );
+      await expectFocusDoesNotMoveViewport(page);
+      await page.evaluate(() => localStorage.removeItem("theme"));
       await expectNoDocumentOverflow(page);
       expectCleanDiagnostics(diagnostics);
     });

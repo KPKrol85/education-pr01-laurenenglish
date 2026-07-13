@@ -32,6 +32,12 @@
 - **Krótkie helpery →** `utilities/`.
 - **Nowe tokeny →** `tokens/` (z krótkim uzasadnieniem w opisie zmiany).
 
+## Responsive layout baseline
+
+- Wspólne miary kontenera, szerokiego headera i czytelnej treści są tokenami `--layout-*` oraz `--content-measure*`.
+- Pełna, ośmioelementowa nawigacja desktopowa włącza się od `1280px`; poniżej tej szerokości działa dostępny drawer, aby etykiety i akcje headera nie były ściskane ani zawijane.
+- Siatki używają `minmax(0, 1fr)`, a komponenty o szerokiej treści wewnętrznej muszą ograniczać własny rozmiar zamiast rozszerzać dokument.
+
 ## Notatki praktyczne
 
 - Projekt posiada już klasę `.container` (utilities) – traktuj ją jako aktualny helper layoutu, bez duplikowania `.u-container`.

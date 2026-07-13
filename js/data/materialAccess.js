@@ -49,7 +49,7 @@ export const resolveMaterialAction = (item) => {
       kind: "link",
       label: `${action.label} ${packageRecord.label}`,
       href: packageRecord.href,
-      buttonClass: "button--primary",
+      buttonClass: "button--secondary",
       isValid: typeof action.label === "string" && action.label.trim() !== "",
       reason: "package-route",
       packageKey: packageRecord.key,

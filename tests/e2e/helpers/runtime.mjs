@@ -115,17 +115,68 @@ export const expectNoDocumentOverflow = async (page) => {
       document.documentElement.scrollWidth,
       document.body.scrollWidth,
     );
+    const overflowElements = [...document.querySelectorAll("body *")]
+      .map((element) => {
+        const rect = element.getBoundingClientRect();
+        return {
+          className:
+            typeof element.className === "string" ? element.className : "",
+          left: Math.round(rect.left * 10) / 10,
+          right: Math.round(rect.right * 10) / 10,
+          tagName: element.tagName,
+        };
+      })
+      .filter(
+        ({ left, right }) =>
+          left < -0.5 || right > document.documentElement.clientWidth + 0.5,
+      )
+      .slice(0, 12);
     scrollTo({ left: documentWidth, top: startY, behavior: "instant" });
     await new Promise((resolve) => requestAnimationFrame(resolve));
     const reachableX = scrollX;
     scrollTo({ left: startX, top: startY, behavior: "instant" });
     return {
       documentWidth,
+      overflowElements,
       reachableX,
       viewportWidth: document.documentElement.clientWidth,
     };
   });
+  expect(metrics.documentWidth, JSON.stringify(metrics)).toBeLessThanOrEqual(
+    metrics.viewportWidth,
+  );
   expect(metrics.reachableX, JSON.stringify(metrics)).toBeLessThanOrEqual(0.5);
+};
+
+export const expectFocusDoesNotMoveViewport = async (page) => {
+  const shifted = await page.evaluate(async () => {
+    const selectors =
+      'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+    const candidates = [...document.querySelectorAll(selectors)].filter(
+      (element) =>
+        element instanceof HTMLElement &&
+        element.offsetParent !== null &&
+        !element.closest("[inert]"),
+    );
+    const results = [];
+    for (const element of candidates) {
+      scrollTo({ left: 0, top: scrollY, behavior: "instant" });
+      element.focus({ preventScroll: false });
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+      if (Math.abs(scrollX) > 0.5) {
+        results.push({
+          label:
+            element.getAttribute("aria-label") ||
+            element.textContent?.trim().slice(0, 60) ||
+            element.tagName,
+          scrollX,
+        });
+      }
+    }
+    scrollTo({ left: 0, top: 0, behavior: "instant" });
+    return results;
+  });
+  expect(shifted).toEqual([]);
 };
 
 export const expectElementsContained = async (locator) => {

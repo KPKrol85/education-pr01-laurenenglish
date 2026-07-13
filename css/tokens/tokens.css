@@ -50,6 +50,12 @@
   --space-3xl: 64px;
   --space-4xl: 96px;
 
+  /* Layout */
+  --layout-container-max: 70rem;
+  --layout-header-max: 80rem;
+  --content-measure: 42rem;
+  --content-measure-narrow: 36rem;
+
   /* Font sizes */
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;

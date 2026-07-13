@@ -87,7 +87,7 @@ ${renderBenefits(packageRecord.benefits)}
 export const renderHomePackageCards = () =>
   wrapRegion(
     CONTENT_MARKERS.homePackages,
-    packageList.map(renderHomePackageCard).join("\n"),
+    renderHomePackageCard(packages.regular),
   );
 
 export const renderHomePackagesLink = () =>

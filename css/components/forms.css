@@ -1,9 +1,15 @@
 .form {
   background: var(--color-surface);
   border: var(--size-1px) solid var(--color-border);
-  padding: var(--space-xl);
+  padding: var(--space-lg);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
+}
+
+@media (min-width: 480px) {
+  .form {
+    padding: var(--space-xl);
+  }
 }
 
 .form__field {

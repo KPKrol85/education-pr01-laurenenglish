@@ -111,7 +111,7 @@ The intended source-only UI is more complete than the current runtime suggests. 
    - **Verification or acceptance criteria:** Light and dark theme screenshots show readable hero, card, navigation, form, badge, and focus states; applicable text and control states meet WCAG AA contrast; raw colors outside the token layer are documented exceptions; no ID selectors or unnecessary `!important` are introduced; layer order and low specificity remain intact.
    - **Likely source files or areas:** `css/tokens/tokens.css`, `css/base/*`, `css/utilities/utilities.css`, `css/components/*`, `css/sections/hero.css`, `css/sections/resources.css`, `css/pages/pages.css`, `css/style.css`
 
-8. [ ] **Stabilize responsive layout and refine the educational UI hierarchy**
+8. [x] **Stabilize responsive layout and refine the educational UI hierarchy**
 
    - **Priority:** Medium
    - **Affected area:** Mobile layout, header/navigation density, typography, spacing, cards, CTA hierarchy, visual cohesion

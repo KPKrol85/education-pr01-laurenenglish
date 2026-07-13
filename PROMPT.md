@@ -1,6 +1,10 @@
+## PROMPT - CODEX
+
+You are a senior frontend performance and PWA developer working on the Lauren English project.
+
 # PROJECT CONTEXT
 
-You are a senior frontend and technical SEO developer working in the currently opened `education-pr01-laurenenglish` repository.
+You are working in the currently opened `education-pr01-laurenenglish` repository.
 
 Read and follow the current repository state and authoritative documentation before editing, especially:
 
@@ -9,640 +13,646 @@ Read and follow the current repository state and authoritative documentation bef
 * `INITIAL-AUDIT.md`
 * `package.json`
 * `playwright.config.mjs`
-* `.gitignore`
+* `manifest.webmanifest`
+* `service-worker.template.js`
+* generated `service-worker.js`
+* `offline.html`
+* `scripts/site-config.mjs`
+* current build and asset-generation scripts
 * `docs/runtime-checklist.md`
-* existing HTML assembly, build, verification, and deployment files
-* the current project-local Playwright tests
+* existing project-local Playwright tests
 
 Treat the current repository state as the source of truth.
 
-Roadmap points 1–8 are complete. The permanent project-local Playwright workflow is available and must be used for browser and HTTP verification.
+Roadmap points 1–9 are complete. Point 9 established intentional static routing, real HTTP 404 behavior, centralized public-site configuration, deterministic SEO checks, and successful-response-only navigation caching.
 
-Implement only roadmap point 9:
+Implement only roadmap point 10:
 
-> **Correct routing, metadata, and structured-data foundations**
+> **Harden PWA lifecycle, offline behavior, and performance-critical assets**
 
-Do not implement roadmap point 10.
+Do not reimplement completed routing or SEO work. Preserve the real online `404` behavior introduced in point 9.
 
 The original audit reported:
 
-* the five primary pages had canonical links and descriptions
-* `404.html`, `offline.html`, and `thank-you.html` reused the homepage canonical
-* utility and error pages had no deliberate indexing policy
-* `_redirects` rewrote every unknown route to `index.html` with status `200`
-* the dedicated 404 page was therefore ineffective and unknown routes could become soft 404s
-* every sitemap entry used the same outdated `2024-06-01` date
-* homepage JSON-LD contained unverified business data
-* Open Graph and social-preview metadata had not been runtime-validated
+* precache entries referencing missing production assets
+* unsafe activation cleanup deleting every origin cache except the current cache
+* unsuitable responses being stored without adequate validation
+* a service-worker version differing from `package.json`
+* a lazy-loaded above-the-fold hero image
+* four shipped font weights without confirmed justification
+* unverified manifest icons and installability prerequisites
 
-Some evidence may already have changed during roadmap points 1–8. Verify the current implementation before editing and do not modify behavior that is already correct.
+Some findings may already have been corrected during points 1–9. Reproduce and confirm the current behavior before changing it.
 
-Preserve unrelated user-authored changes, including `PROMPT.md`.
+A permanent project-local Playwright workflow exists. Use it for browser verification.
+
+Do not create temporary test harnesses under `C:\tmp`.
+
+Preserve unrelated user-authored working-tree changes, including `PROMPT.md`.
 
 # TASK OBJECTIVE
 
-Create an intentional and internally consistent routing, indexing, metadata, social-preview, sitemap, robots, and structured-data foundation for the static Lauren English website.
+Create a safe, deterministic, and maintainable PWA lifecycle for Lauren English.
 
-The completed implementation must ensure that:
+The completed implementation must:
 
-* every known public route returns the intended successful response
-* every unknown route returns an actual HTTP `404`
-* missing routes are not rewritten to the homepage
-* indexable pages have unique, verified metadata
-* canonical and Open Graph URLs are synchronized
-* utility and error pages have a deliberate `noindex` policy
-* utility and error pages do not reuse the homepage canonical
-* only indexable public routes appear in the sitemap
-* sitemap modification dates are trustworthy or omitted
-* `robots.txt` points to the real deployed sitemap
-* structured data contains only supported and verified information
-* social-preview metadata uses a crawler-compatible image
-* metadata remains deterministic and maintainable through the existing build pipeline
+* install the service worker successfully from a valid precache manifest
+* create only intentional Lauren English caches
+* preserve caches belonging to unrelated applications on the same origin
+* cache only suitable successful responses
+* preserve real online `404` behavior
+* provide an intentional offline navigation fallback
+* update cached assets predictably when production output changes
+* keep generated service-worker metadata synchronized with the build
+* verify manifest and icon prerequisites
+* prioritize the above-the-fold LCP image
+* load only justified font assets and weights
+* preserve accessibility, routing, SEO, themes, and progressive enhancement
+* provide permanent static and Playwright verification for PWA behavior
 
-This is a technical SEO and routing task. Do not redesign the website or rewrite unrelated content.
+This is a focused lifecycle, offline, and performance-critical asset task. Do not redesign the application.
 
 # IMPLEMENTATION PLAN
 
-## 1. Inspect the current routing and metadata model
+1. Inspect the current PWA and asset architecture before editing.
 
-Inspect the complete working tree and current source-of-truth architecture before editing.
+   Review at minimum:
 
-At minimum, review:
+   * `service-worker.template.js`
+   * generated `service-worker.js`
+   * the script that generates the service worker
+   * `package.json`
+   * `manifest.webmanifest`
+   * `offline.html`
+   * the five primary HTML pages
+   * shared HTML generation sources
+   * hero image markup and source asset
+   * all `@font-face` declarations
+   * `assets/fonts/`
+   * `assets/icons/`
+   * production CSS and JavaScript output paths
+   * existing Playwright runtime helpers and test suites
 
-* all five primary page sources
-* `404.html`
-* `offline.html`
-* `thank-you.html`
-* `_redirects`
-* `robots.txt`
-* `sitemap.xml`
-* `assets/og/og-default.svg`
-* `scripts/shared-shell.mjs`
-* `scripts/build-html.mjs`
-* `scripts/content-renderers.mjs`
-* `service-worker.template.js`
-* current generated HTML
-* current Playwright smoke and runtime helpers
-* any existing metadata, route, deployment, or SEO configuration
+2. Record the current state before implementation:
 
-Record the current:
+   * current cache names and prefixes
+   * current cache version source
+   * current precache entries
+   * missing or stale precache entries
+   * install, activate, fetch, and message lifecycle behavior
+   * navigation fallback behavior
+   * static asset runtime strategy
+   * response eligibility checks
+   * manifest fields and icon declarations
+   * registered font files and weights
+   * actual font weights used by rendered UI
+   * hero image loading attributes
+   * current critical asset request pattern
 
-* canonical site origin
-* public route set
-* redirect rules
-* indexing policy
-* canonical links
-* Open Graph tags
-* Twitter card tags
-* JSON-LD blocks
-* sitemap entries
-* sitemap dates
-* robots directives
-* service-worker navigation behavior
+3. Verify which original audit findings remain reproducible.
 
-Do not assume the original audit evidence is still reproducible.
+   Do not modify behavior that is already correct.
 
-## 2. Resolve the authoritative public origin
+4. Establish one explicit Lauren English cache namespace.
 
-Determine the authoritative deployed HTTPS origin from current repository evidence such as:
+   Use a stable project-specific prefix, such as the existing project cache prefix if one is already established.
 
-* existing canonical URLs
-* README deployment documentation
-* current Open Graph URLs
-* sitemap
-* robots
-* deployment configuration
+   All caches created by this service worker must use that prefix.
 
-Use one verified origin consistently.
+5. Correct activation cleanup.
 
-Do not invent a new production domain.
+   During activation:
 
-If the repository contains conflicting origins, reconcile them using the most authoritative current deployment documentation.
+   * delete only obsolete caches whose names belong to the Lauren English prefix
+   * preserve the currently active Lauren English caches
+   * preserve unrelated cache names on the same origin
+   * do not call broad cache deletion against every non-current cache
+   * keep cleanup deterministic and testable
 
-If no authoritative public origin can be established, do not guess. Report the blocker and leave roadmap point 9 unchecked.
+6. Repair and validate the precache contract.
 
-## 3. Define the intentional public route set
+   Build the precache list from the real generated runtime contract.
 
-Define the current static route policy for:
+   Ensure every precached path:
 
-### Indexable primary pages
+   * exists after a production build
+   * is served successfully
+   * uses the correct public path
+   * is intentionally required for shell or offline behavior
+   * does not duplicate another normalized entry
+   * does not reference obsolete source or output locations
 
-* homepage
-* services page
-* packages page
-* materials page
-* progress page
+   Include only justified assets, such as:
 
-Use the actual current filenames and canonical URL style from the repository.
+   * primary document routes where required by the selected offline strategy
+   * `offline.html`
+   * production CSS
+   * production JavaScript
+   * required local fonts
+   * required manifest icons
+   * essential above-the-fold assets where appropriate
 
-Do not switch between `.html`, extensionless URLs, or trailing-slash URLs without a deliberate migration reason.
+   Do not precache unrelated catalogue images or every available asset without a demonstrated offline requirement.
 
-### Non-indexable utility pages
+7. Add a deterministic build-time precache validation step.
 
-* `404.html`
-* `offline.html`
-* `thank-you.html`
+   The production build must fail clearly when:
 
-These pages must remain accessible where required but must not be treated as normal search-result pages.
+   * a configured precache file is missing
+   * a duplicate normalized entry exists
+   * a source-only development asset is referenced
+   * an obsolete production path is referenced
 
-Prefer one small canonical route and metadata registry integrated with the existing HTML build architecture if it prevents duplicated route literals across:
+   Do not depend on runtime `cache.addAll()` failure as the first validation mechanism.
 
-* page metadata
-* sitemap generation
-* robots generation
-* structured-data URLs
-* route verification
+8. Implement deterministic cache revisioning.
 
-Do not introduce a parallel site generator or broad architecture rewrite.
+   Do not manually maintain a version literal independently in:
 
-## 4. Correct static routing and 404 behavior
+   * `package.json`
+   * the service-worker template
+   * generated `service-worker.js`
 
-Inspect `_redirects` and remove the catch-all homepage rewrite that returns `index.html` with status `200`.
+   Generate the final cache revision through the existing build pipeline.
 
-Preserve legitimate explicit redirects that are still required.
+   Use a deterministic value based on the current package version and/or a stable fingerprint of the generated precache contract.
 
-Configure unknown routes to return the dedicated 404 document with HTTP status `404`.
+   Requirements:
 
-For a Netlify-style static deployment, use the platform’s correct custom-404 behavior without creating an SPA fallback.
+   * identical production inputs produce the same revision
+   * changed precached output produces a new revision
+   * current date or build time is not used as the revision source
+   * the generated service worker contains the generated revision
+   * documentation explains the update mechanism
 
-Ensure:
+9. Define the service-worker install and activation behavior clearly.
 
-* known content routes return `200`
-* static assets return their correct status
-* direct utility-page URLs remain accessible
-* an unknown URL returns `404`
-* the unknown response displays the intended 404 content where the deployment model supports it
-* redirect loops do not exist
-* unknown routes are never normalized to the homepage with status `200`
+   Verify and implement as appropriate:
 
-Do not introduce a JavaScript router.
+   * successful precache population before install completion
+   * controlled use of `skipWaiting`
+   * controlled use of `clients.claim`
+   * cleanup after activation
+   * predictable behavior when a new worker is waiting
+   * no partially populated active cache
 
-Do not add Netlify CLI or another deployment dependency solely for this task.
+   Preserve an existing correct strategy when it already meets the requirements.
 
-## 5. Review service-worker navigation behavior
+   Do not introduce a complex update-notification interface unless one already exists.
 
-Inspect `service-worker.template.js` and the generated service worker.
+10. Harden response-cache eligibility.
 
-Ensure the service worker does not convert unknown online navigations into homepage responses.
+    Cache only responses that are appropriate for the selected strategy.
 
-Preserve the intended offline experience:
+    At minimum, reject:
 
-* online unknown routes retain real `404` behavior
-* offline navigations may use `offline.html`
-* error responses are not incorrectly cached as valid content
-* the homepage is not used as a generic missing-route fallback
-* PWA behavior from previous roadmap points remains intact
+    * failed responses
+    * `4xx` and `5xx` responses
+    * partial `206` responses
+    * non-GET requests
+    * unsupported URL schemes
+    * unintended cross-origin requests
+    * opaque responses unless an explicit existing requirement justifies them
+    * utility error documents stored as successful page content
 
-Use fresh browser contexts and disabled or isolated service workers when testing online HTTP routing.
+    Keep eligibility logic focused and reusable rather than duplicating conditions across handlers.
 
-## 6. Create deliberate metadata policies
+11. Define navigation behavior.
 
-Define explicit metadata behavior for each page category.
+    Preserve point-9 routing semantics:
 
-### Indexable primary pages
+    * successful online primary navigation returns the real page
+    * an online unknown route remains a real HTTP `404`
+    * the service worker must not replace online unknown routes with the homepage
+    * the service worker must not convert a `404` into a cached `200`
+    * failed network navigation while offline uses the documented offline fallback
+    * cached successful navigation may be used only according to the selected documented strategy
+    * `offline.html` is never presented as a normal indexable online route
 
-Each primary page must have:
+12. Define static asset runtime behavior.
 
-* one unique `<title>`
-* one useful and page-specific meta description
-* one absolute self-referencing canonical URL
-* one matching absolute `og:url`
-* page-appropriate `og:title`
-* page-appropriate `og:description`
-* appropriate `og:type`
-* consistent `og:site_name`
-* correct locale metadata where currently supported
-* a valid social-preview image
-* matching Twitter card metadata where used
+    Use an appropriate focused strategy for same-origin production assets.
 
-Canonical and `og:url` values must match exactly after URL normalization.
+    Ensure:
 
-Do not create duplicate canonical, description, Open Graph, or Twitter tags.
+    * successful intended assets may be reused offline
+    * failed asset responses are not cached
+    * requests with query strings do not create uncontrolled duplicate entries
+    * old runtime entries do not grow without bounds
+    * source CSS and JavaScript files are not requested by production pages
+    * generated CSS and JavaScript remain the runtime contract
 
-Use existing visible page content as the source for titles and descriptions. Do not invent unsupported marketing claims.
+    Do not add a service-worker library or Workbox dependency.
 
-### Utility and error pages
+13. Verify offline behavior for all primary pages.
 
-For `404.html`, `offline.html`, and `thank-you.html`:
+    Test the documented policy for:
 
-* add a deliberate `noindex, nofollow` policy
-* remove the reused homepage canonical
-* do not point canonical metadata at an unrelated indexable page
-* avoid conflicting canonical and `noindex` signals
-* remove or minimize unnecessary Open Graph and Twitter metadata
-* keep titles descriptive and utility-specific
-* exclude the pages from the sitemap
+    * homepage
+    * services
+    * packages
+    * materials
+    * progress
 
-Do not use `robots.txt` disallow rules as a replacement for page-level `noindex`.
+    Confirm both:
 
-## 7. Correct the social-preview image foundation
+    * normal online navigation
+    * behavior after the network becomes unavailable
 
-Inspect `assets/og/og-default.svg` and current social metadata.
+    If the selected strategy intentionally returns `offline.html` rather than each exact page, assert that behavior explicitly.
 
-Major social crawlers should receive a crawler-compatible raster image.
+14. Verify failed responses are not cached.
 
-If the current Open Graph image is SVG-only:
+    Include deterministic tests proving that:
 
-* retain the SVG as the editable source if appropriate
-* create a deterministic raster derivative such as `assets/og/og-default.png`
-* preserve the existing approved design rather than redesigning it
-* use a suitable social-preview size, preferably `1200 × 630`
-* avoid adding a permanent image-processing dependency unless one already exists
-* commit the final raster asset required by social metadata
+    * an unknown online route returns `404`
+    * the unknown response is not inserted into a successful navigation cache
+    * a failed asset request is not cached
+    * a later valid response is not shadowed by a previously cached failure
 
-For the final Open Graph and Twitter image metadata, provide where appropriate:
+15. Verify cache cleanup scope.
 
-* absolute image URL
-* secure HTTPS URL
-* MIME type
-* width
-* height
-* descriptive image alt text
+    Add a test that creates:
 
-Verify that the referenced asset exists and returns a successful response.
+    * an old Lauren English cache
+    * the current Lauren English cache
+    * an unrelated sentinel cache
 
-Do not claim that SVG social-preview support is sufficient unless it is demonstrably supported by the required metadata targets.
+    After activation or equivalent lifecycle verification:
 
-## 8. Remove unsupported structured data
+    * the old Lauren English cache is removed
+    * the current cache remains
+    * the unrelated sentinel cache remains
 
-Inspect every JSON-LD block.
+16. Inspect and correct the web app manifest.
 
-Remove unsupported or unverified fields such as any unverified:
+    Validate at minimum:
 
-* business identity
-* organization identity
-* postal address
-* telephone number
-* opening hours
-* price range
-* rating or review aggregate
-* social profile
-* founder or employee identity
-* commercial offer
-* service guarantee
+    * valid JSON
+    * `name`
+    * `short_name`
+    * `id`
+    * `start_url`
+    * `scope`
+    * `display`
+    * `theme_color`
+    * `background_color`
+    * `lang`
+    * icon paths
+    * icon MIME types
+    * declared icon dimensions
+    * icon files actually exist
+    * icon files match declared dimensions
+    * at least the required installability icon sizes are available
+    * maskable purpose is declared only for an icon with appropriate safe padding
 
-Do not retain `LocalBusiness`, `Organization`, `Person`, `Offer`, `Product`, `AggregateRating`, `Review`, or similar entities unless the required information is explicitly verified by authoritative project content.
+    Keep manifest URLs consistent with the current static deployment and authoritative origin model.
 
-Prefer a minimal supported model, such as:
+    Do not add unsupported screenshots, shortcuts, categories, or promotional metadata merely to make the manifest larger.
 
-* `WebSite` on the homepage
-* `WebPage` on indexable pages
-* `inLanguage`
-* verified page name and description
-* absolute page URL
-* consistent site identity
+17. Verify installability prerequisites locally.
 
-Do not add `SearchAction` because the site has no verified site-search feature.
+    Through the existing localhost Playwright server, verify:
 
-Do not add breadcrumb structured data unless visible breadcrumbs and a real breadcrumb hierarchy exist.
+    * the manifest link loads
+    * the manifest parses
+    * declared icons load successfully
+    * the page is served in a secure localhost context
+    * service-worker registration succeeds
+    * `navigator.serviceWorker.ready` resolves
+    * the worker controls the page after the required reload
+    * the worker reaches the expected active state
+    * the current project cache is created
 
-Ensure:
+    Do not claim that a browser install prompt or external deployment installability was verified unless it was genuinely tested.
 
-* JSON-LD is valid JSON
-* all URLs are absolute and use the authoritative origin
-* `@id` values are stable and non-conflicting
-* visible content and structured data agree
-* utility pages do not expose inappropriate business or page entities
-* there is no duplicated or contradictory structured data
+18. Correct the hero/LCP asset behavior.
 
-## 9. Regenerate the sitemap from the real route set
+    Inspect the actual above-the-fold hero image.
 
-Make `sitemap.xml` represent only the current indexable public route set.
+    Ensure:
 
-Requirements:
+    * it is not marked `loading="lazy"`
+    * it uses `loading="eager"` or the appropriate default
+    * it has an appropriate `fetchpriority`
+    * explicit width and height are present
+    * intrinsic aspect ratio is preserved
+    * decoding behavior is intentional
+    * the image does not cause layout shift
+    * the asset is not downloaded more than once
+    * mobile and desktop layouts do not request unnecessary duplicate variants
 
-* include each indexable primary URL exactly once
-* exclude `404.html`
-* exclude `offline.html`
-* exclude `thank-you.html`
-* use the authoritative HTTPS origin
-* avoid duplicate URL variants
-* use valid XML
-* preserve a deterministic route order
+    Preserve the existing approved image and design.
 
-Correct the placeholder `2024-06-01` modification dates.
+    Do not redesign the hero.
 
-For `<lastmod>`:
+19. Audit font delivery.
 
-* include it only when the date represents a real content modification
-* do not use build time
-* do not use filesystem modification time
-* do not use the current date merely because the build ran
-* do not preserve known placeholder dates
-* omit `<lastmod>` when a trustworthy content date is unavailable
+    Inspect all local Inter files, `@font-face` declarations, `font-weight` usage, and browser requests.
 
-If route metadata is centralized, generate the sitemap from that source through the existing build workflow.
+    For every shipped weight:
 
-Do not manually maintain a second independent route list when avoidable.
+    * confirm that the production UI actually uses it
+    * confirm that the corresponding font file is referenced correctly
+    * remove it from runtime delivery only when it is genuinely unused
+    * preserve it when removal would cause synthetic or incorrect typography
 
-## 10. Correct robots.txt
+    Ensure:
 
-Ensure `robots.txt`:
+    * `font-display` has an appropriate non-blocking value
+    * only production font formats are requested
+    * no missing font request occurs
+    * no duplicate weight declaration exists
+    * preload is used only for truly critical font files
+    * not every font file is preloaded
+    * theme changes do not request additional font variants
 
-* uses valid directives
-* does not accidentally block indexable content or required assets
-* does not use disallow rules as a substitute for `noindex`
-* contains one absolute `Sitemap:` directive
-* points to the deployed sitemap under the authoritative HTTPS origin
-* does not reference a stale domain or path
+    Do not change the font family during this task.
 
-Generate it from the same verified site origin where practical.
+20. Establish a focused critical-asset budget.
 
-## 11. Add deterministic SEO validation
+    Document and validate a practical request budget based on the corrected production homepage.
 
-Add or extend a focused project-local static check, for example `scripts/check-seo.mjs`, if no equivalent check exists.
+    At minimum, track:
 
-The check should validate at minimum:
+    * number of production CSS files requested
+    * number of production JavaScript files requested
+    * number of initial font files requested
+    * number of above-the-fold hero image requests
+    * absence of source CSS and JavaScript requests
+    * absence of duplicate critical asset requests
+    * total sizes of the hero image and font files where deterministically available
 
-* unique primary-page titles
-* unique primary-page descriptions
-* exactly one canonical on each indexable page
-* canonical URLs are absolute
-* `og:url` matches canonical
-* required Open Graph metadata exists
-* required Twitter metadata exists where the project uses Twitter cards
-* social-preview assets exist
-* utility pages contain `noindex`
-* utility pages do not reuse the homepage canonical
-* utility pages are absent from the sitemap
-* sitemap URLs exactly match the indexable route registry
-* sitemap dates are valid when present
-* robots sitemap URL matches the authoritative origin
-* JSON-LD parses successfully
-* disallowed or unsupported structured-data types and fields are absent
-* `_redirects` contains no homepage catch-all rewrite with status `200`
-* the intended 404 rule is present
+    Base limits on the real corrected implementation.
 
-Keep the check deterministic and dependency-light.
+    Do not invent a broad Lighthouse score requirement.
 
-Do not duplicate complete HTML, content, or CSS checks already covered by existing scripts.
+    Do not add Lighthouse, WebPageTest, or another large dependency.
 
-Add a focused npm script such as:
+21. Add or extend a deterministic static PWA check.
 
-* `check:seo`
+    Add a focused project-local script such as `scripts/check-pwa.mjs` if no equivalent exists.
 
-Integrate it into the appropriate verification workflow only if that matches the current package-script architecture.
+    Validate at minimum:
 
-## 12. Add focused Playwright SEO and routing coverage
+    * service-worker template placeholders are resolved in generated output
+    * generated cache revision matches the current build contract
+    * all precache entries exist
+    * precache entries are unique
+    * cache prefix is project-specific
+    * cleanup code is prefix-scoped
+    * unsupported failed responses cannot pass the cache-eligibility condition
+    * manifest JSON is valid
+    * required manifest fields exist
+    * declared icons exist and match their declared dimensions
+    * hero image is not lazy-loaded
+    * hero image has explicit dimensions
+    * font files referenced by CSS exist
+    * no obsolete source build paths remain
+    * generated service worker does not contain an independently maintained stale version
 
-Extend the permanent project-local Playwright suite with a focused specification such as:
+    Add an npm script such as:
 
-* `tests/e2e/seo-routing.spec.mjs`
+    * `check:pwa`
 
-Add an npm command such as:
+    Integrate it into the current verification workflow where appropriate.
 
-* `test:e2e:seo`
+22. Add focused permanent Playwright PWA tests.
 
-Use the existing Playwright configuration, server lifecycle, diagnostics, storage isolation, and service-worker policy.
+    Add a project-local specification such as:
 
-Verify through browser and request-level assertions:
+    * `tests/e2e/pwa.spec.mjs`
 
-### HTTP routing
+    Add an npm command such as:
 
-* all five primary routes return `200`
-* required static assets return `200`
-* direct utility routes remain accessible
-* one or more unknown routes return `404`
-* unknown routes do not return homepage content as successful pages
-* no redirect loop occurs
+    * `test:e2e:pwa`
 
-### Runtime metadata
+    Reuse the current Playwright server, diagnostics, and project helpers.
 
-For every indexable page:
+    The focused suite should verify:
 
-* title is present
-* description is present
-* canonical is present and unique
-* canonical is self-consistent
-* `og:url` equals canonical
-* Open Graph image URL is absolute
-* Open Graph image request succeeds
-* JSON-LD parses without runtime errors
+    * service-worker registration
+    * active worker state
+    * controlled page after reload
+    * expected Lauren English cache creation
+    * successful online primary routes
+    * documented offline navigation behavior
+    * real online unknown-route `404`
+    * failed responses are not cached
+    * old project-cache cleanup
+    * preservation of unrelated cache
+    * manifest response and required fields
+    * icon response status and dimensions
+    * hero image loading attributes
+    * actual font requests
+    * absence of duplicate critical asset requests
+    * absence of source CSS or JavaScript requests
 
-For utility pages:
+    Use deterministic browser state and semantic assertions.
 
-* robots policy contains `noindex`
-* homepage canonical is not reused
-* no conflicting indexable metadata remains
+    Service-worker tests must use isolated contexts and clean up caches and registrations they create.
 
-### Sitemap and robots
+    Do not weaken the normal E2E service-worker isolation used by unrelated suites.
 
-* `sitemap.xml` returns successfully
-* `robots.txt` returns successfully
-* sitemap URLs match the expected route set
-* robots references the deployed sitemap
+23. Preserve the established production and SEO behavior.
 
-Use semantic and deterministic assertions.
+    Re-run point-9 routing assertions and confirm:
 
-Do not create a temporary harness under `C:\tmp`.
+    * primary routes return `200`
+    * unknown routes return `404`
+    * the service worker does not mask online `404` responses
+    * sitemap, robots, canonical, and utility-page behavior remain unchanged
 
-Do not add pixel-perfect screenshot tests.
+24. Update documentation.
 
-## 13. Validate social and structured metadata honestly
+    Update `docs/runtime-checklist.md` and any directly relevant README section with:
 
-Perform deterministic local validation of:
+    * production build command
+    * generated service-worker contract
+    * cache prefix and revision strategy
+    * install and update lifecycle
+    * offline navigation policy
+    * cache cleanup scope
+    * response eligibility policy
+    * manifest and icon verification
+    * hero/LCP policy
+    * justified font weights
+    * critical asset budget
+    * `check:pwa`
+    * `test:e2e:pwa`
+    * manual post-deployment verification steps
 
-* meta-tag consistency
-* absolute URLs
-* image reachability
-* image dimensions and MIME type
-* JSON-LD syntax
-* allowed structured-data types
-* sitemap and robots consistency
+    Keep documentation aligned with the implementation.
 
-Use official external structured-data or social-preview validators only when they are genuinely accessible.
+25. Build and verify.
 
-Do not claim Google, Schema.org, Facebook, LinkedIn, X, or another external validator passed unless it was actually executed.
+    Run the real current project scripts, including at minimum:
 
-An unavailable external service must not cause repeated test-harness rebuilding.
+    * `npm run build`
+    * `npm run check:data`
+    * `npm run check:content`
+    * `npm run check:html`
+    * `npm run check:css`
+    * `npm run check:seo`
+    * `npm run check:pwa`
+    * `npm run test:e2e:pwa`
+    * `npm run test:e2e:seo`
+    * `npm run test:e2e`
+    * relevant `node --check` commands
+    * relevant Prettier checks
+    * `git diff --check`
 
-## 14. Update documentation
+    Verify the final build is deterministic and HTML generation remains idempotent.
 
-Update README or focused project documentation with the final policy for:
+    Perform one complete PWA verification pass after implementation.
 
-* authoritative site origin
-* indexable route set
-* non-indexable utility pages
-* canonical URL conventions
-* social-preview asset
-* sitemap generation
-* robots generation
-* structured-data scope
-* local SEO verification commands
-* E2E routing and metadata command
-* real 404 behavior
+    Allow at most one targeted rerun after a confirmed product defect is corrected.
 
-Keep documentation aligned with the actual implementation.
+    Do not repeatedly rebuild or rewrite the test harness.
 
-Do not add speculative deployment instructions.
+    If the permanent Playwright infrastructure fails twice for the same environmental reason, stop and report the blocker.
 
-## 15. Build and verify
+26. Update the roadmap only after full acceptance.
 
-After canonical source changes:
+    When all required static, browser, offline, and lifecycle checks pass:
 
-1. regenerate shared HTML through the existing build workflow
-2. regenerate production CSS, JavaScript, and service-worker output
-3. regenerate sitemap and robots if they are build-managed
-4. verify generated HTML idempotence
-5. run all existing static checks
-6. run the new focused SEO check
-7. run the focused SEO and routing Playwright suite
-8. run the complete Playwright suite
-
-Run at minimum, using the real current package scripts:
-
-* `npm run build`
-* `npm run check:data`
-* `npm run check:content`
-* `npm run check:html`
-* `npm run check:css`
-* `npm run check:seo`
-* `npm run test:e2e:seo`
-* `npm run test:e2e`
-* relevant `node --check` commands
-* relevant Prettier checks
-* `git diff --check`
-
-Verify the build does not create stale or non-idempotent HTML changes.
-
-Perform one complete verification pass after implementation.
-
-Allow at most one targeted rerun after a confirmed product defect is corrected.
-
-If the project-local testing infrastructure fails twice for the same environment reason, stop and report the blocker instead of building a replacement harness.
-
-## 16. Update the roadmap
-
-Only after all acceptance criteria pass:
-
-* mark roadmap point 9 as `[x]`
-* leave roadmap point 10 unchecked
-* do not modify unrelated roadmap items
-
-If the public origin cannot be verified, route status cannot be confirmed, or required browser verification remains blocked, leave point 9 unchecked.
+    * mark roadmap point 10 as `[x]`
+    * do not modify completion states for points 1–9
+    * do not mark completion if service-worker or offline verification remains blocked
 
 # CONSTRAINTS
 
-* Do not implement roadmap point 10.
-* Do not redesign the site.
+* Do not redesign the application.
 * Do not change the font family.
-* Do not rewrite unrelated page content.
+* Do not introduce a serif heading font.
 * Do not introduce Vite.
-* Do not replace the existing production build pipeline.
-* Do not introduce a JavaScript router.
-* Do not restore an SPA fallback.
-* Do not rewrite unknown paths to the homepage.
-* Do not invent a deployment domain.
-* Do not invent business details.
-* Do not invent addresses, telephone numbers, opening hours, reviews, ratings, prices, social profiles, or organization identities.
-* Do not retain unsupported structured data for appearance alone.
-* Do not add new SEO or schema dependencies unless strictly necessary.
-* Do not add Netlify CLI solely for this task.
-* Do not add an external sitemap generator.
-* Do not add temporary browser scripts outside the repository.
+* Do not replace the current production build pipeline.
+* Do not implement the separate localhost port `8181` source-preview workflow.
+* Do not add Workbox or another service-worker framework.
+* Do not add Lighthouse or another broad performance dependency.
+* Do not add browsers other than the currently configured Chromium workflow.
+* Do not add a complex PWA update-notification interface.
+* Do not add push notifications, background sync, periodic sync, or application data caching.
+* Do not cache form submissions.
+* Do not cache non-GET requests.
+* Do not cache failed or partial responses.
+* Do not cache arbitrary cross-origin resources.
+* Do not delete unrelated origin caches.
+* Do not use a broad cache cleanup rule.
+* Do not use the homepage as an offline fallback.
+* Do not mask online `404` responses.
+* Do not create a second service-worker source of truth.
+* Do not maintain independent manual cache versions.
+* Do not use current time as a cache revision.
+* Do not precache every asset without justification.
+* Do not remove font weights without confirming actual usage.
+* Do not preload every font file.
+* Do not redesign or replace the hero image.
+* Do not add pixel-perfect visual baselines.
+* Do not create temporary test scripts outside the repository.
 * Do not use machine-specific absolute paths.
-* Do not manually edit generated HTML or minified assets.
+* Do not manually edit generated HTML, minified assets, or generated `service-worker.js`.
 * Edit canonical source files and regenerate outputs.
-* Do not add utility pages to the sitemap.
-* Do not use `robots.txt` disallow as a substitute for `noindex`.
-* Do not create fake `<lastmod>` dates.
-* Do not use build time as a content modification date.
-* Do not create multiple competing route registries.
-* Do not add pixel-perfect screenshot baselines.
-* Do not weaken service-worker offline behavior.
-* Do not modify unrelated dependency versions.
+* Preserve the point-9 routing, metadata, sitemap, robots, and structured-data foundation.
+* Preserve accessibility, responsive behavior, themes, progressive enhancement, and reduced motion.
 * Preserve unrelated working-tree changes.
-* Keep the diff focused and reviewable.
+* Keep the final diff focused and review-friendly.
 
 # TECHNICAL RULES
 
-* Follow the existing source-of-truth and generation architecture.
-* Prefer one verified site-origin constant.
-* Prefer one maintainable public-route and metadata registry.
-* Reuse the existing HTML assembler rather than creating a second page-generation system.
-* Use absolute HTTPS URLs for canonical, Open Graph, sitemap, and structured-data URLs.
-* Normalize URL style consistently.
-* Ensure each indexable page has one canonical URL.
-* Ensure `og:url` matches canonical.
-* Keep titles and descriptions unique and grounded in visible content.
-* Keep utility pages deliberately non-indexable.
-* Use a raster social-preview image compatible with common crawlers.
-* Keep JSON-LD minimal, valid, verified, and consistent with visible content.
-* Keep sitemap entries limited to canonical indexable routes.
-* Omit unreliable sitemap dates.
-* Preserve real HTTP status semantics.
-* Preserve progressive enhancement, accessibility, themes, PWA behavior, and reduced motion.
-* Use the existing project-local Playwright infrastructure.
-* Use API request assertions for HTTP status verification.
-* Use observable browser metadata assertions.
+* Use the existing service-worker template as the canonical source.
+* Generate the final service worker through the current build pipeline.
+* Use a stable project-specific cache prefix.
+* Generate a deterministic cache revision.
+* Validate the precache list before runtime.
+* Cache only successful, complete, intended same-origin GET responses.
+* Keep online routing semantics separate from offline fallback behavior.
+* Preserve real HTTP status meaning.
+* Keep runtime cache growth bounded and intentional.
+* Keep manifest paths consistent with deployment scope.
+* Verify icon files against declared dimensions and types.
+* Prioritize only genuine above-the-fold assets.
+* Keep below-the-fold images lazy-loaded where appropriate.
+* Preserve explicit media dimensions.
+* Deliver only justified local font files and weights.
+* Use non-blocking font rendering.
+* Use the permanent project-local Playwright infrastructure.
+* Clean service-worker registrations, caches, and browser state between focused lifecycle tests.
+* Do not leak PWA state into unrelated test suites.
 * Avoid arbitrary timeout-based waits.
-* Report only checks genuinely performed.
+* Use observable lifecycle and cache state.
+* Report only verification genuinely performed.
 
 Acceptance criteria:
 
-* all five primary public routes return `200`
-* unknown routes return actual `404`
-* unknown routes are not rewritten to homepage content with `200`
-* `_redirects` contains no catch-all homepage rewrite
-* the dedicated 404 behavior is intentional
-* online unknown navigation is not masked by the service worker
-* primary pages have unique titles and descriptions
-* each indexable page has exactly one self-consistent canonical
-* each indexable page has matching `og:url`
-* utility pages have deliberate `noindex, nofollow`
-* utility pages do not reuse the homepage canonical
-* utility pages are absent from the sitemap
-* sitemap contains exactly the real indexable route set
-* sitemap contains no placeholder modification dates
-* `<lastmod>` values are trustworthy or omitted
-* robots points to the correct deployed sitemap
-* social-preview metadata references a reachable crawler-compatible image
-* Open Graph image metadata includes accurate dimensions and type
-* JSON-LD parses correctly
-* unsupported and unverified business fields are absent
-* structured data agrees with visible content
-* static SEO checks pass
-* focused SEO and routing Playwright tests pass
+* production build creates a valid generated service worker
+* no unresolved service-worker template placeholder remains
+* every precache entry exists and is unique
+* service-worker installation completes successfully
+* one current Lauren English project cache is created according to the documented strategy
+* obsolete Lauren English caches are removed
+* unrelated origin caches remain untouched
+* changed precached assets produce a deterministic new cache revision
+* failed, partial, non-GET, and unintended responses are not cached
+* successful online primary routes remain available
+* online unknown routes continue to return real `404`
+* online `404` responses are not cached as valid navigation documents
+* offline navigation uses the documented fallback
+* the homepage is not used as a generic offline or missing-route fallback
+* manifest JSON and required fields are valid
+* declared icons exist and match declared type and dimensions
+* service-worker registration and activation succeed on localhost
+* the worker controls the page after the expected lifecycle step
+* hero/LCP image is not deferred
+* hero image has explicit dimensions and is requested once
+* only justified font weights are delivered
+* no missing or duplicate font request occurs
+* no production page requests source CSS or JavaScript
+* critical asset request behavior matches the documented budget
+* `check:pwa` passes
+* focused PWA Playwright tests pass
+* point-9 SEO and routing tests continue to pass
 * the complete Playwright suite passes
-* existing data, content, HTML, and CSS checks pass
-* only roadmap point 9 is marked `[x]`
-* roadmap point 10 remains unchecked
+* existing data, content, HTML, CSS, and SEO checks pass
+* build output remains deterministic
+* only roadmap point 10 is marked `[x]`
 
 # OUTPUT EXPECTATION
 
 Return a concise final report containing:
 
 * documentation and source files inspected
-* authoritative public origin confirmed
-* original audit evidence reproduced
-* original evidence that was no longer reproducible
-* final indexable route set
-* final non-indexable utility route set
-* `_redirects` changes
-* known-route HTTP results
-* unknown-route HTTP result
-* service-worker navigation findings
-* metadata changes by page category
-* canonical and Open Graph synchronization
-* social-preview asset changes
-* structured-data types retained
-* unsupported structured-data fields removed
-* sitemap entries and last-modification policy
-* robots changes
-* route or metadata registry added or updated
-* static SEO checks added
-* Playwright SEO and routing tests added
+* original audit findings reproduced
+* original findings that were already resolved
+* final cache prefix and revision strategy
+* precache entries and validation approach
+* install and activation lifecycle decisions
+* cache cleanup behavior
+* unrelated-cache preservation result
+* response cache-eligibility rules
+* online navigation strategy
+* offline navigation strategy
+* unknown-route behavior
+* service-worker update behavior
+* manifest fields and icon verification
+* hero/LCP changes
+* font-weight audit and final delivered weights
+* critical asset budget and measured request results
+* static PWA checks added
+* Playwright PWA tests added
 * npm scripts added or updated
 * documentation changes
+* files changed
 * generated files rebuilt
-* static checks executed
-* focused browser checks executed
+* production build result
+* static check results
+* focused PWA test result
+* SEO routing regression result
 * complete E2E result
 * console, page-error, request, and HTTP diagnostics
-* confirmation that no external temporary harness was created
+* confirmation that no temporary external harness was created
 * confirmation that unrelated working-tree changes were preserved
-* confirmation that only roadmap point 9 was marked `[x]`
-* confirmation that point 10 remains unchecked
+* confirmation that only roadmap point 10 was marked `[x]`
 * any blocker that prevented full acceptance
 
 Do not include unrelated recommendations.

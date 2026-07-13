@@ -133,7 +133,7 @@ The intended source-only UI is more complete than the current runtime suggests. 
    - **Verification or acceptance criteria:** Known routes return 200 and unknown routes return 404; canonical URLs are self-consistent where appropriate; utility pages have deliberate index/noindex behavior; sitemap entries and dates reflect real content; robots points to the deployed sitemap; structured-data and social-preview validators report no unsupported or conflicting fields.
    - **Likely source files or areas:** All HTML `<head>` sections, `_redirects`, `404.html`, `offline.html`, `thank-you.html`, `sitemap.xml`, `robots.txt`, `assets/og/og-default.svg`, verified business/content source
 
-10. [ ] **Harden PWA lifecycle, offline behavior, and performance-critical assets**
+10. [x] **Harden PWA lifecycle, offline behavior, and performance-critical assets**
 
    - **Priority:** High
    - **Affected area:** Service worker, cache safety, offline navigation, manifest/installability, images, fonts, performance verification

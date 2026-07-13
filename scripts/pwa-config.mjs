@@ -1,0 +1,50 @@
+import { INDEXABLE_PAGES } from "./site-config.mjs";
+
+export const CACHE_PREFIX = "clean-english-v";
+export const OFFLINE_PATH = "/offline.html";
+
+export const PRIMARY_DOCUMENT_PATHS = Object.freeze(
+  INDEXABLE_PAGES.map(({ file }) => `/${file}`),
+);
+
+export const FONT_PATHS = Object.freeze([
+  "/assets/fonts/inter-400.woff2",
+  "/assets/fonts/inter-600.woff2",
+  "/assets/fonts/inter-700.woff2",
+]);
+
+export const MANIFEST_ICON_PATHS = Object.freeze([
+  "/assets/icons/icon-192.svg",
+  "/assets/icons/icon-512.svg",
+]);
+
+export const HERO_IMAGE_PATH = "/assets/img/hero/hero-01.jpg";
+export const OFFLINE_PAGE_IMAGE_PATHS = Object.freeze([
+  HERO_IMAGE_PATH,
+  "/assets/img/about/lauren.jpg",
+]);
+
+export const PRECACHE_PATHS = Object.freeze([
+  ...PRIMARY_DOCUMENT_PATHS,
+  OFFLINE_PATH,
+  "/assets/build/style.min.css",
+  "/assets/build/main.min.js",
+  ...FONT_PATHS,
+  ...MANIFEST_ICON_PATHS,
+  ...OFFLINE_PAGE_IMAGE_PATHS,
+  "/manifest.webmanifest",
+]);
+
+export const CRITICAL_ASSET_BUDGET = Object.freeze({
+  productionCssRequests: 1,
+  productionJavaScriptRequests: 1,
+  initialFontRequests: FONT_PATHS.length,
+  heroImageRequests: 1,
+  maximumHeroImageBytes: 1_100_000,
+  maximumInitialFontBytes: 75_000,
+});
+
+export const normalizePublicPath = (path) => {
+  const url = new URL(path, "https://pwa.local");
+  return url.pathname === "/" ? "/index.html" : url.pathname;
+};

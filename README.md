@@ -40,13 +40,14 @@ service-worker.js                        # wygenerowany Service Worker
 - `npm run check:content` – sprawdza publiczne strony pod kątem niezweryfikowanych danych, atrap prawnych, opinii i aktywnego formularza danych osobowych.
 - `npm run check:css` – sprawdza kolejność warstw, semantyczne tokeny obu motywów, surowe kolory, selektory, duplikaty utilities i kontrast WCAG.
 - `npm run check:seo` – sprawdza trasy, metadane, JSON-LD, raster Open Graph, sitemapę, robots i politykę 404/noindex.
+- `npm run check:pwa` – sprawdza deterministyczny Service Worker, precache, manifest, ikony, hero, fonty i budżet krytycznych zasobów.
 - `npm run test:e2e` – buduje produkcyjne pliki, uruchamia lokalny serwer i pełny zestaw testów Chromium w widokach desktop oraz mobile.
 - `npm run build:html` – składa wspólny header, nawigację i footer w pięciu głównych stronach oraz statyczny katalog materiałów.
 - `npm run check:html` – bez zapisu sprawdza aktualność regionów generowanych, semantykę, ID i lokalne linki.
 - `npm run build` – pełny build produkcyjny: JavaScript, CSS i Service Worker.
 - `npm run build:css` – PostCSS + `postcss-import` + cssnano; generuje `assets/build/style.min.css`.
 - `npm run build:js` – esbuild; bundluje moduły od `js/main.js` do `assets/build/main.min.js`.
-- `npm run build:sw` – generuje `service-worker.js` z `service-worker.template.js` i ustawia wersję cache zgodną z `package.json`.
+- `npm run build:sw` – waliduje precache i generuje `service-worker.js` z wersji pakietu oraz deterministycznego fingerprintu szablonu i zawartości cache.
 - `npm run images` – optymalizacja obrazów (webp/avif).
 - `npm run lint:js` – ESLint.
 - `npm run format` – Prettier.
@@ -86,11 +87,12 @@ Dostępne polecenia skupione:
 - `npm run test:e2e:theme` – light/dark, synchronizacja kontrolek i przywracanie zapisanego motywu.
 - `npm run test:e2e:responsive` – szerokości 320, 390, 768, 1024 i 1440 px, overflow i containment.
 - `npm run test:e2e:seo` – statusy tras i zasobów, prawdziwe 404, metadane runtime, sitemapę i robots.
+- `npm run test:e2e:pwa` – instalacja i aktywacja SW, cache cleanup, manifest, online 404, offline, odpowiedzi niedozwolone i budżet krytycznych requestów.
 - `npm run test:e2e:headed` – pełny zestaw w widocznym Chromium.
 - `npm run test:e2e:ui` – interaktywny tryb Playwright UI.
 - `npm run test:e2e:report` – otwiera ostatni raport HTML.
 
-Konfiguracja używa projektów Chromium `1440 × 900` i `390 × 844`, pojedynczego workera, izolowanych kontekstów oraz zablokowanych Service Workerów. Screenshoty i trace są zapisywane tylko dla nieudanych testów; video jest wyłączone. `playwright-report/`, `test-results/` i `blob-report/` są lokalnymi artefaktami ignorowanymi przez Git.
+Konfiguracja używa projektów Chromium `1440 × 900` i `390 × 844`, pojedynczego workera, izolowanych kontekstów oraz domyślnie zablokowanych Service Workerów. Tylko `pwa.spec.mjs` włącza SW w świeżym kontekście i sprząta rejestracje oraz cache po teście. Screenshoty i trace są zapisywane tylko dla nieudanych testów; video jest wyłączone. `playwright-report/`, `test-results/` i `blob-report/` są lokalnymi artefaktami ignorowanymi przez Git.
 
 Skrypty `check:*` wykonują deterministyczną walidację źródeł i danych bez przeglądarki. Playwright weryfikuje zachowanie wygenerowanych stron w prawdziwym Chromium; oba rodzaje kontroli są wymagane przed przekazaniem zmian.
 
@@ -133,9 +135,22 @@ Każda strona ma dokładnie jeden stan `aria-current="page"`: na stronie główn
 
 ## PWA
 
-- Manifest i ikony w `/assets/icons/`.
-- Service worker z cache app shell i offline fallback (`offline.html`).
-- `robots.txt`, `sitemap.xml`, `_redirects`.
+- `service-worker.template.js` pozostaje jedynym źródłem Service Workera. `scripts/pwa-config.mjs` definiuje kontrakt assetów, a `scripts/build-service-worker.mjs` sprawdza istnienie i unikalność ścieżek przed wygenerowaniem `service-worker.js`.
+- Cache używa stałego prefiksu `clean-english-v` oraz rewizji `<package version>-<12 znaków SHA-256>`. Fingerprint obejmuje szablon, konfigurację i treść każdego precachowanego pliku, więc identyczne wejścia dają identyczną nazwę, a zmiana wejścia tworzy nową.
+- Instalacja kończy się dopiero po pełnym `cache.addAll`; nieudana instalacja usuwa wyłącznie niekompletny bieżący cache. Po udanej instalacji worker wywołuje `skipWaiting`, a aktywacja usuwa wyłącznie starsze cache z prefiksem Lauren English i wykonuje `clients.claim`.
+- Precache obejmuje pięć głównych dokumentów, `offline.html`, produkcyjne CSS/JS, Inter 400/600/700, ikony 192/512, dwa obrazy używane na homepage (hero i portret) oraz manifest. Nie zawiera stron błędów, formularzy, źródłowych `css/`/`js/` ani katalogu materiałów.
+- Nawigacja online jest network-first: prawdziwy `404` pozostaje `404` i nie trafia do cache. Przy awarii sieci główna znana trasa otrzymuje swoją kopię, a inna nawigacja otrzymuje `offline.html`; homepage nie jest fallbackiem ogólnym.
+- Cache przyjmuje tylko pełne odpowiedzi `200` dla zamierzonych, same-origin żądań `GET` HTTP(S). Odpowiedzi przekierowane, opaque, częściowe, nieudane, cross-origin i inne metody nie są zapisywane. Statyczny runtime jest ograniczony do jawnej listy precache, a query string nie tworzy dodatkowych wpisów.
+- Manifest deklaruje `id`, `start_url`, `scope`, `lang`, kolory, tryb standalone i zweryfikowane SVG `192 × 192` oraz `512 × 512`. Nie deklaruje `maskable`, ponieważ nie ma osobnego assetu ze zweryfikowaną strefą bezpieczną.
+- Hero używa jednego JPEG `1600 × 1200`, jawnych wymiarów, `loading="eager"`, `fetchpriority="high"` i `decoding="async"`. Budżet homepage to 1 CSS, 1 JS, 3 początkowe fonty (łącznie maks. 75 kB) oraz 1 request hero (maks. 1,1 MB), bez requestów źródłowych i duplikatów.
+
+Weryfikacja lokalna:
+
+```powershell
+npm run build
+npm run check:pwa
+npm run test:e2e:pwa
+```
 
 ## SEO i routing
 
@@ -162,7 +177,7 @@ npm run test:e2e:seo
 
 ## Uwagi
 
-Typografia używa lokalnych plików Inter z `assets/fonts/`. Kanoniczne deklaracje `@font-face` znajdują się w `css/base/base.css` i korzystają z root-relative URL, dzięki czemu zachowują poprawne ścieżki po wygenerowaniu CSS do `assets/build/`.
+Typografia dostarcza lokalne Inter 400, 600 i 700 z `assets/fonts/`; UI nie używa wagi 500. Kanoniczne deklaracje `@font-face` znajdują się w `css/base/base.css`, używają `font-display: swap` i root-relative URL, dzięki czemu zachowują poprawne ścieżki po wygenerowaniu CSS do `assets/build/`.
 
 ## Materiały (katalog)
 

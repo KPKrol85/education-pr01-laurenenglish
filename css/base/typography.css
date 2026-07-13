@@ -1,1 +1,14 @@
-/* Reserved base-layer extension point; the active type scale lives in tokens and base element rules. */
+/* Reserved base-layer extension point for global semantic heading typography. */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-family-heading);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}

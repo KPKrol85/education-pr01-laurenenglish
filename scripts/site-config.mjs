@@ -8,6 +8,10 @@ export const SITE = Object.freeze({
     width: 512,
     height: 512,
   }),
+  headingFont: Object.freeze({
+    path: "/assets/fonts/literata-700.woff2",
+    type: "font/woff2",
+  }),
   socialImage: Object.freeze({
     path: "/assets/og/og-default.png",
     type: "image/png",
@@ -147,6 +151,7 @@ const renderIndexableHead = (page) => {
     <title>${page.title}</title>
     <meta name="description" content="${page.description}" />
     <link rel="canonical" href="${canonical}" />
+    <link rel="preload" href="${SITE.headingFont.path}" as="font" type="${SITE.headingFont.type}" crossorigin />
     <meta property="og:title" content="${page.title}" />
     <meta property="og:description" content="${page.description}" />
     <meta property="og:type" content="website" />
@@ -173,6 +178,7 @@ ${SEO_MARKERS.end}`;
 const renderUtilityHead = (page) => `${SEO_MARKERS.start}
     <title>${page.title}</title>
     <meta name="robots" content="noindex, nofollow" />
+    <link rel="preload" href="${SITE.headingFont.path}" as="font" type="${SITE.headingFont.type}" crossorigin />
 ${SEO_MARKERS.end}`;
 
 export const renderSeoHead = (page) =>

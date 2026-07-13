@@ -7,11 +7,36 @@ export const PRIMARY_DOCUMENT_PATHS = Object.freeze(
   INDEXABLE_PAGES.map(({ file }) => `/${file}`),
 );
 
-export const FONT_PATHS = Object.freeze([
-  "/assets/fonts/inter-400.woff2",
-  "/assets/fonts/inter-600.woff2",
-  "/assets/fonts/inter-700.woff2",
-]);
+export const FONT_ASSETS = Object.freeze(
+  [
+    {
+      family: "Inter",
+      path: "/assets/fonts/inter-400.woff2",
+      style: "normal",
+      weight: 400,
+    },
+    {
+      family: "Inter",
+      path: "/assets/fonts/inter-600.woff2",
+      style: "normal",
+      weight: 600,
+    },
+    {
+      family: "Inter",
+      path: "/assets/fonts/inter-700.woff2",
+      style: "normal",
+      weight: 700,
+    },
+    {
+      family: "Literata",
+      path: SITE.headingFont.path,
+      style: "normal",
+      weight: 700,
+    },
+  ].map(Object.freeze),
+);
+
+export const FONT_PATHS = Object.freeze(FONT_ASSETS.map(({ path }) => path));
 
 export const MANIFEST_ICON_PATHS = Object.freeze([
   "/assets/icons/icon-192.svg",
@@ -41,10 +66,11 @@ export const CRITICAL_ASSET_BUDGET = Object.freeze({
   productionCssRequests: 1,
   productionJavaScriptRequests: 1,
   initialFontRequests: FONT_PATHS.length,
+  preloadedFontRequests: 1,
   brandLogoRequests: 1,
   heroImageRequests: 1,
   maximumHeroImageBytes: 1_100_000,
-  maximumInitialFontBytes: 75_000,
+  maximumInitialFontBytes: 185_000,
 });
 
 export const normalizePublicPath = (path) => {

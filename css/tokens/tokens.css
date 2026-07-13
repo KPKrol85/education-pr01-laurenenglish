@@ -29,6 +29,10 @@
   --color-focus-guard: #ffffff;
   --color-shadow: rgba(15, 23, 42, 0.08);
 
+  /* Typography */
+  --font-family-heading: "Literata", serif;
+  --font-family-body: "Inter", sans-serif;
+
   /* Radius */
   --radius-sm: 10px;
   --radius-md: 16px;

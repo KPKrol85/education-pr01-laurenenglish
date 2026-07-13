@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 
+import { FONT_PATHS } from "../../scripts/pwa-config.mjs";
 import { SITE } from "../../scripts/site-config.mjs";
 import {
   PRIMARY_PAGES,
@@ -39,11 +40,12 @@ test.describe("generated production pages", () => {
       await expect(page.locator(".header__logo-mark")).toHaveCount(0);
 
       await page.evaluate(() => document.fonts.ready.then(() => true));
-      const fontPaths = await page.evaluate(() =>
+      const fontResources = await page.evaluate(() =>
         performance
           .getEntriesByType("resource")
-          .map((entry) => new URL(entry.name).pathname)
-          .filter((pathname) => pathname.startsWith("/assets/fonts/")),
+          .map((entry) => new URL(entry.name))
+          .filter(({ pathname }) => /\.(?:woff2?|ttf|otf)$/i.test(pathname))
+          .map(({ origin, pathname }) => ({ origin, pathname })),
       );
 
       expect(assetStatuses.get("/assets/build/style.min.css")).toBe(200);
@@ -52,9 +54,16 @@ test.describe("generated production pages", () => {
       expect(assetContentTypes.get(SITE.brandLogo.path)).toContain(
         "image/svg+xml",
       );
-      expect(fontPaths.length).toBeGreaterThan(0);
-      for (const fontPath of fontPaths) {
-        expect(assetStatuses.get(fontPath)).toBe(200);
+      expect(fontResources.map(({ pathname }) => pathname).sort()).toEqual(
+        [...FONT_PATHS].sort(),
+      );
+      expect(new Set(fontResources.map(({ pathname }) => pathname)).size).toBe(
+        FONT_PATHS.length,
+      );
+      for (const { origin, pathname } of fontResources) {
+        expect(origin).toBe("http://127.0.0.1:4173");
+        expect(assetStatuses.get(pathname)).toBe(200);
+        expect(assetContentTypes.get(pathname)).toContain("font/woff2");
       }
       expectCleanDiagnostics(diagnostics);
     });

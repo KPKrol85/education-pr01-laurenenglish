@@ -11,6 +11,7 @@ import {
 } from "./helpers/runtime.mjs";
 
 const DESKTOP_NAV_MIN_WIDTH = 1280;
+const POLISH_SAMPLE = "Zażółć gęślą jaźń — ĄĆĘŁŃÓŚŹŻ ąćęłńóśźż";
 
 const VIEWPORTS = Object.freeze([
   { width: 320, height: 844 },
@@ -119,6 +120,79 @@ const expectSharedLogoContract = async (page) => {
   await expectElementsContained(logoImages);
 };
 
+const expectTypographyContract = async (page) => {
+  const typography = await page.evaluate(async (polishSample) => {
+    await document.fonts.ready;
+    await Promise.all([
+      document.fonts.load('700 2rem "Literata"', polishSample),
+      document.fonts.load('400 1rem "Inter"', polishSample),
+    ]);
+
+    const rootStyle = getComputedStyle(document.documentElement);
+    const getMetrics = (element) => {
+      const rect = element.getBoundingClientRect();
+      const style = getComputedStyle(element);
+      return {
+        family: style.fontFamily,
+        left: rect.left,
+        right: rect.right,
+        scrollWidth: element.scrollWidth,
+        clientWidth: element.clientWidth,
+      };
+    };
+    const uiSelector = [
+      ".nav__link",
+      ".button",
+      ".badge",
+      ".accordion__trigger",
+      "input",
+      "select",
+      "textarea",
+      "label",
+      "table",
+    ].join(",");
+
+    return {
+      bodyFamily: getComputedStyle(document.body).fontFamily,
+      headingFamilyToken: rootStyle
+        .getPropertyValue("--font-family-heading")
+        .trim(),
+      bodyFamilyToken: rootStyle.getPropertyValue("--font-family-body").trim(),
+      headings: [...document.querySelectorAll("h1,h2,h3,h4,h5,h6")].map(
+        getMetrics,
+      ),
+      interLoaded: document.fonts.check('400 1rem "Inter"', polishSample),
+      layoutShift: window.__typographyLayoutShift ?? 0,
+      literataLoaded: document.fonts.check('700 2rem "Literata"', polishSample),
+      ui: [...document.querySelectorAll(uiSelector)].map(getMetrics),
+      viewportWidth: document.documentElement.clientWidth,
+    };
+  }, POLISH_SAMPLE);
+
+  expect(typography.headingFamilyToken.replaceAll(" ", "")).toBe(
+    '"Literata",serif',
+  );
+  expect(typography.bodyFamilyToken.replaceAll(" ", "")).toBe(
+    '"Inter",sans-serif',
+  );
+  expect(typography.bodyFamily).toContain("Inter");
+  expect(typography.literataLoaded).toBe(true);
+  expect(typography.interLoaded).toBe(true);
+  expect(typography.layoutShift).toBeLessThanOrEqual(0.1);
+  expect(typography.headings.length).toBeGreaterThan(0);
+  expect(typography.ui.length).toBeGreaterThan(0);
+
+  for (const heading of typography.headings) {
+    expect(heading.family).toContain("Literata");
+    expect(heading.left).toBeGreaterThanOrEqual(-0.5);
+    expect(heading.right).toBeLessThanOrEqual(typography.viewportWidth + 0.5);
+    expect(heading.scrollWidth).toBeLessThanOrEqual(heading.clientWidth + 1);
+  }
+  for (const element of typography.ui) {
+    expect(element.family).toContain("Inter");
+  }
+};
+
 test.describe("responsive production contracts", () => {
   test.beforeEach(({}, testInfo) => {
     test.skip(testInfo.project.name !== "chromium-desktop");
@@ -128,6 +202,28 @@ test.describe("responsive production contracts", () => {
     test(`${viewport.width}px contains pages, controls, CTAs, and cards`, async ({
       page,
     }) => {
+      await page.addInitScript(() => {
+        window.__typographyLayoutShift = 0;
+        if (!("PerformanceObserver" in window)) return;
+        try {
+          new PerformanceObserver((list) => {
+            for (const entry of list.getEntries()) {
+              const affectsHeading = entry.sources?.some(({ node }) =>
+                node instanceof Element
+                  ? node.matches("h1,h2,h3,h4,h5,h6") ||
+                    Boolean(node.closest("h1,h2,h3,h4,h5,h6")) ||
+                    Boolean(node.querySelector("h1,h2,h3,h4,h5,h6"))
+                  : false,
+              );
+              if (!entry.hadRecentInput && affectsHeading) {
+                window.__typographyLayoutShift += entry.value;
+              }
+            }
+          }).observe({ buffered: true, type: "layout-shift" });
+        } catch {
+          // Layout Instability API support is verified where the browser exposes it.
+        }
+      });
       await page.setViewportSize(viewport);
       const diagnostics = collectRuntimeDiagnostics(page);
 
@@ -145,6 +241,7 @@ test.describe("responsive production contracts", () => {
 
       await page.goto("/index.html", { waitUntil: "networkidle" });
       await expectSharedLogoContract(page);
+      await expectTypographyContract(page);
       expect(
         await page.evaluate(
           (path) =>

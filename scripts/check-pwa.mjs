@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { readFile, readdir, stat } from "node:fs/promises";
 import { extname, resolve } from "node:path";
 
@@ -12,6 +13,7 @@ import {
   BRAND_LOGO_PATH,
   CACHE_PREFIX,
   CRITICAL_ASSET_BUDGET,
+  FONT_ASSETS,
   FONT_PATHS,
   HERO_IMAGE_PATH,
   MANIFEST_ICON_PATHS,
@@ -28,6 +30,15 @@ const assert = (condition, message) => {
 const countOccurrences = (source, value) => source.split(value).length - 1;
 const readText = (path) => readFile(path, "utf8");
 const publicFile = (path) => resolve(ROOT, `.${path}`);
+const sha256 = (buffer) =>
+  createHash("sha256").update(buffer).digest("hex").toUpperCase();
+const fontAssetKey = ({ family, style, weight }) =>
+  `${family}:${weight}:${style}`;
+
+const LITERATA_FONT_SHA256 =
+  "DACE38D75534603D7B2E727E3A5979B6C53BEDB9DB9E14D4263EF92CFCB5F3D3";
+const LITERATA_LICENSE_SHA256 =
+  "5B52638039D9F63FE82BAB2CCEA1CF0312D275C49E6F1CF7E36361C256B4CE92";
 
 const getAttribute = (tag, name) =>
   tag.match(new RegExp(`\\b${name}="([^"]*)"`, "i"))?.[1] ?? null;
@@ -284,33 +295,66 @@ const verifyHeroAndFonts = async () => {
   const fontFaces = baseCss.match(/@font-face\s*{[\s\S]*?}/g) ?? [];
   assert(
     fontFaces.length === FONT_PATHS.length,
-    `Expected ${FONT_PATHS.length} justified Inter font faces`,
+    `Expected ${FONT_PATHS.length} justified local font faces`,
   );
 
   const expectedFonts = new Map(
-    FONT_PATHS.map((path) => [
-      Number(path.match(/inter-(\d+)\.woff2$/)?.[1]),
-      path,
-    ]),
+    FONT_ASSETS.map((asset) => [fontAssetKey(asset), asset]),
   );
-  const deliveredWeights = [];
+  const deliveredKeys = [];
   for (const fontFace of fontFaces) {
+    const family = fontFace.match(/font-family:\s*"([^"]+)"/)?.[1];
     const weight = Number(fontFace.match(/font-weight:\s*(\d+)/)?.[1]);
+    const style = fontFace.match(/font-style:\s*([\w-]+)/)?.[1];
     const source = fontFace.match(/url\("([^"]+)"\)/)?.[1];
+    const key = fontAssetKey({ family, style, weight });
+    const expectedFont = expectedFonts.get(key);
     assert(
-      expectedFonts.get(weight) === source,
-      `Unexpected Inter ${weight} source`,
+      expectedFont?.path === source,
+      `Unexpected ${family} ${weight} ${style} source`,
     );
     assert(
       /font-display:\s*swap/.test(fontFace),
-      `Inter ${weight} must use non-blocking font-display: swap`,
+      `${family} ${weight} must use non-blocking font-display: swap`,
     );
-    await stat(publicFile(source));
-    deliveredWeights.push(weight);
+    const fontBuffer = await readFile(publicFile(source));
+    assert(
+      fontBuffer.subarray(0, 4).toString("ascii") === "wOF2",
+      `${source} must be a valid WOFF2 file`,
+    );
+    if (source === "/assets/fonts/literata-700.woff2") {
+      assert(
+        sha256(fontBuffer) === LITERATA_FONT_SHA256,
+        "Literata 700 must match the pinned official upstream asset",
+      );
+    }
+    deliveredKeys.push(key);
   }
   assert(
-    deliveredWeights.sort((a, b) => a - b).join(",") === "400,600,700",
-    "Production typography must deliver only Inter 400, 600, and 700",
+    deliveredKeys.sort().join(",") ===
+      [...expectedFonts.keys()].sort().join(","),
+    "Production typography must deliver exactly the configured local font faces",
+  );
+  assert(
+    FONT_ASSETS.filter(({ family }) => family === "Inter")
+      .map(({ weight }) => weight)
+      .sort((a, b) => a - b)
+      .join(",") === "400,600,700",
+    "Production typography must retain only Inter 400, 600, and 700",
+  );
+  assert(
+    FONT_ASSETS.filter(({ family }) => family === "Literata")
+      .map(({ weight }) => weight)
+      .join(",") === "700",
+    "Production typography must deliver only the justified Literata 700 face",
+  );
+
+  const literataLicense = await readFile(
+    resolve(ROOT, "assets/fonts/OFL-Literata.txt"),
+  );
+  assert(
+    sha256(literataLicense) === LITERATA_LICENSE_SHA256,
+    "Literata license must match the pinned official upstream OFL",
   );
 
   const cssFiles = await getCssFiles(resolve(ROOT, "css"));
@@ -325,7 +369,33 @@ const verifyHeroAndFonts = async () => {
   assert(
     /font-weight:\s*600\b/.test(cssWithoutFontFaces) &&
       /font-weight:\s*700\b/.test(cssWithoutFontFaces),
-    "Inter 600 and 700 must remain justified by explicit UI styles",
+    "Inter 600 and 700 must remain justified by explicit production styles",
+  );
+  assert(
+    sourceCss.includes('--font-family-heading: "Literata", serif;') &&
+      sourceCss.includes('--font-family-body: "Inter", sans-serif;'),
+    "Canonical heading and body font-family tokens are missing",
+  );
+  assert(
+    /h1,\s*[\s\S]*?h6\s*{[\s\S]*?font-family:\s*var\(--font-family-heading\)/.test(
+      sourceCss,
+    ),
+    "Semantic headings must use the heading font-family token",
+  );
+  assert(
+    /body\s*{[\s\S]*?font-family:\s*var\(--font-family-body\)/.test(
+      sourceCss,
+    ) &&
+      /button,\s*[\s\S]*?textarea\s*{[\s\S]*?font-family:\s*var\(--font-family-body\)/.test(
+        sourceCss,
+      ),
+    "Body and interface controls must use the body font-family token",
+  );
+  assert(
+    !/(?:fonts\.googleapis|fonts\.gstatic|https?:\/\/[^)'"\s]+\.(?:woff2?|ttf|otf))/i.test(
+      sourceCss,
+    ),
+    "Production CSS must not request remote font assets",
   );
 
   const fontBytes = (
@@ -346,6 +416,10 @@ const verifyProductionAssetContract = async () => {
       html: await readText(resolve(ROOT, page.file)),
     })),
   );
+  const criticalHeadingFont = FONT_ASSETS.find(
+    ({ family }) => family === "Literata",
+  );
+  assert(criticalHeadingFont, "A configured Literata heading font is required");
   for (const { page, html } of pageSources) {
     assert(
       countOccurrences(html, 'href="/assets/build/style.min.css"') === 1,
@@ -359,9 +433,20 @@ const verifyProductionAssetContract = async () => {
       !/(?:href|src)="\/(?:css|js)\//.test(html),
       `${page.file} must not request source CSS or JavaScript`,
     );
+    const fontPreloads =
+      html.match(
+        /<link\b(?=[^>]*\brel="preload")(?=[^>]*\bas="font")[^>]*>/gi,
+      ) ?? [];
     assert(
-      !/<link\b[^>]*rel="preload"[^>]*as="font"/i.test(html),
-      `${page.file} must not preload unproven font files`,
+      fontPreloads.length === CRITICAL_ASSET_BUDGET.preloadedFontRequests,
+      `${page.file} must preload exactly one justified critical heading font`,
+    );
+    const preload = fontPreloads[0];
+    assert(
+      getAttribute(preload, "href") === criticalHeadingFont.path &&
+        getAttribute(preload, "type") === "font/woff2" &&
+        /\bcrossorigin(?:\s|=|>)/i.test(preload),
+      `${page.file} must preload only the local Literata 700 WOFF2 face with CORS`,
     );
   }
 

@@ -1,4 +1,4 @@
-import { INDEXABLE_PAGES } from "./site-config.mjs";
+import { INDEXABLE_PAGES, SITE } from "./site-config.mjs";
 
 export const CACHE_PREFIX = "clean-english-v";
 export const OFFLINE_PATH = "/offline.html";
@@ -19,6 +19,7 @@ export const MANIFEST_ICON_PATHS = Object.freeze([
 ]);
 
 export const HERO_IMAGE_PATH = "/assets/img/hero/hero-01.jpg";
+export const BRAND_LOGO_PATH = SITE.brandLogo.path;
 export const OFFLINE_PAGE_IMAGE_PATHS = Object.freeze([
   HERO_IMAGE_PATH,
   "/assets/img/about/lauren.jpg",
@@ -31,6 +32,7 @@ export const PRECACHE_PATHS = Object.freeze([
   "/assets/build/main.min.js",
   ...FONT_PATHS,
   ...MANIFEST_ICON_PATHS,
+  BRAND_LOGO_PATH,
   ...OFFLINE_PAGE_IMAGE_PATHS,
   "/manifest.webmanifest",
 ]);
@@ -39,6 +41,7 @@ export const CRITICAL_ASSET_BUDGET = Object.freeze({
   productionCssRequests: 1,
   productionJavaScriptRequests: 1,
   initialFontRequests: FONT_PATHS.length,
+  brandLogoRequests: 1,
   heroImageRequests: 1,
   maximumHeroImageBytes: 1_100_000,
   maximumInitialFontBytes: 75_000,

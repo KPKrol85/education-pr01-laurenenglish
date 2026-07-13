@@ -3,6 +3,11 @@ export const SITE = Object.freeze({
   name: "Lauren – Clean English",
   language: "pl-PL",
   locale: "pl_PL",
+  brandLogo: Object.freeze({
+    path: "/assets/img/logo/logo.svg",
+    width: 512,
+    height: 512,
+  }),
   socialImage: Object.freeze({
     path: "/assets/og/og-default.png",
     type: "image/png",

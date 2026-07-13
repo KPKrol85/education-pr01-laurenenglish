@@ -9,6 +9,7 @@ import {
   createServiceWorkerBuild,
 } from "./build-service-worker.mjs";
 import {
+  BRAND_LOGO_PATH,
   CACHE_PREFIX,
   CRITICAL_ASSET_BUDGET,
   FONT_PATHS,
@@ -403,6 +404,10 @@ const run = async () => {
     PRECACHE_PATHS.includes(OFFLINE_PATH) &&
       PRIMARY_DOCUMENT_PATHS.every((path) => PRECACHE_PATHS.includes(path)),
     "Precache must contain the offline page and every primary document",
+  );
+  assert(
+    PRECACHE_PATHS.includes(BRAND_LOGO_PATH),
+    "Precache must contain the shared brand logo",
   );
   assert(
     INDEXABLE_PAGES.length === PRIMARY_DOCUMENT_PATHS.length,

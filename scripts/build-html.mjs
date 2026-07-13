@@ -20,6 +20,7 @@ import {
 import {
   ALL_PAGES,
   SEO_MARKERS,
+  SITE,
   renderRedirects,
   renderRobots,
   renderSeoHead,
@@ -140,6 +141,8 @@ const getIds = (html) =>
   [...html.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
 
 const getAnchorHref = (anchor) => anchor.match(/\shref="([^"]+)"/)?.[1] ?? null;
+const getAttribute = (tag, name) =>
+  tag.match(new RegExp(`\\b${name}="([^"]*)"`, "i"))?.[1] ?? null;
 
 const validateLocalLink = async (href, page, assembledPages) => {
   if (/^(?:https?:|mailto:|tel:)/.test(href)) return;
@@ -352,14 +355,41 @@ const validatePage = async (html, page, assembledPages) => {
     }
   }
 
-  const logoHrefs = [
-    ...`${header}\n${footer}`.matchAll(
-      /<a class="header__logo" href="([^"]+)"/g,
-    ),
+  const headerLogoHrefs = [
+    ...header.matchAll(/<a class="header__logo" href="([^"]+)"/g),
+  ].map((match) => match[1]);
+  const footerLogoHrefs = [
+    ...footer.matchAll(/<a class="footer__brand" href="([^"]+)"/g),
   ].map((match) => match[1]);
   assert(
-    logoHrefs.length === 2 && logoHrefs.every((href) => href === "/index.html"),
-    `${page.file}: header and footer logos must link to /index.html`,
+    headerLogoHrefs.length === 1 && headerLogoHrefs[0] === "/index.html",
+    `${page.file}: header logo must link to /index.html`,
+  );
+  assert(
+    footerLogoHrefs.length === 1 && footerLogoHrefs[0] === "/index.html",
+    `${page.file}: footer logo must link to /index.html`,
+  );
+
+  const logoImages = [
+    ...header.matchAll(/<img\b[^>]*class="header__logo-image"[^>]*>/g),
+    ...footer.matchAll(/<img\b[^>]*class="footer__logo-image"[^>]*>/g),
+  ].map((match) => match[0]);
+  assert(
+    logoImages.length === 2,
+    `${page.file}: header and footer need one shared logo image each`,
+  );
+  for (const image of logoImages) {
+    assert(
+      getAttribute(image, "src") === SITE.brandLogo.path &&
+        getAttribute(image, "alt") === "" &&
+        getAttribute(image, "width") === String(SITE.brandLogo.width) &&
+        getAttribute(image, "height") === String(SITE.brandLogo.height),
+      `${page.file}: shared logo image attributes changed`,
+    );
+  }
+  assert(
+    !`${header}\n${footer}`.includes("header__logo-mark"),
+    `${page.file}: obsolete generated logo mark remains`,
   );
 
   const shellHrefs = [

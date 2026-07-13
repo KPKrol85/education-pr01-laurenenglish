@@ -42,15 +42,12 @@ body.has-open-navigation {
   line-height: 1.2;
 }
 
-.header__logo-mark {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: var(--color-primary);
-  color: var(--color-text-on-primary);
-  display: grid;
-  place-items: center;
-  font-weight: 700;
+.header__logo-image {
+  display: block;
+  flex: 0 0 auto;
+  width: var(--brand-logo-size);
+  height: var(--brand-logo-size);
+  object-fit: contain;
 }
 
 .header__actions {

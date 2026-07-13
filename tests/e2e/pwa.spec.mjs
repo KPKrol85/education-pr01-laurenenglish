@@ -2,6 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { createServiceWorkerBuild } from "../../scripts/build-service-worker.mjs";
 import {
+  BRAND_LOGO_PATH,
   CACHE_PREFIX,
   CRITICAL_ASSET_BUDGET,
   FONT_PATHS,
@@ -345,6 +346,9 @@ test("meets the critical request budget without duplicate or source asset reques
   );
   expect(countPath(HERO_IMAGE_PATH)).toBe(
     CRITICAL_ASSET_BUDGET.heroImageRequests,
+  );
+  expect(countPath(BRAND_LOGO_PATH)).toBe(
+    CRITICAL_ASSET_BUDGET.brandLogoRequests,
   );
   const requestedFonts = resourcePaths
     .filter((path) => path.startsWith("/assets/fonts/"))

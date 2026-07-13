@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 
+import { SITE } from "../../scripts/site-config.mjs";
 import {
   PRIMARY_PAGES,
   collectRuntimeDiagnostics,
@@ -13,11 +14,16 @@ test.describe("generated production pages", () => {
     }) => {
       const diagnostics = collectRuntimeDiagnostics(page);
       const assetStatuses = new Map();
+      const assetContentTypes = new Map();
 
       page.on("response", (response) => {
         const url = new URL(response.url());
         if (url.hostname === "127.0.0.1" && url.port === "4173") {
           assetStatuses.set(url.pathname, response.status());
+          assetContentTypes.set(
+            url.pathname,
+            response.headers()["content-type"] ?? "",
+          );
         }
       });
 
@@ -27,6 +33,10 @@ test.describe("generated production pages", () => {
       expect(response?.ok()).toBe(true);
       await expect(page.getByRole("main")).toBeVisible();
       await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+      await expect(
+        page.locator(`img[src="${SITE.brandLogo.path}"]`),
+      ).toHaveCount(2);
+      await expect(page.locator(".header__logo-mark")).toHaveCount(0);
 
       await page.evaluate(() => document.fonts.ready.then(() => true));
       const fontPaths = await page.evaluate(() =>
@@ -38,6 +48,10 @@ test.describe("generated production pages", () => {
 
       expect(assetStatuses.get("/assets/build/style.min.css")).toBe(200);
       expect(assetStatuses.get("/assets/build/main.min.js")).toBe(200);
+      expect(assetStatuses.get(SITE.brandLogo.path)).toBe(200);
+      expect(assetContentTypes.get(SITE.brandLogo.path)).toContain(
+        "image/svg+xml",
+      );
       expect(fontPaths.length).toBeGreaterThan(0);
       for (const fontPath of fontPaths) {
         expect(assetStatuses.get(fontPath)).toBe(200);

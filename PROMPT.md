@@ -1,492 +1,192 @@
-## PROMPT - CODEX
-
-You are a senior frontend performance and PWA developer working on the Lauren English project.
-
 # PROJECT CONTEXT
 
-You are working in the currently opened `education-pr01-laurenenglish` repository.
+You are a senior frontend developer working in the currently opened `education-pr01-laurenenglish` repository.
 
 Read and follow the current repository state and authoritative documentation before editing, especially:
 
 * `CONTEXT-PROJECT.md`
 * `README.md`
-* `INITIAL-AUDIT.md`
 * `package.json`
-* `playwright.config.mjs`
-* `manifest.webmanifest`
-* `service-worker.template.js`
-* generated `service-worker.js`
-* `offline.html`
-* `scripts/site-config.mjs`
-* current build and asset-generation scripts
-* `docs/runtime-checklist.md`
-* existing project-local Playwright tests
+* `scripts/shared-shell.mjs`
+* `scripts/build-html.mjs`
+* the current header and footer CSS
+* the current PWA configuration and precache contract
+* the existing project-local Playwright tests
 
-Treat the current repository state as the source of truth.
+Treat canonical source files as the source of truth.
 
-Roadmap points 1–9 are complete. Point 9 established intentional static routing, real HTTP 404 behavior, centralized public-site configuration, deterministic SEO checks, and successful-response-only navigation caching.
+Roadmap points 1–10 are complete. This is a separate, focused visual-polish task.
 
-Implement only roadmap point 10:
+A final Lauren English logo already exists at:
 
-> **Harden PWA lifecycle, offline behavior, and performance-critical assets**
+`assets/img/logo/logo.svg`
 
-Do not reimplement completed routing or SEO work. Preserve the real online `404` behavior introduced in point 9.
+The current header uses a generated decorative `<span class="header__logo-mark">` instead of the real logo asset.
 
-The original audit reported:
-
-* precache entries referencing missing production assets
-* unsafe activation cleanup deleting every origin cache except the current cache
-* unsuitable responses being stored without adequate validation
-* a service-worker version differing from `package.json`
-* a lazy-loaded above-the-fold hero image
-* four shipped font weights without confirmed justification
-* unverified manifest icons and installability prerequisites
-
-Some findings may already have been corrected during points 1–9. Reproduce and confirm the current behavior before changing it.
-
-A permanent project-local Playwright workflow exists. Use it for browser verification.
-
-Do not create temporary test harnesses under `C:\tmp`.
-
-Preserve unrelated user-authored working-tree changes, including `PROMPT.md`.
+The real SVG logo must now be used consistently in both the shared header and shared footer.
 
 # TASK OBJECTIVE
 
-Create a safe, deterministic, and maintainable PWA lifecycle for Lauren English.
+Replace the current CSS-generated logo mark with the existing local SVG logo:
+
+`/assets/img/logo/logo.svg`
+
+Use the same logo asset in:
+
+* the shared site header
+* the shared site footer
+
+Preserve the existing visible brand text:
+
+`Lauren – Clean English`
 
 The completed implementation must:
 
-* install the service worker successfully from a valid precache manifest
-* create only intentional Lauren English caches
-* preserve caches belonging to unrelated applications on the same origin
-* cache only suitable successful responses
-* preserve real online `404` behavior
-* provide an intentional offline navigation fallback
-* update cached assets predictably when production output changes
-* keep generated service-worker metadata synchronized with the build
-* verify manifest and icon prerequisites
-* prioritize the above-the-fold LCP image
-* load only justified font assets and weights
-* preserve accessibility, routing, SEO, themes, and progressive enhancement
-* provide permanent static and Playwright verification for PWA behavior
-
-This is a focused lifecycle, offline, and performance-critical asset task. Do not redesign the application.
+* use the real SVG through semantic `<img>` markup
+* preserve the existing accessible brand link
+* preserve the current header and footer layout
+* preserve responsive navigation behavior
+* preserve light and dark themes
+* avoid stretching, cropping, or distorting the logo
+* keep the logo readable at narrow mobile sizes
+* update the canonical shared shell rather than manually editing generated pages
+* rebuild and verify all generated output
 
 # IMPLEMENTATION PLAN
 
-1. Inspect the current PWA and asset architecture before editing.
+1. Inspect the current repository state and complete working-tree diff before editing.
 
-   Review at minimum:
+2. Preserve unrelated user-authored changes, including `PROMPT.md`.
 
-   * `service-worker.template.js`
-   * generated `service-worker.js`
-   * the script that generates the service worker
-   * `package.json`
-   * `manifest.webmanifest`
-   * `offline.html`
-   * the five primary HTML pages
-   * shared HTML generation sources
-   * hero image markup and source asset
-   * all `@font-face` declarations
-   * `assets/fonts/`
-   * `assets/icons/`
-   * production CSS and JavaScript output paths
-   * existing Playwright runtime helpers and test suites
+3. Inspect:
 
-2. Record the current state before implementation:
+   * `assets/img/logo/logo.svg`
+   * its SVG `viewBox`
+   * intrinsic proportions
+   * transparent background behavior
+   * current header logo markup
+   * current footer brand markup
+   * related header and footer CSS
 
-   * current cache names and prefixes
-   * current cache version source
-   * current precache entries
-   * missing or stale precache entries
-   * install, activate, fetch, and message lifecycle behavior
-   * navigation fallback behavior
-   * static asset runtime strategy
-   * response eligibility checks
-   * manifest fields and icon declarations
-   * registered font files and weights
-   * actual font weights used by rendered UI
-   * hero image loading attributes
-   * current critical asset request pattern
+4. Confirm the SVG is valid and can be loaded as a same-origin image.
 
-3. Verify which original audit findings remain reproducible.
+5. Update the canonical shared shell in `scripts/shared-shell.mjs`.
 
-   Do not modify behavior that is already correct.
+6. Replace the current decorative header element:
 
-4. Establish one explicit Lauren English cache namespace.
+   `span.header__logo-mark`
 
-   Use a stable project-specific prefix, such as the existing project cache prefix if one is already established.
+   with a semantic image using:
 
-   All caches created by this service worker must use that prefix.
+   `/assets/img/logo/logo.svg`
 
-5. Correct activation cleanup.
+7. Keep the existing header logo link and visible text.
 
-   During activation:
+8. Use a focused class such as:
 
-   * delete only obsolete caches whose names belong to the Lauren English prefix
-   * preserve the currently active Lauren English caches
-   * preserve unrelated cache names on the same origin
-   * do not call broad cache deletion against every non-current cache
-   * keep cleanup deterministic and testable
+   * `header__logo-image`
 
-6. Repair and validate the precache contract.
+   or reuse an appropriate existing image class if one already exists.
 
-   Build the precache list from the real generated runtime contract.
+9. Add explicit `width` and `height` attributes based on the SVG’s real aspect ratio.
 
-   Ensure every precached path:
+10. Do not hard-code dimensions that distort the asset.
 
-   * exists after a production build
-   * is served successfully
-   * uses the correct public path
-   * is intentionally required for shell or offline behavior
-   * does not duplicate another normalized entry
-   * does not reference obsolete source or output locations
+11. Preserve the current accessible name of the homepage link.
 
-   Include only justified assets, such as:
+12. Avoid duplicate screen-reader announcements:
 
-   * primary document routes where required by the selected offline strategy
-   * `offline.html`
-   * production CSS
-   * production JavaScript
-   * required local fonts
-   * required manifest icons
-   * essential above-the-fold assets where appropriate
+    * if the visible brand text and link already provide the accessible name, use an empty image `alt`
+    * do not repeat “Lauren – Clean English” unnecessarily through both image alt text and visible text
 
-   Do not precache unrelated catalogue images or every available asset without a demonstrated offline requirement.
+13. Update the shared footer markup to use the same SVG logo.
 
-7. Add a deterministic build-time precache validation step.
+14. Preserve the current footer text, links, hierarchy, and accessible structure.
 
-   The production build must fail clearly when:
+15. Use a focused footer class such as:
 
-   * a configured precache file is missing
-   * a duplicate normalized entry exists
-   * a source-only development asset is referenced
-   * an obsolete production path is referenced
+    * `footer__logo-image`
+    * or an existing appropriate footer brand class
 
-   Do not depend on runtime `cache.addAll()` failure as the first validation mechanism.
+16. Do not create a second copy of the logo file.
 
-8. Implement deterministic cache revisioning.
+17. Remove the old generated logo-mark CSS only when it is no longer used anywhere.
 
-   Do not manually maintain a version literal independently in:
+18. Remove obsolete styles such as:
 
-   * `package.json`
-   * the service-worker template
-   * generated `service-worker.js`
+    * generated letter content
+    * logo-mark background
+    * logo-mark text color
+    * logo-mark font-weight
+    * other rules used exclusively by the removed decorative span
 
-   Generate the final cache revision through the existing build pipeline.
+19. Add minimal image-specific styles that:
 
-   Use a deterministic value based on the current package version and/or a stable fingerprint of the generated precache contract.
+    * preserve intrinsic aspect ratio
+    * use `display: block`
+    * prevent shrinking or overflow
+    * fit the current header and footer composition
+    * remain stable at all existing breakpoints
 
-   Requirements:
+20. Use the established token system for reusable sizing and spacing where appropriate.
 
-   * identical production inputs produce the same revision
-   * changed precached output produces a new revision
-   * current date or build time is not used as the revision source
-   * the generated service worker contains the generated revision
-   * documentation explains the update mechanism
+21. Do not redesign the header or footer.
 
-9. Define the service-worker install and activation behavior clearly.
+22. Do not change navigation labels, CTA copy, brand text, or footer content.
 
-   Verify and implement as appropriate:
+23. Do not change the logo artwork.
 
-   * successful precache population before install completion
-   * controlled use of `skipWaiting`
-   * controlled use of `clients.claim`
-   * cleanup after activation
-   * predictable behavior when a new worker is waiting
-   * no partially populated active cache
+24. Do not inline the entire SVG into each page.
 
-   Preserve an existing correct strategy when it already meets the requirements.
+25. Use the local SVG as an external image asset.
 
-   Do not introduce a complex update-notification interface unless one already exists.
+26. Inspect the current PWA precache contract.
 
-10. Harden response-cache eligibility.
+27. Because the logo becomes a shared critical shell asset, add it to the validated precache only if required by the established offline asset policy.
 
-    Cache only responses that are appropriate for the selected strategy.
+28. If added to the precache:
 
-    At minimum, reject:
+    * update the canonical PWA configuration
+    * regenerate the deterministic cache revision
+    * do not manually edit generated `service-worker.js`
 
-    * failed responses
-    * `4xx` and `5xx` responses
-    * partial `206` responses
-    * non-GET requests
-    * unsupported URL schemes
-    * unintended cross-origin requests
-    * opaque responses unless an explicit existing requirement justifies them
-    * utility error documents stored as successful page content
+29. Regenerate shared HTML and production assets through the existing build pipeline.
 
-    Keep eligibility logic focused and reusable rather than duplicating conditions across handlers.
+30. Verify all generated primary pages use the new logo markup.
 
-11. Define navigation behavior.
+31. Confirm the old decorative logo span is absent from generated pages.
 
-    Preserve point-9 routing semantics:
+32. Verify the logo request:
 
-    * successful online primary navigation returns the real page
-    * an online unknown route remains a real HTTP `404`
-    * the service worker must not replace online unknown routes with the homepage
-    * the service worker must not convert a `404` into a cached `200`
-    * failed network navigation while offline uses the documented offline fallback
-    * cached successful navigation may be used only according to the selected documented strategy
-    * `offline.html` is never presented as a normal indexable online route
+    * returns HTTP `200`
+    * uses the correct SVG MIME type
+    * is requested from the expected local path
+    * is not requested multiple times unnecessarily on the same page
 
-12. Define static asset runtime behavior.
+33. Verify the header and footer at:
 
-    Use an appropriate focused strategy for same-origin production assets.
+    * 320px
+    * 390px
+    * 768px
+    * 1024px
+    * 1440px
 
-    Ensure:
+34. Verify both light and dark themes.
 
-    * successful intended assets may be reused offline
-    * failed asset responses are not cached
-    * requests with query strings do not create uncontrolled duplicate entries
-    * old runtime entries do not grow without bounds
-    * source CSS and JavaScript files are not requested by production pages
-    * generated CSS and JavaScript remain the runtime contract
+35. Confirm:
 
-    Do not add a service-worker library or Workbox dependency.
+    * no horizontal overflow
+    * no logo distortion
+    * no clipping
+    * no overlap with navigation or header actions
+    * no footer layout regression
+    * no inaccessible duplicate brand announcement
 
-13. Verify offline behavior for all primary pages.
+36. Update or add only focused Playwright assertions required to protect the new logo contract.
 
-    Test the documented policy for:
+37. Do not create temporary test harnesses outside the repository.
 
-    * homepage
-    * services
-    * packages
-    * materials
-    * progress
-
-    Confirm both:
-
-    * normal online navigation
-    * behavior after the network becomes unavailable
-
-    If the selected strategy intentionally returns `offline.html` rather than each exact page, assert that behavior explicitly.
-
-14. Verify failed responses are not cached.
-
-    Include deterministic tests proving that:
-
-    * an unknown online route returns `404`
-    * the unknown response is not inserted into a successful navigation cache
-    * a failed asset request is not cached
-    * a later valid response is not shadowed by a previously cached failure
-
-15. Verify cache cleanup scope.
-
-    Add a test that creates:
-
-    * an old Lauren English cache
-    * the current Lauren English cache
-    * an unrelated sentinel cache
-
-    After activation or equivalent lifecycle verification:
-
-    * the old Lauren English cache is removed
-    * the current cache remains
-    * the unrelated sentinel cache remains
-
-16. Inspect and correct the web app manifest.
-
-    Validate at minimum:
-
-    * valid JSON
-    * `name`
-    * `short_name`
-    * `id`
-    * `start_url`
-    * `scope`
-    * `display`
-    * `theme_color`
-    * `background_color`
-    * `lang`
-    * icon paths
-    * icon MIME types
-    * declared icon dimensions
-    * icon files actually exist
-    * icon files match declared dimensions
-    * at least the required installability icon sizes are available
-    * maskable purpose is declared only for an icon with appropriate safe padding
-
-    Keep manifest URLs consistent with the current static deployment and authoritative origin model.
-
-    Do not add unsupported screenshots, shortcuts, categories, or promotional metadata merely to make the manifest larger.
-
-17. Verify installability prerequisites locally.
-
-    Through the existing localhost Playwright server, verify:
-
-    * the manifest link loads
-    * the manifest parses
-    * declared icons load successfully
-    * the page is served in a secure localhost context
-    * service-worker registration succeeds
-    * `navigator.serviceWorker.ready` resolves
-    * the worker controls the page after the required reload
-    * the worker reaches the expected active state
-    * the current project cache is created
-
-    Do not claim that a browser install prompt or external deployment installability was verified unless it was genuinely tested.
-
-18. Correct the hero/LCP asset behavior.
-
-    Inspect the actual above-the-fold hero image.
-
-    Ensure:
-
-    * it is not marked `loading="lazy"`
-    * it uses `loading="eager"` or the appropriate default
-    * it has an appropriate `fetchpriority`
-    * explicit width and height are present
-    * intrinsic aspect ratio is preserved
-    * decoding behavior is intentional
-    * the image does not cause layout shift
-    * the asset is not downloaded more than once
-    * mobile and desktop layouts do not request unnecessary duplicate variants
-
-    Preserve the existing approved image and design.
-
-    Do not redesign the hero.
-
-19. Audit font delivery.
-
-    Inspect all local Inter files, `@font-face` declarations, `font-weight` usage, and browser requests.
-
-    For every shipped weight:
-
-    * confirm that the production UI actually uses it
-    * confirm that the corresponding font file is referenced correctly
-    * remove it from runtime delivery only when it is genuinely unused
-    * preserve it when removal would cause synthetic or incorrect typography
-
-    Ensure:
-
-    * `font-display` has an appropriate non-blocking value
-    * only production font formats are requested
-    * no missing font request occurs
-    * no duplicate weight declaration exists
-    * preload is used only for truly critical font files
-    * not every font file is preloaded
-    * theme changes do not request additional font variants
-
-    Do not change the font family during this task.
-
-20. Establish a focused critical-asset budget.
-
-    Document and validate a practical request budget based on the corrected production homepage.
-
-    At minimum, track:
-
-    * number of production CSS files requested
-    * number of production JavaScript files requested
-    * number of initial font files requested
-    * number of above-the-fold hero image requests
-    * absence of source CSS and JavaScript requests
-    * absence of duplicate critical asset requests
-    * total sizes of the hero image and font files where deterministically available
-
-    Base limits on the real corrected implementation.
-
-    Do not invent a broad Lighthouse score requirement.
-
-    Do not add Lighthouse, WebPageTest, or another large dependency.
-
-21. Add or extend a deterministic static PWA check.
-
-    Add a focused project-local script such as `scripts/check-pwa.mjs` if no equivalent exists.
-
-    Validate at minimum:
-
-    * service-worker template placeholders are resolved in generated output
-    * generated cache revision matches the current build contract
-    * all precache entries exist
-    * precache entries are unique
-    * cache prefix is project-specific
-    * cleanup code is prefix-scoped
-    * unsupported failed responses cannot pass the cache-eligibility condition
-    * manifest JSON is valid
-    * required manifest fields exist
-    * declared icons exist and match their declared dimensions
-    * hero image is not lazy-loaded
-    * hero image has explicit dimensions
-    * font files referenced by CSS exist
-    * no obsolete source build paths remain
-    * generated service worker does not contain an independently maintained stale version
-
-    Add an npm script such as:
-
-    * `check:pwa`
-
-    Integrate it into the current verification workflow where appropriate.
-
-22. Add focused permanent Playwright PWA tests.
-
-    Add a project-local specification such as:
-
-    * `tests/e2e/pwa.spec.mjs`
-
-    Add an npm command such as:
-
-    * `test:e2e:pwa`
-
-    Reuse the current Playwright server, diagnostics, and project helpers.
-
-    The focused suite should verify:
-
-    * service-worker registration
-    * active worker state
-    * controlled page after reload
-    * expected Lauren English cache creation
-    * successful online primary routes
-    * documented offline navigation behavior
-    * real online unknown-route `404`
-    * failed responses are not cached
-    * old project-cache cleanup
-    * preservation of unrelated cache
-    * manifest response and required fields
-    * icon response status and dimensions
-    * hero image loading attributes
-    * actual font requests
-    * absence of duplicate critical asset requests
-    * absence of source CSS or JavaScript requests
-
-    Use deterministic browser state and semantic assertions.
-
-    Service-worker tests must use isolated contexts and clean up caches and registrations they create.
-
-    Do not weaken the normal E2E service-worker isolation used by unrelated suites.
-
-23. Preserve the established production and SEO behavior.
-
-    Re-run point-9 routing assertions and confirm:
-
-    * primary routes return `200`
-    * unknown routes return `404`
-    * the service worker does not mask online `404` responses
-    * sitemap, robots, canonical, and utility-page behavior remain unchanged
-
-24. Update documentation.
-
-    Update `docs/runtime-checklist.md` and any directly relevant README section with:
-
-    * production build command
-    * generated service-worker contract
-    * cache prefix and revision strategy
-    * install and update lifecycle
-    * offline navigation policy
-    * cache cleanup scope
-    * response eligibility policy
-    * manifest and icon verification
-    * hero/LCP policy
-    * justified font weights
-    * critical asset budget
-    * `check:pwa`
-    * `test:e2e:pwa`
-    * manual post-deployment verification steps
-
-    Keep documentation aligned with the implementation.
-
-25. Build and verify.
-
-    Run the real current project scripts, including at minimum:
+38. Run the existing project verification workflow, including at minimum:
 
     * `npm run build`
     * `npm run check:data`
@@ -495,164 +195,104 @@ This is a focused lifecycle, offline, and performance-critical asset task. Do no
     * `npm run check:css`
     * `npm run check:seo`
     * `npm run check:pwa`
-    * `npm run test:e2e:pwa`
-    * `npm run test:e2e:seo`
+    * relevant focused Playwright tests
     * `npm run test:e2e`
     * relevant `node --check` commands
     * relevant Prettier checks
     * `git diff --check`
 
-    Verify the final build is deterministic and HTML generation remains idempotent.
+39. Confirm generated HTML remains deterministic and idempotent.
 
-    Perform one complete PWA verification pass after implementation.
-
-    Allow at most one targeted rerun after a confirmed product defect is corrected.
-
-    Do not repeatedly rebuild or rewrite the test harness.
-
-    If the permanent Playwright infrastructure fails twice for the same environmental reason, stop and report the blocker.
-
-26. Update the roadmap only after full acceptance.
-
-    When all required static, browser, offline, and lifecycle checks pass:
-
-    * mark roadmap point 10 as `[x]`
-    * do not modify completion states for points 1–9
-    * do not mark completion if service-worker or offline verification remains blocked
+40. Do not modify `INITIAL-AUDIT.md`.
 
 # CONSTRAINTS
 
-* Do not redesign the application.
-* Do not change the font family.
-* Do not introduce a serif heading font.
-* Do not introduce Vite.
-* Do not replace the current production build pipeline.
-* Do not implement the separate localhost port `8181` source-preview workflow.
-* Do not add Workbox or another service-worker framework.
-* Do not add Lighthouse or another broad performance dependency.
-* Do not add browsers other than the currently configured Chromium workflow.
-* Do not add a complex PWA update-notification interface.
-* Do not add push notifications, background sync, periodic sync, or application data caching.
-* Do not cache form submissions.
-* Do not cache non-GET requests.
-* Do not cache failed or partial responses.
-* Do not cache arbitrary cross-origin resources.
-* Do not delete unrelated origin caches.
-* Do not use a broad cache cleanup rule.
-* Do not use the homepage as an offline fallback.
-* Do not mask online `404` responses.
-* Do not create a second service-worker source of truth.
-* Do not maintain independent manual cache versions.
-* Do not use current time as a cache revision.
-* Do not precache every asset without justification.
-* Do not remove font weights without confirming actual usage.
-* Do not preload every font file.
-* Do not redesign or replace the hero image.
-* Do not add pixel-perfect visual baselines.
-* Do not create temporary test scripts outside the repository.
-* Do not use machine-specific absolute paths.
-* Do not manually edit generated HTML, minified assets, or generated `service-worker.js`.
-* Edit canonical source files and regenerate outputs.
-* Preserve the point-9 routing, metadata, sitemap, robots, and structured-data foundation.
-* Preserve accessibility, responsive behavior, themes, progressive enhancement, and reduced motion.
+* Do not redesign the header.
+* Do not redesign the footer.
+* Do not modify the SVG artwork.
+* Do not generate a replacement logo.
+* Do not introduce another logo file.
+* Do not change the brand text.
+* Do not change navigation structure or CTA content.
+* Do not change fonts during this task.
+* Do not implement the planned Literata typography task yet.
+* Do not introduce inline SVG duplication across pages.
+* Do not use the logo as a CSS background image.
+* Do not manually edit generated HTML.
+* Do not manually edit minified CSS or JavaScript.
+* Do not manually edit generated `service-worker.js`.
+* Do not introduce inline styles.
+* Do not use styling IDs.
+* Do not add unnecessary dependencies.
+* Do not change unrelated PWA, SEO, routing, content, or accessibility behavior.
+* Do not modify roadmap completion states.
 * Preserve unrelated working-tree changes.
-* Keep the final diff focused and review-friendly.
+* Keep the diff focused and review-friendly.
 
 # TECHNICAL RULES
 
-* Use the existing service-worker template as the canonical source.
-* Generate the final service worker through the current build pipeline.
-* Use a stable project-specific cache prefix.
-* Generate a deterministic cache revision.
-* Validate the precache list before runtime.
-* Cache only successful, complete, intended same-origin GET responses.
-* Keep online routing semantics separate from offline fallback behavior.
-* Preserve real HTTP status meaning.
-* Keep runtime cache growth bounded and intentional.
-* Keep manifest paths consistent with deployment scope.
-* Verify icon files against declared dimensions and types.
-* Prioritize only genuine above-the-fold assets.
-* Keep below-the-fold images lazy-loaded where appropriate.
-* Preserve explicit media dimensions.
-* Deliver only justified local font files and weights.
-* Use non-blocking font rendering.
-* Use the permanent project-local Playwright infrastructure.
-* Clean service-worker registrations, caches, and browser state between focused lifecycle tests.
-* Do not leak PWA state into unrelated test suites.
-* Avoid arbitrary timeout-based waits.
-* Use observable lifecycle and cache state.
-* Report only verification genuinely performed.
+* Edit canonical source files and regenerate output.
+* Use semantic `<img>` markup.
+* Use the root-relative path `/assets/img/logo/logo.svg`.
+* Preserve the SVG’s real aspect ratio.
+* Use explicit intrinsic dimensions.
+* Use CSS to control rendered size without distortion.
+* Keep selector specificity low.
+* Follow the existing BEM-style naming system.
+* Follow the current token-first CSS architecture.
+* Preserve the shared-shell generation contract.
+* Preserve the accessible name of the homepage brand link.
+* Avoid redundant image alt text when visible text already names the brand.
+* Preserve keyboard focus and link behavior.
+* Preserve light and dark theme compatibility.
+* Preserve responsive and PWA guarantees.
+* Use only project-local Playwright infrastructure.
+* Report only verification actually performed.
 
 Acceptance criteria:
 
-* production build creates a valid generated service worker
-* no unresolved service-worker template placeholder remains
-* every precache entry exists and is unique
-* service-worker installation completes successfully
-* one current Lauren English project cache is created according to the documented strategy
-* obsolete Lauren English caches are removed
-* unrelated origin caches remain untouched
-* changed precached assets produce a deterministic new cache revision
-* failed, partial, non-GET, and unintended responses are not cached
-* successful online primary routes remain available
-* online unknown routes continue to return real `404`
-* online `404` responses are not cached as valid navigation documents
-* offline navigation uses the documented fallback
-* the homepage is not used as a generic offline or missing-route fallback
-* manifest JSON and required fields are valid
-* declared icons exist and match declared type and dimensions
-* service-worker registration and activation succeed on localhost
-* the worker controls the page after the expected lifecycle step
-* hero/LCP image is not deferred
-* hero image has explicit dimensions and is requested once
-* only justified font weights are delivered
-* no missing or duplicate font request occurs
-* no production page requests source CSS or JavaScript
-* critical asset request behavior matches the documented budget
-* `check:pwa` passes
-* focused PWA Playwright tests pass
-* point-9 SEO and routing tests continue to pass
-* the complete Playwright suite passes
-* existing data, content, HTML, CSS, and SEO checks pass
-* build output remains deterministic
-* only roadmap point 10 is marked `[x]`
+* `/assets/img/logo/logo.svg` is used in the shared header
+* the same logo asset is used in the shared footer
+* the old decorative header logo span is removed
+* obsolete logo-mark CSS is removed
+* visible `Lauren – Clean English` text remains
+* the homepage logo link remains accessible
+* no duplicate brand announcement is introduced
+* the SVG retains its correct proportions
+* the logo is not clipped, stretched, or blurred
+* header and footer remain stable at all required viewport widths
+* both themes remain visually coherent
+* no horizontal overflow or navigation collision is introduced
+* the logo asset returns successfully with the correct MIME type
+* offline behavior remains consistent with the established PWA policy
+* generated HTML and assets are rebuilt
+* all relevant static and browser checks pass
+* `INITIAL-AUDIT.md` remains unchanged
 
 # OUTPUT EXPECTATION
 
 Return a concise final report containing:
 
-* documentation and source files inspected
-* original audit findings reproduced
-* original findings that were already resolved
-* final cache prefix and revision strategy
-* precache entries and validation approach
-* install and activation lifecycle decisions
-* cache cleanup behavior
-* unrelated-cache preservation result
-* response cache-eligibility rules
-* online navigation strategy
-* offline navigation strategy
-* unknown-route behavior
-* service-worker update behavior
-* manifest fields and icon verification
-* hero/LCP changes
-* font-weight audit and final delivered weights
-* critical asset budget and measured request results
-* static PWA checks added
-* Playwright PWA tests added
-* npm scripts added or updated
-* documentation changes
+* source files inspected
+* SVG dimensions and aspect ratio confirmed
+* canonical header source changed
+* canonical footer source changed
+* final header markup approach
+* final footer markup approach
+* accessibility and alt-text decision
+* obsolete markup and CSS removed
+* CSS classes added or updated
+* PWA precache decision
 * files changed
 * generated files rebuilt
-* production build result
-* static check results
-* focused PWA test result
-* SEO routing regression result
-* complete E2E result
-* console, page-error, request, and HTTP diagnostics
-* confirmation that no temporary external harness was created
-* confirmation that unrelated working-tree changes were preserved
-* confirmation that only roadmap point 10 was marked `[x]`
-* any blocker that prevented full acceptance
+* viewport and theme combinations tested
+* logo request status and MIME result
+* responsive layout results
+* static checks executed
+* Playwright checks executed
+* confirmation that no temporary harness was created
+* confirmation that unrelated changes were preserved
+* confirmation that `INITIAL-AUDIT.md` was not changed
+* any blocker encountered
 
 Do not include unrelated recommendations.

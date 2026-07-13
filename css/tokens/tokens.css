@@ -72,6 +72,7 @@
   --transition-base: 240ms ease;
   --size-1px: 1px;
   --control-min-size: 44px;
+  --brand-logo-size: 40px;
 }
 
 [data-theme="dark"] {

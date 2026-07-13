@@ -82,10 +82,10 @@ npm run test:e2e
 
 Dostępne polecenia skupione:
 
-- `npm run test:e2e:smoke` – pięć głównych stron, wygenerowane CSS/JS, fonty i diagnostyka runtime.
+- `npm run test:e2e:smoke` – pięć głównych stron, współdzielone logo, wygenerowane CSS/JS, fonty i diagnostyka runtime.
 - `npm run test:e2e:interactions` – nawigacja, drawer, focus, accordion i tabs.
 - `npm run test:e2e:theme` – light/dark, synchronizacja kontrolek i przywracanie zapisanego motywu.
-- `npm run test:e2e:responsive` – szerokości 320, 390, 768, 1024 i 1440 px, overflow i containment.
+- `npm run test:e2e:responsive` – szerokości 320, 390, 768, 1024 i 1440 px, oba motywy, współdzielone logo, overflow i containment.
 - `npm run test:e2e:seo` – statusy tras i zasobów, prawdziwe 404, metadane runtime, sitemapę i robots.
 - `npm run test:e2e:pwa` – instalacja i aktywacja SW, cache cleanup, manifest, online 404, offline, odpowiedzi niedozwolone i budżet krytycznych requestów.
 - `npm run test:e2e:headed` – pełny zestaw w widocznym Chromium.
@@ -138,11 +138,11 @@ Każda strona ma dokładnie jeden stan `aria-current="page"`: na stronie główn
 - `service-worker.template.js` pozostaje jedynym źródłem Service Workera. `scripts/pwa-config.mjs` definiuje kontrakt assetów, a `scripts/build-service-worker.mjs` sprawdza istnienie i unikalność ścieżek przed wygenerowaniem `service-worker.js`.
 - Cache używa stałego prefiksu `clean-english-v` oraz rewizji `<package version>-<12 znaków SHA-256>`. Fingerprint obejmuje szablon, konfigurację i treść każdego precachowanego pliku, więc identyczne wejścia dają identyczną nazwę, a zmiana wejścia tworzy nową.
 - Instalacja kończy się dopiero po pełnym `cache.addAll`; nieudana instalacja usuwa wyłącznie niekompletny bieżący cache. Po udanej instalacji worker wywołuje `skipWaiting`, a aktywacja usuwa wyłącznie starsze cache z prefiksem Lauren English i wykonuje `clients.claim`.
-- Precache obejmuje pięć głównych dokumentów, `offline.html`, produkcyjne CSS/JS, Inter 400/600/700, ikony 192/512, dwa obrazy używane na homepage (hero i portret) oraz manifest. Nie zawiera stron błędów, formularzy, źródłowych `css/`/`js/` ani katalogu materiałów.
+- Precache obejmuje pięć głównych dokumentów, `offline.html`, produkcyjne CSS/JS, Inter 400/600/700, ikony 192/512, współdzielone logo, dwa obrazy używane na homepage (hero i portret) oraz manifest. Nie zawiera stron błędów, formularzy, źródłowych `css/`/`js/` ani katalogu materiałów.
 - Nawigacja online jest network-first: prawdziwy `404` pozostaje `404` i nie trafia do cache. Przy awarii sieci główna znana trasa otrzymuje swoją kopię, a inna nawigacja otrzymuje `offline.html`; homepage nie jest fallbackiem ogólnym.
 - Cache przyjmuje tylko pełne odpowiedzi `200` dla zamierzonych, same-origin żądań `GET` HTTP(S). Odpowiedzi przekierowane, opaque, częściowe, nieudane, cross-origin i inne metody nie są zapisywane. Statyczny runtime jest ograniczony do jawnej listy precache, a query string nie tworzy dodatkowych wpisów.
 - Manifest deklaruje `id`, `start_url`, `scope`, `lang`, kolory, tryb standalone i zweryfikowane SVG `192 × 192` oraz `512 × 512`. Nie deklaruje `maskable`, ponieważ nie ma osobnego assetu ze zweryfikowaną strefą bezpieczną.
-- Hero używa jednego JPEG `1600 × 1200`, jawnych wymiarów, `loading="eager"`, `fetchpriority="high"` i `decoding="async"`. Budżet homepage to 1 CSS, 1 JS, 3 początkowe fonty (łącznie maks. 75 kB) oraz 1 request hero (maks. 1,1 MB), bez requestów źródłowych i duplikatów.
+- Hero używa jednego JPEG `1600 × 1200`, jawnych wymiarów, `loading="eager"`, `fetchpriority="high"` i `decoding="async"`. Budżet homepage to 1 CSS, 1 JS, 3 początkowe fonty (łącznie maks. 75 kB), 1 request współdzielonego logo oraz 1 request hero (maks. 1,1 MB), bez requestów źródłowych i duplikatów.
 
 Weryfikacja lokalna:
 

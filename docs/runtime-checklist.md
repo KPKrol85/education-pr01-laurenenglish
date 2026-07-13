@@ -20,6 +20,7 @@
 - Otwórz każdą stronę (`index.html`, `uslugi.html`, `pakiety.html`, `materialy.html`, `postepy.html`, `thank-you.html`, `offline.html`, `404.html`) i w DevTools → Network upewnij się, że:
   - `/assets/build/style.min.css` zwraca HTTP 200.
   - `/assets/build/main.min.js` zwraca HTTP 200.
+  - `/assets/img/logo/logo.svg` zwraca HTTP 200 z MIME `image/svg+xml` i jest pobierane tylko raz mimo użycia w headerze i footerze.
   - Nie ma requestów do kanonicznych plików `css/` ani `js/`.
   - Fonty Inter 400, 600 i 700 ładują się z `/assets/fonts/` bez odpowiedzi 404; waga 500 nie jest requestowana.
   - Konsola nie zawiera błędów modułów ani błędów ładowania zasobów.
@@ -34,7 +35,7 @@
 - Zainstaluj zależności bez lockfile: `npm install --no-package-lock`.
 - Zainstaluj Chromium: `npx playwright install chromium`.
 - Uruchom kompletny build i browser E2E: `npm run test:e2e`.
-- W razie potrzeby uruchom osobno: `test:e2e:smoke`, `test:e2e:interactions`, `test:e2e:theme` lub `test:e2e:responsive`.
+- W razie potrzeby uruchom osobno: `test:e2e:smoke`, `test:e2e:interactions`, `test:e2e:theme` lub `test:e2e:responsive`; testy smoke i responsive chronią także kontrakt współdzielonego logo.
 - Routing i metadane uruchom osobno przez `npm run test:e2e:seo`; pięć tras indeksowanych i wymagane zasoby muszą zwracać `200`, a nieznane ścieżki muszą zwracać projektowy dokument z HTTP `404`.
 - Lifecycle i offline uruchom osobno przez `npm run test:e2e:pwa`; tylko ten plik testowy włącza Service Workery i sprząta ich stan.
 - Widoki bazowe to Chromium desktop `1440 × 900` oraz mobile `390 × 844`; responsive suite dodatkowo sprawdza szerokości 320, 768 i 1024 px.
@@ -57,14 +58,14 @@
 - Instalacja jest atomowa z perspektywy aktywnego workera: `skipWaiting` następuje dopiero po pełnym precache, a błąd usuwa niekompletny nowy cache. Aktywacja przejmuje klientów i usuwa wyłącznie starsze cache zaczynające się od `clean-english-v`; inne cache originu muszą pozostać.
 - Online pięć głównych tras działa network-first. Tylko pełna, nieprzekierowana odpowiedź HTML `200` znanej trasy może odświeżyć jej wpis. Nieznana trasa online pozostaje realnym `404` i nie jest zapisywana.
 - Offline znana główna trasa korzysta ze swojej kopii precache. Inna nawigacja pokazuje `offline.html`; nie używaj homepage jako fallbacku.
-- Statyczne cache-first dotyczy wyłącznie jawnych assetów precache, w tym hero i portretu wymaganych do kompletnej homepage offline; nie obejmuje katalogu materiałów. Zapisywane są tylko same-origin żądania `GET` HTTP(S) z pełną odpowiedzią `200`; query string jest normalizowany do jednej ścieżki. Nie zapisuj `206`, 4xx/5xx, redirectów, opaque, cross-origin ani innych metod.
+- Statyczne cache-first dotyczy wyłącznie jawnych assetów precache, w tym współdzielonego logo oraz hero i portretu wymaganych do kompletnych głównych stron offline; nie obejmuje katalogu materiałów. Zapisywane są tylko same-origin żądania `GET` HTTP(S) z pełną odpowiedzią `200`; query string jest normalizowany do jednej ścieżki. Nie zapisuj `206`, 4xx/5xx, redirectów, opaque, cross-origin ani innych metod.
 
 ## Manifest i krytyczne zasoby
 
 - Manifest musi zwrócić `application/manifest+json`, zawierać `name`, `short_name`, `id`, `start_url`, `scope`, `display`, kolory i `lang`, a ikony SVG muszą zwracać `200` i mieć rzeczywiste wymiary `192 × 192` oraz `512 × 512`.
 - Nie deklaruj `maskable`, dopóki osobna ikona nie ma zweryfikowanej strefy bezpiecznej.
 - Hero ma być pobrane raz jako `/assets/img/hero/hero-01.jpg`, z wymiarami `1600 × 1200`, `loading="eager"`, `fetchpriority="high"` i bez przesunięcia layoutu.
-- Budżet krytyczny homepage: 1 produkcyjny CSS, 1 produkcyjny JS, 3 fonty (Inter 400/600/700, razem maks. 75 kB), 1 hero (maks. 1,1 MB), zero źródłowych CSS/JS i zero duplikatów.
+- Budżet krytyczny homepage: 1 produkcyjny CSS, 1 produkcyjny JS, 3 fonty (Inter 400/600/700, razem maks. 75 kB), 1 współdzielone logo, 1 hero (maks. 1,1 MB), zero źródłowych CSS/JS i zero duplikatów.
 
 ## Manualna kontrola po wdrożeniu
 

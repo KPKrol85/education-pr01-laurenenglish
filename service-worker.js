@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "clean-english-v";
-const CACHE_REVISION = "1.0.0-330c0fdbd349";
+const CACHE_REVISION = "1.0.0-3adcec7f3151";
 const CACHE_NAME = `${CACHE_PREFIX}${CACHE_REVISION}`;
 const OFFLINE_PATH = "/offline.html";
 const PRECACHE_PATHS = [
@@ -16,6 +16,7 @@ const PRECACHE_PATHS = [
   "/assets/fonts/inter-700.woff2",
   "/assets/icons/icon-192.svg",
   "/assets/icons/icon-512.svg",
+  "/assets/img/logo/logo.svg",
   "/assets/img/hero/hero-01.jpg",
   "/assets/img/about/lauren.jpg",
   "/manifest.webmanifest",

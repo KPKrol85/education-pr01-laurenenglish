@@ -1,4 +1,4 @@
-import { INDEXABLE_PAGES } from "./site-config.mjs";
+import { INDEXABLE_PAGES, SITE } from "./site-config.mjs";
 
 export const PRIMARY_PAGES = INDEXABLE_PAGES;
 
@@ -72,7 +72,7 @@ export const renderSharedHeader = (pageKey) => {
     <header class="header" id="top">
       <div class="container header__inner">
         <a class="header__logo" href="/index.html" aria-label="Lauren – Clean English"${logoCurrent}>
-          <span class="header__logo-mark">LC</span>
+          <img class="header__logo-image" src="${SITE.brandLogo.path}" alt="" width="${SITE.brandLogo.width}" height="${SITE.brandLogo.height}" />
           <span class="header__logo-text">Lauren – Clean English</span>
         </a>
         <nav class="nav" aria-label="Główna nawigacja">
@@ -116,9 +116,9 @@ export const renderSharedFooter = () => `${SHELL_MARKERS.footerStart}
     <footer class="footer">
       <div class="container footer__grid">
         <div>
-          <a class="header__logo" href="/index.html">
-            <span class="header__logo-mark">LC</span>
-            <span class="header__logo-text">Lauren – Clean English</span>
+          <a class="footer__brand" href="/index.html">
+            <img class="footer__logo-image" src="${SITE.brandLogo.path}" alt="" width="${SITE.brandLogo.width}" height="${SITE.brandLogo.height}" />
+            <span class="footer__brand-text">Lauren – Clean English</span>
           </a>
           <p class="footer__text">Profesjonalny angielski w spokojnym rytmie.</p>
         </div>

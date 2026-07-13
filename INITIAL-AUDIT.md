@@ -122,7 +122,7 @@ The intended source-only UI is more complete than the current runtime suggests. 
    - **Verification or acceptance criteria:** At 320, 390, 768, 1024, and 1440px there is no document-level horizontal overflow, clipping, unintended overlap, or inaccessible off-screen focus; navigation labels and CTAs remain readable and usable; touch targets and line lengths are appropriate; page-level visual regression screenshots show consistent spacing, typography, and component states.
    - **Likely source files or areas:** Shared header/navigation HTML, homepage section structure, `css/tokens/tokens.css`, `css/components/navigation.css`, `css/components/buttons.css`, `css/components/cards.css`, `css/utilities/utilities.css`, section/page CSS
 
-9. [ ] **Correct routing, metadata, and structured-data foundations**
+9. [x] **Correct routing, metadata, and structured-data foundations**
 
    - **Priority:** High
    - **Affected area:** SEO, canonical URLs, 404 behavior, redirects, sitemap, robots, Open Graph, structured data

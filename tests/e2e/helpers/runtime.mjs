@@ -1,12 +1,13 @@
 import { expect } from "@playwright/test";
 
-export const PRIMARY_PAGES = Object.freeze([
-  { path: "/index.html", name: "Strona główna" },
-  { path: "/uslugi.html", name: "Usługi" },
-  { path: "/pakiety.html", name: "Pakiety" },
-  { path: "/materialy.html", name: "Materiały" },
-  { path: "/postepy.html", name: "Postępy" },
-]);
+import { INDEXABLE_PAGES } from "../../../scripts/site-config.mjs";
+
+export const PRIMARY_PAGES = Object.freeze(
+  INDEXABLE_PAGES.map((page) => ({
+    path: page.runtimePath,
+    name: page.title,
+  })),
+);
 
 const isLocalUrl = (url) => {
   try {

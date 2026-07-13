@@ -1,14 +1,6 @@
-export const PRIMARY_PAGES = Object.freeze([
-  { key: "home", file: "index.html", currentHref: "/index.html" },
-  { key: "services", file: "uslugi.html", currentHref: "/uslugi.html" },
-  {
-    key: "packages",
-    file: "pakiety.html",
-    currentHref: "/pakiety.html#pakiety",
-  },
-  { key: "materials", file: "materialy.html", currentHref: "/materialy.html" },
-  { key: "progress", file: "postepy.html", currentHref: "/postepy.html" },
-]);
+import { INDEXABLE_PAGES } from "./site-config.mjs";
+
+export const PRIMARY_PAGES = INDEXABLE_PAGES;
 
 export const SHELL_MARKERS = Object.freeze({
   headerStart: "    <!-- shared-shell:header:start -->",
@@ -62,9 +54,21 @@ const renderFooterLinks = (links) =>
 export const renderSharedHeader = (pageKey) => {
   getPage(pageKey);
   const logoCurrent = pageKey === "home" ? ' aria-current="page"' : "";
+  const preservedHomeAnnotation =
+    pageKey === "home" ? "\n\n    <!-- Header -->" : "";
+  const navToggleStart =
+    pageKey === "home"
+      ? '          <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="nav-drawer" hidden>'
+      : `          <button
+            class="nav__toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="nav-drawer"
+            hidden
+          >`;
 
   return `${SHELL_MARKERS.headerStart}
-    <a class="skip-link" href="#main">Przejdź do treści</a>
+    <a class="skip-link" href="#main">Przejdź do treści</a>${preservedHomeAnnotation}
     <header class="header" id="top">
       <div class="container header__inner">
         <a class="header__logo" href="/index.html" aria-label="Lauren – Clean English"${logoCurrent}>
@@ -72,13 +76,7 @@ export const renderSharedHeader = (pageKey) => {
           <span class="header__logo-text">Lauren – Clean English</span>
         </a>
         <nav class="nav" aria-label="Główna nawigacja">
-          <button
-            class="nav__toggle"
-            type="button"
-            aria-expanded="false"
-            aria-controls="nav-drawer"
-            hidden
-          >
+${navToggleStart}
             <span class="nav__toggle-line"></span>
             <span class="nav__toggle-line"></span>
             <span class="nav__toggle-line"></span>

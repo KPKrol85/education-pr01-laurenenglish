@@ -1,6 +1,6 @@
 # PROJECT CONTEXT
 
-You are a senior frontend developer working in the currently opened `education-pr01-laurenenglish` repository.
+You are a senior frontend and technical SEO developer working in the currently opened `education-pr01-laurenenglish` repository.
 
 Read and follow the current repository state and authoritative documentation before editing, especially:
 
@@ -10,511 +10,639 @@ Read and follow the current repository state and authoritative documentation bef
 * `package.json`
 * `playwright.config.mjs`
 * `.gitignore`
-* `docs/css-architecture.md`
 * `docs/runtime-checklist.md`
-* the canonical CSS source files
-* the shared HTML shell and content renderers
-* the existing project-local Playwright tests
+* existing HTML assembly, build, verification, and deployment files
+* the current project-local Playwright tests
 
 Treat the current repository state as the source of truth.
 
-Roadmap points 1–7 are complete. A permanent project-local Playwright workflow is now available and must be used for browser verification.
+Roadmap points 1–8 are complete. The permanent project-local Playwright workflow is available and must be used for browser and HTTP verification.
 
-Implement only roadmap point 8:
+Implement only roadmap point 9:
 
-> **Stabilize responsive layout and refine the educational UI hierarchy**
+> **Correct routing, metadata, and structured-data foundations**
 
-Do not implement roadmap points 9 or 10.
+Do not implement roadmap point 10.
 
 The original audit reported:
 
-* a 702px document width at a 390px viewport
-* horizontal viewport movement when a closed drawer link received focus
-* an off-canvas drawer remaining outside the viewport
-* crowded desktop navigation with wrapping labels
-* repeated catalogue sections and similarly weighted cards on the homepage
-* weak distinction between primary and secondary calls to action
-* inconsistent visual hierarchy across pages
+* the five primary pages had canonical links and descriptions
+* `404.html`, `offline.html`, and `thank-you.html` reused the homepage canonical
+* utility and error pages had no deliberate indexing policy
+* `_redirects` rewrote every unknown route to `index.html` with status `200`
+* the dedicated 404 page was therefore ineffective and unknown routes could become soft 404s
+* every sitemap entry used the same outdated `2024-06-01` date
+* homepage JSON-LD contained unverified business data
+* Open Graph and social-preview metadata had not been runtime-validated
 
-Some of this evidence may already have been resolved by roadmap points 1–7. Verify the current implementation before changing anything and do not fix issues that are no longer reproducible.
+Some evidence may already have changed during roadmap points 1–8. Verify the current implementation before editing and do not modify behavior that is already correct.
 
-Preserve unrelated user-authored working-tree changes.
+Preserve unrelated user-authored changes, including `PROMPT.md`.
 
 # TASK OBJECTIVE
 
-Stabilize the responsive layout across the complete public website and refine its educational visual hierarchy without redesigning the Lauren English brand.
+Create an intentional and internally consistent routing, indexing, metadata, social-preview, sitemap, robots, and structured-data foundation for the static Lauren English website.
 
-The completed implementation must:
+The completed implementation must ensure that:
 
-* eliminate document-level horizontal overflow
-* prevent clipping, overlap, and off-screen interactive content
-* preserve accessible mobile drawer behavior
-* prevent desktop navigation labels and actions from wrapping or colliding
-* improve responsive typography, spacing, line length, and content rhythm
-* establish a clearer hierarchy between primary, secondary, and supporting content
-* normalize card and button importance
-* reduce unnecessary homepage repetition
-* keep canonical package and material data single-source
-* preserve the established warm green educational direction
-* preserve both accessible themes
-* remain stable from narrow phones through large desktops
+* every known public route returns the intended successful response
+* every unknown route returns an actual HTTP `404`
+* missing routes are not rewritten to the homepage
+* indexable pages have unique, verified metadata
+* canonical and Open Graph URLs are synchronized
+* utility and error pages have a deliberate `noindex` policy
+* utility and error pages do not reuse the homepage canonical
+* only indexable public routes appear in the sitemap
+* sitemap modification dates are trustworthy or omitted
+* `robots.txt` points to the real deployed sitemap
+* structured data contains only supported and verified information
+* social-preview metadata uses a crawler-compatible image
+* metadata remains deterministic and maintainable through the existing build pipeline
 
-This is a focused responsive and hierarchy refinement task, not a visual redesign.
+This is a technical SEO and routing task. Do not redesign the website or rewrite unrelated content.
 
 # IMPLEMENTATION PLAN
 
-## 1. Inspect the current implementation
+## 1. Inspect the current routing and metadata model
 
-Inspect the complete current diff and relevant source files before editing.
+Inspect the complete working tree and current source-of-truth architecture before editing.
 
 At minimum, review:
 
+* all five primary page sources
+* `404.html`
+* `offline.html`
+* `thank-you.html`
+* `_redirects`
+* `robots.txt`
+* `sitemap.xml`
+* `assets/og/og-default.svg`
 * `scripts/shared-shell.mjs`
 * `scripts/build-html.mjs`
 * `scripts/content-renderers.mjs`
-* the five primary page sources
-* `css/tokens/tokens.css`
-* `css/base/`
-* `css/utilities/`
-* `css/components/navigation.css`
-* `css/components/buttons.css`
-* `css/components/cards.css`
-* relevant section and page CSS
-* existing responsive Playwright tests
+* `service-worker.template.js`
+* current generated HTML
+* current Playwright smoke and runtime helpers
+* any existing metadata, route, deployment, or SEO configuration
 
-Confirm the current completion state in `INITIAL-AUDIT.md`.
+Record the current:
 
-Do not assume the original audit evidence is still valid.
+* canonical site origin
+* public route set
+* redirect rules
+* indexing policy
+* canonical links
+* Open Graph tags
+* Twitter card tags
+* JSON-LD blocks
+* sitemap entries
+* sitemap dates
+* robots directives
+* service-worker navigation behavior
 
-## 2. Establish a browser baseline
+Do not assume the original audit evidence is still reproducible.
 
-Use the existing project-local Playwright workflow.
+## 2. Resolve the authoritative public origin
 
-Verify all five primary pages at:
+Determine the authoritative deployed HTTPS origin from current repository evidence such as:
 
-* 320px
-* 390px
-* 768px
-* 1024px
-* 1440px
+* existing canonical URLs
+* README deployment documentation
+* current Open Graph URLs
+* sitemap
+* robots
+* deployment configuration
 
-Check representative pages in both light and dark themes where visual hierarchy or component boundaries could differ.
+Use one verified origin consistently.
 
-Record confirmed issues before editing.
+Do not invent a new production domain.
 
-Do not create temporary Playwright scripts under `C:\tmp`.
+If the repository contains conflicting origins, reconcile them using the most authoritative current deployment documentation.
 
-## 3. Eliminate horizontal overflow
+If no authoritative public origin can be established, do not guess. Report the blocker and leave roadmap point 9 unchecked.
 
-Identify the real source of any document-level overflow.
+## 3. Define the intentional public route set
 
-Inspect:
+Define the current static route policy for:
 
-* off-canvas navigation positioning
-* fixed and absolute elements
-* transforms
-* intrinsic flex and grid sizing
-* long labels and unbroken content
-* media dimensions
-* card minimum widths
-* CTA groups
-* page padding and container calculations
+### Indexable primary pages
 
-Correct the source of overflow instead of hiding it globally.
+* homepage
+* services page
+* packages page
+* materials page
+* progress page
 
-Use appropriate techniques such as:
+Use the actual current filenames and canonical URL style from the repository.
 
-* `min-width: 0`
-* `minmax(0, 1fr)`
-* safe wrapping
-* responsive stacking
-* contained transforms
-* viewport-safe drawer sizing
-* intrinsic media containment
+Do not switch between `.html`, extensionless URLs, or trailing-slash URLs without a deliberate migration reason.
 
-Do not use a global `overflow-x: hidden` workaround unless the real overflow source has first been corrected and the remaining rule is demonstrably appropriate.
+### Non-indexable utility pages
 
-Ensure focusing any interactive element cannot shift the document horizontally.
+* `404.html`
+* `offline.html`
+* `thank-you.html`
 
-## 4. Stabilize mobile navigation
+These pages must remain accessible where required but must not be treated as normal search-result pages.
 
-Preserve the established accessible drawer contracts:
+Prefer one small canonical route and metadata registry integrated with the existing HTML build architecture if it prevents duplicated route literals across:
 
-* closed drawer content is not keyboard-focusable
-* the drawer opens fully inside the viewport
-* the drawer has an opaque semantic surface
-* drawer content can scroll vertically where required
-* focus is trapped while open
-* Escape closes the drawer
-* focus returns to the trigger
-* synchronized theme controls remain usable
-* no drawer content overlaps or leaks onto the page
-* no fixed element expands the document width
+* page metadata
+* sitemap generation
+* robots generation
+* structured-data URLs
+* route verification
 
-Test the drawer at 320px and 390px, including enlarged text and long navigation labels where practical.
+Do not introduce a parallel site generator or broad architecture rewrite.
 
-## 5. Refine desktop header composition
+## 4. Correct static routing and 404 behavior
 
-Measure the real width needed by:
+Inspect `_redirects` and remove the catch-all homepage rewrite that returns `index.html` with status `200`.
 
-* logo
-* navigation labels
-* current-page state
-* theme control
-* primary CTA
-* menu spacing
+Preserve legitimate explicit redirects that are still required.
 
-Choose a deliberate navigation transition based on actual content width.
+Configure unknown routes to return the dedicated 404 document with HTTP status `404`.
 
-Switch to the mobile navigation composition before desktop navigation labels begin wrapping, colliding, or becoming cramped.
-
-Do not:
-
-* remove navigation destinations
-* shorten labels without a content reason
-* reduce text to an uncomfortably small size
-* add multiple narrowly spaced breakpoints
-
-Reuse the current breakpoint system where possible. Add or adjust a breakpoint only when real content measurements justify it.
-
-## 6. Refine containers and readable line lengths
-
-Ensure narrow screens retain safe page-edge spacing.
-
-Ensure larger screens do not create excessively stretched layouts.
-
-Refine readable measures for:
-
-* hero copy
-* section introductions
-* body paragraphs
-* form guidance
-* card descriptions
-* progress explanations
-* unavailable or status messages
-
-Use the existing token system.
-
-Add or adjust semantic layout tokens only when the value is genuinely reusable across multiple areas.
-
-## 7. Refine typography and spacing rhythm
-
-Do not change the font family during this task.
-
-Keep Inter as the current project font.
-
-Refine the existing responsive type scale only where the current hierarchy is weak.
-
-Preserve semantic heading order.
-
-Improve vertical rhythm between:
-
-* page headers and content
-* section headings and introductions
-* card groups
-* form groups
-* CTA groups
-* hero content and following sections
-* final content sections and footer
-
-Prefer existing spacing and typography tokens over raw values.
-
-## 8. Refine homepage hierarchy
-
-Review the homepage as a complete learning-oriented journey.
-
-It should clearly communicate:
-
-1. the primary educational proposition
-2. the main learning or service value
-3. a representative offer
-4. supporting materials or progress context
-5. one clear next action
-
-Identify full catalogue content that is already available on dedicated pages.
-
-Reduce repetition conservatively by rendering curated representative items where appropriate.
-
-Use existing canonical data, featured flags, renderers, and destination links.
-
-Do not create a second package or material data source.
-
-Do not remove essential educational context merely to shorten the page.
-
-## 9. Normalize CTA hierarchy
-
-Review all major CTA groups.
-
-Establish a consistent hierarchy:
-
-* one dominant primary action per major context
-* secondary actions with reduced visual weight
-* tertiary or informational links using quiet treatment
+For a Netlify-style static deployment, use the platform’s correct custom-404 behavior without creating an SPA fallback.
 
 Ensure:
 
-* labels remain readable at 320px
-* CTA groups stack or wrap before becoming cramped
-* buttons do not overflow their containers
-* touch targets remain comfortable
-* disabled and unavailable states remain clear
-* both themes preserve contrast and hierarchy
+* known content routes return `200`
+* static assets return their correct status
+* direct utility-page URLs remain accessible
+* an unknown URL returns `404`
+* the unknown response displays the intended 404 content where the deployment model supports it
+* redirect loops do not exist
+* unknown routes are never normalized to the homepage with status `200`
 
-Reuse the existing button component system rather than creating many new variants.
+Do not introduce a JavaScript router.
 
-## 10. Normalize card hierarchy
+Do not add Netlify CLI or another deployment dependency solely for this task.
 
-Review cards across:
+## 5. Review service-worker navigation behavior
 
-* services
-* packages
-* materials
-* progress
-* educational/editorial content
-* contact and unavailable states
+Inspect `service-worker.template.js` and the generated service worker.
 
-Improve distinction between:
+Ensure the service worker does not convert unknown online navigations into homepage responses.
 
-* featured cards
-* standard cards
-* informational cards
-* unavailable or disabled cards
+Preserve the intended offline experience:
 
-Ensure card grids:
+* online unknown routes retain real `404` behavior
+* offline navigations may use `offline.html`
+* error responses are not incorrectly cached as valid content
+* the homepage is not used as a generic missing-route fallback
+* PWA behavior from previous roadmap points remains intact
 
-* remain contained at all required widths
-* collapse predictably
-* do not use minimum widths that force overflow
-* preserve consistent internal spacing
-* use clear heading and action hierarchy
-* do not all compete with equal visual weight
+Use fresh browser contexts and disabled or isolated service workers when testing online HTTP routing.
 
-Reuse established card variants.
+## 6. Create deliberate metadata policies
 
-Avoid creating near-duplicate component classes.
+Define explicit metadata behavior for each page category.
 
-## 11. Align secondary pages
+### Indexable primary pages
 
-Verify that all primary and secondary public pages share a coherent baseline for:
+Each primary page must have:
 
-* page-header spacing
-* content width
-* heading hierarchy
-* section spacing
-* card treatment
-* form treatment
-* CTA hierarchy
-* footer spacing
+* one unique `<title>`
+* one useful and page-specific meta description
+* one absolute self-referencing canonical URL
+* one matching absolute `og:url`
+* page-appropriate `og:title`
+* page-appropriate `og:description`
+* appropriate `og:type`
+* consistent `og:site_name`
+* correct locale metadata where currently supported
+* a valid social-preview image
+* matching Twitter card metadata where used
 
-Do not redesign or expand page content outside the needs of point 8.
+Canonical and `og:url` values must match exactly after URL normalization.
 
-## 12. Preserve existing guarantees
+Do not create duplicate canonical, description, Open Graph, or Twitter tags.
 
-Do not regress:
+Use existing visible page content as the source for titles and descriptions. Do not invent unsupported marketing claims.
 
-* keyboard navigation
-* visible focus
-* `aria-current`
-* `aria-expanded`
-* `aria-hidden`
-* `inert`
-* focus trapping and restoration
-* progressive enhancement
-* JavaScript-disabled content visibility
-* storage failure handling
-* reduced-motion behavior
-* light and dark theme contrast
-* canonical package and material rendering
-* production build determinism
-* PWA behavior
+### Utility and error pages
 
-## 13. Update focused Playwright coverage
+For `404.html`, `offline.html`, and `thank-you.html`:
 
-Extend the existing project-local Playwright suite only where required for point 8.
+* add a deliberate `noindex, nofollow` policy
+* remove the reused homepage canonical
+* do not point canonical metadata at an unrelated indexable page
+* avoid conflicting canonical and `noindex` signals
+* remove or minimize unnecessary Open Graph and Twitter metadata
+* keep titles descriptive and utility-specific
+* exclude the pages from the sitemap
 
-Add or refine deterministic checks for:
+Do not use `robots.txt` disallow rules as a replacement for page-level `noindex`.
 
-* document width not exceeding viewport width
-* no horizontal scrolling
-* no focus-triggered viewport movement
-* header controls remaining visible
-* desktop navigation labels not wrapping or colliding
-* mobile drawer containment
-* closed drawer focus safety
-* CTA visibility and wrapping
-* representative card-grid containment
+## 7. Correct the social-preview image foundation
 
-Test the required widths:
+Inspect `assets/og/og-default.svg` and current social metadata.
 
-* 320px
-* 390px
-* 768px
-* 1024px
-* 1440px
+Major social crawlers should receive a crawler-compatible raster image.
 
-Use semantic locators and observable state.
+If the current Open Graph image is SVG-only:
 
-Do not add pixel-perfect screenshot assertions.
+* retain the SVG as the editable source if appropriate
+* create a deterministic raster derivative such as `assets/og/og-default.png`
+* preserve the existing approved design rather than redesigning it
+* use a suitable social-preview size, preferably `1200 × 630`
+* avoid adding a permanent image-processing dependency unless one already exists
+* commit the final raster asset required by social metadata
 
-Do not recreate the previous temporary browser harness.
+For the final Open Graph and Twitter image metadata, provide where appropriate:
 
-Capture review screenshots through the existing workflow only where useful, without committing unstable baselines.
+* absolute image URL
+* secure HTTPS URL
+* MIME type
+* width
+* height
+* descriptive image alt text
 
-## 14. Build and verify
+Verify that the referenced asset exists and returns a successful response.
 
-After source changes:
+Do not claim that SVG social-preview support is sufficient unless it is demonstrably supported by the required metadata targets.
 
-1. regenerate shared HTML through the existing build commands
+## 8. Remove unsupported structured data
+
+Inspect every JSON-LD block.
+
+Remove unsupported or unverified fields such as any unverified:
+
+* business identity
+* organization identity
+* postal address
+* telephone number
+* opening hours
+* price range
+* rating or review aggregate
+* social profile
+* founder or employee identity
+* commercial offer
+* service guarantee
+
+Do not retain `LocalBusiness`, `Organization`, `Person`, `Offer`, `Product`, `AggregateRating`, `Review`, or similar entities unless the required information is explicitly verified by authoritative project content.
+
+Prefer a minimal supported model, such as:
+
+* `WebSite` on the homepage
+* `WebPage` on indexable pages
+* `inLanguage`
+* verified page name and description
+* absolute page URL
+* consistent site identity
+
+Do not add `SearchAction` because the site has no verified site-search feature.
+
+Do not add breadcrumb structured data unless visible breadcrumbs and a real breadcrumb hierarchy exist.
+
+Ensure:
+
+* JSON-LD is valid JSON
+* all URLs are absolute and use the authoritative origin
+* `@id` values are stable and non-conflicting
+* visible content and structured data agree
+* utility pages do not expose inappropriate business or page entities
+* there is no duplicated or contradictory structured data
+
+## 9. Regenerate the sitemap from the real route set
+
+Make `sitemap.xml` represent only the current indexable public route set.
+
+Requirements:
+
+* include each indexable primary URL exactly once
+* exclude `404.html`
+* exclude `offline.html`
+* exclude `thank-you.html`
+* use the authoritative HTTPS origin
+* avoid duplicate URL variants
+* use valid XML
+* preserve a deterministic route order
+
+Correct the placeholder `2024-06-01` modification dates.
+
+For `<lastmod>`:
+
+* include it only when the date represents a real content modification
+* do not use build time
+* do not use filesystem modification time
+* do not use the current date merely because the build ran
+* do not preserve known placeholder dates
+* omit `<lastmod>` when a trustworthy content date is unavailable
+
+If route metadata is centralized, generate the sitemap from that source through the existing build workflow.
+
+Do not manually maintain a second independent route list when avoidable.
+
+## 10. Correct robots.txt
+
+Ensure `robots.txt`:
+
+* uses valid directives
+* does not accidentally block indexable content or required assets
+* does not use disallow rules as a substitute for `noindex`
+* contains one absolute `Sitemap:` directive
+* points to the deployed sitemap under the authoritative HTTPS origin
+* does not reference a stale domain or path
+
+Generate it from the same verified site origin where practical.
+
+## 11. Add deterministic SEO validation
+
+Add or extend a focused project-local static check, for example `scripts/check-seo.mjs`, if no equivalent check exists.
+
+The check should validate at minimum:
+
+* unique primary-page titles
+* unique primary-page descriptions
+* exactly one canonical on each indexable page
+* canonical URLs are absolute
+* `og:url` matches canonical
+* required Open Graph metadata exists
+* required Twitter metadata exists where the project uses Twitter cards
+* social-preview assets exist
+* utility pages contain `noindex`
+* utility pages do not reuse the homepage canonical
+* utility pages are absent from the sitemap
+* sitemap URLs exactly match the indexable route registry
+* sitemap dates are valid when present
+* robots sitemap URL matches the authoritative origin
+* JSON-LD parses successfully
+* disallowed or unsupported structured-data types and fields are absent
+* `_redirects` contains no homepage catch-all rewrite with status `200`
+* the intended 404 rule is present
+
+Keep the check deterministic and dependency-light.
+
+Do not duplicate complete HTML, content, or CSS checks already covered by existing scripts.
+
+Add a focused npm script such as:
+
+* `check:seo`
+
+Integrate it into the appropriate verification workflow only if that matches the current package-script architecture.
+
+## 12. Add focused Playwright SEO and routing coverage
+
+Extend the permanent project-local Playwright suite with a focused specification such as:
+
+* `tests/e2e/seo-routing.spec.mjs`
+
+Add an npm command such as:
+
+* `test:e2e:seo`
+
+Use the existing Playwright configuration, server lifecycle, diagnostics, storage isolation, and service-worker policy.
+
+Verify through browser and request-level assertions:
+
+### HTTP routing
+
+* all five primary routes return `200`
+* required static assets return `200`
+* direct utility routes remain accessible
+* one or more unknown routes return `404`
+* unknown routes do not return homepage content as successful pages
+* no redirect loop occurs
+
+### Runtime metadata
+
+For every indexable page:
+
+* title is present
+* description is present
+* canonical is present and unique
+* canonical is self-consistent
+* `og:url` equals canonical
+* Open Graph image URL is absolute
+* Open Graph image request succeeds
+* JSON-LD parses without runtime errors
+
+For utility pages:
+
+* robots policy contains `noindex`
+* homepage canonical is not reused
+* no conflicting indexable metadata remains
+
+### Sitemap and robots
+
+* `sitemap.xml` returns successfully
+* `robots.txt` returns successfully
+* sitemap URLs match the expected route set
+* robots references the deployed sitemap
+
+Use semantic and deterministic assertions.
+
+Do not create a temporary harness under `C:\tmp`.
+
+Do not add pixel-perfect screenshot tests.
+
+## 13. Validate social and structured metadata honestly
+
+Perform deterministic local validation of:
+
+* meta-tag consistency
+* absolute URLs
+* image reachability
+* image dimensions and MIME type
+* JSON-LD syntax
+* allowed structured-data types
+* sitemap and robots consistency
+
+Use official external structured-data or social-preview validators only when they are genuinely accessible.
+
+Do not claim Google, Schema.org, Facebook, LinkedIn, X, or another external validator passed unless it was actually executed.
+
+An unavailable external service must not cause repeated test-harness rebuilding.
+
+## 14. Update documentation
+
+Update README or focused project documentation with the final policy for:
+
+* authoritative site origin
+* indexable route set
+* non-indexable utility pages
+* canonical URL conventions
+* social-preview asset
+* sitemap generation
+* robots generation
+* structured-data scope
+* local SEO verification commands
+* E2E routing and metadata command
+* real 404 behavior
+
+Keep documentation aligned with the actual implementation.
+
+Do not add speculative deployment instructions.
+
+## 15. Build and verify
+
+After canonical source changes:
+
+1. regenerate shared HTML through the existing build workflow
 2. regenerate production CSS, JavaScript, and service-worker output
-3. verify generated HTML idempotence
-4. run all existing static checks
-5. run the complete Playwright suite
-6. run the focused responsive suite
+3. regenerate sitemap and robots if they are build-managed
+4. verify generated HTML idempotence
+5. run all existing static checks
+6. run the new focused SEO check
+7. run the focused SEO and routing Playwright suite
+8. run the complete Playwright suite
 
-Run at minimum:
+Run at minimum, using the real current package scripts:
 
 * `npm run build`
 * `npm run check:data`
 * `npm run check:content`
 * `npm run check:html`
 * `npm run check:css`
+* `npm run check:seo`
+* `npm run test:e2e:seo`
 * `npm run test:e2e`
-* `npm run test:e2e:responsive`
-* relevant JavaScript syntax checks
+* relevant `node --check` commands
 * relevant Prettier checks
 * `git diff --check`
 
-Use the real scripts currently defined in `package.json`.
+Verify the build does not create stale or non-idempotent HTML changes.
 
-Do not report a command as passing unless it was actually executed.
+Perform one complete verification pass after implementation.
 
-Perform one complete browser verification pass after implementation.
+Allow at most one targeted rerun after a confirmed product defect is corrected.
 
-A single targeted rerun is allowed after a confirmed product defect is corrected.
+If the project-local testing infrastructure fails twice for the same environment reason, stop and report the blocker instead of building a replacement harness.
 
-Do not repeatedly rewrite or debug the test harness. If the project-local Playwright infrastructure fails twice for the same environment reason, stop and report the blocker.
-
-## 15. Update the roadmap
+## 16. Update the roadmap
 
 Only after all acceptance criteria pass:
 
-* mark roadmap point 8 as `[x]`
-* leave points 9 and 10 unchecked
+* mark roadmap point 9 as `[x]`
+* leave roadmap point 10 unchecked
 * do not modify unrelated roadmap items
 
-If browser verification is incomplete or blocked, leave point 8 unchecked.
+If the public origin cannot be verified, route status cannot be confirmed, or required browser verification remains blocked, leave point 9 unchecked.
 
 # CONSTRAINTS
 
-* Do not redesign the Lauren English brand.
-* Preserve the warm green educational direction.
+* Do not implement roadmap point 10.
+* Do not redesign the site.
 * Do not change the font family.
-* Do not introduce a serif heading font yet.
+* Do not rewrite unrelated page content.
 * Do not introduce Vite.
-* Do not replace the current production build pipeline.
-* Do not implement roadmap points 9 or 10.
-* Do not implement the separate localhost port `8181` source-preview workflow.
-* Do not rebuild the Playwright workflow from scratch.
-* Do not create temporary test harnesses outside the repository.
+* Do not replace the existing production build pipeline.
+* Do not introduce a JavaScript router.
+* Do not restore an SPA fallback.
+* Do not rewrite unknown paths to the homepage.
+* Do not invent a deployment domain.
+* Do not invent business details.
+* Do not invent addresses, telephone numbers, opening hours, reviews, ratings, prices, social profiles, or organization identities.
+* Do not retain unsupported structured data for appearance alone.
+* Do not add new SEO or schema dependencies unless strictly necessary.
+* Do not add Netlify CLI solely for this task.
+* Do not add an external sitemap generator.
+* Do not add temporary browser scripts outside the repository.
 * Do not use machine-specific absolute paths.
-* Do not add a CSS framework or component library.
-* Do not add broad decorative animation.
-* Do not add new marketing claims, testimonials, legal text, contact details, prices, or guarantees.
-* Do not duplicate package or material data.
 * Do not manually edit generated HTML or minified assets.
 * Edit canonical source files and regenerate outputs.
-* Do not introduce inline styles.
-* Do not use styling IDs.
-* Do not introduce unnecessary `!important`.
-* Do not introduce deep contextual selectors when a component class is appropriate.
-* Do not hide essential content as an overflow workaround.
-* Do not reduce text to an unreadable size to make navigation fit.
-* Do not create many narrowly spaced breakpoints.
-* Do not perform unrelated refactors.
+* Do not add utility pages to the sitemap.
+* Do not use `robots.txt` disallow as a substitute for `noindex`.
+* Do not create fake `<lastmod>` dates.
+* Do not use build time as a content modification date.
+* Do not create multiple competing route registries.
+* Do not add pixel-perfect screenshot baselines.
+* Do not weaken service-worker offline behavior.
+* Do not modify unrelated dependency versions.
 * Preserve unrelated working-tree changes.
-* Keep the final diff focused and reviewable.
+* Keep the diff focused and reviewable.
 
 # TECHNICAL RULES
 
-* Follow the existing token-first CSS architecture.
-* Preserve the established CSS import and layer order.
-* Use BEM-style component classes.
-* Keep selector specificity low.
-* Prefer semantic tokens over raw colors, spacing, radii, shadows, and typography values.
-* Use fluid sizing only where it improves actual responsive behavior.
-* Use safe flex and grid sizing.
-* Use responsive stacking before controls become compressed.
-* Keep touch targets comfortably usable.
-* Preserve semantic HTML and heading order.
-* Preserve visible keyboard focus.
-* Preserve all current ARIA and focus-management contracts.
-* Preserve synchronized theme controls.
-* Preserve no-JavaScript content visibility.
-* Use only the permanent project-local Playwright configuration and tests.
-* Use semantic browser locators.
+* Follow the existing source-of-truth and generation architecture.
+* Prefer one verified site-origin constant.
+* Prefer one maintainable public-route and metadata registry.
+* Reuse the existing HTML assembler rather than creating a second page-generation system.
+* Use absolute HTTPS URLs for canonical, Open Graph, sitemap, and structured-data URLs.
+* Normalize URL style consistently.
+* Ensure each indexable page has one canonical URL.
+* Ensure `og:url` matches canonical.
+* Keep titles and descriptions unique and grounded in visible content.
+* Keep utility pages deliberately non-indexable.
+* Use a raster social-preview image compatible with common crawlers.
+* Keep JSON-LD minimal, valid, verified, and consistent with visible content.
+* Keep sitemap entries limited to canonical indexable routes.
+* Omit unreliable sitemap dates.
+* Preserve real HTTP status semantics.
+* Preserve progressive enhancement, accessibility, themes, PWA behavior, and reduced motion.
+* Use the existing project-local Playwright infrastructure.
+* Use API request assertions for HTTP status verification.
+* Use observable browser metadata assertions.
 * Avoid arbitrary timeout-based waits.
-* Keep browser checks focused on observable responsive behavior.
-* Do not duplicate complete static validation already handled by Node scripts.
-* Update documentation only where the maintained responsive system or component hierarchy genuinely changes.
-* Report only verification genuinely performed.
+* Report only checks genuinely performed.
 
 Acceptance criteria:
 
-* no document-level horizontal overflow at 320, 390, 768, 1024, or 1440px
-* no focus-triggered horizontal movement
-* no clipping or unintended overlap
-* mobile drawer remains contained, scrollable, focus-safe, and fully usable
-* closed mobile navigation cannot receive focus
-* desktop navigation labels do not wrap or collide
-* navigation changes composition before available width becomes insufficient
-* header controls remain readable and usable
-* CTAs remain visible, readable, and correctly prioritized
-* CTA groups wrap or stack before becoming cramped
-* card grids remain contained and predictable
-* text measures remain readable
-* narrow layouts retain safe page-edge spacing
-* large layouts do not become excessively stretched
-* homepage repetition is reduced without removing essential educational context
-* canonical package and material data remain single-source
-* shared page hierarchy and spacing remain coherent
-* light and dark themes retain accessible contrast
-* keyboard, focus, progressive enhancement, and reduced-motion behavior remain intact
-* production build and static checks pass
-* complete project-local Playwright tests pass
-* focused responsive tests pass
-* only roadmap point 8 is marked `[x]`
-* points 9 and 10 remain unchecked
+* all five primary public routes return `200`
+* unknown routes return actual `404`
+* unknown routes are not rewritten to homepage content with `200`
+* `_redirects` contains no catch-all homepage rewrite
+* the dedicated 404 behavior is intentional
+* online unknown navigation is not masked by the service worker
+* primary pages have unique titles and descriptions
+* each indexable page has exactly one self-consistent canonical
+* each indexable page has matching `og:url`
+* utility pages have deliberate `noindex, nofollow`
+* utility pages do not reuse the homepage canonical
+* utility pages are absent from the sitemap
+* sitemap contains exactly the real indexable route set
+* sitemap contains no placeholder modification dates
+* `<lastmod>` values are trustworthy or omitted
+* robots points to the correct deployed sitemap
+* social-preview metadata references a reachable crawler-compatible image
+* Open Graph image metadata includes accurate dimensions and type
+* JSON-LD parses correctly
+* unsupported and unverified business fields are absent
+* structured data agrees with visible content
+* static SEO checks pass
+* focused SEO and routing Playwright tests pass
+* the complete Playwright suite passes
+* existing data, content, HTML, and CSS checks pass
+* only roadmap point 9 is marked `[x]`
+* roadmap point 10 remains unchecked
 
 # OUTPUT EXPECTATION
 
 Return a concise final report containing:
 
 * documentation and source files inspected
+* authoritative public origin confirmed
 * original audit evidence reproduced
 * original evidence that was no longer reproducible
-* confirmed responsive problems
-* navigation and breakpoint decisions
-* mobile drawer changes and verification
-* container and line-length refinements
-* typography and spacing refinements
-* CTA hierarchy refinements
-* card hierarchy refinements
-* homepage content reductions
-* canonical data or renderer changes, if any
-* secondary-page consistency improvements
-* files changed
+* final indexable route set
+* final non-indexable utility route set
+* `_redirects` changes
+* known-route HTTP results
+* unknown-route HTTP result
+* service-worker navigation findings
+* metadata changes by page category
+* canonical and Open Graph synchronization
+* social-preview asset changes
+* structured-data types retained
+* unsupported structured-data fields removed
+* sitemap entries and last-modification policy
+* robots changes
+* route or metadata registry added or updated
+* static SEO checks added
+* Playwright SEO and routing tests added
+* npm scripts added or updated
+* documentation changes
 * generated files rebuilt
-* Playwright tests added or updated
-* viewport and theme combinations tested
-* horizontal-overflow result for each required viewport width
-* keyboard and off-screen-focus results
-* console, page-error, request, and HTTP results
 * static checks executed
-* browser checks executed
-* confirmation that no temporary external test harness was created
+* focused browser checks executed
+* complete E2E result
+* console, page-error, request, and HTTP diagnostics
+* confirmation that no external temporary harness was created
 * confirmation that unrelated working-tree changes were preserved
-* confirmation that only roadmap point 8 was marked `[x]`
-* confirmation that points 9 and 10 remain unchecked
+* confirmation that only roadmap point 9 was marked `[x]`
+* confirmation that point 10 remains unchecked
 * any blocker that prevented full acceptance
 
 Do not include unrelated recommendations.

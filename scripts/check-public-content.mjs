@@ -2,17 +2,10 @@ import { readFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { ALL_PAGES } from "./site-config.mjs";
+
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const PUBLIC_PAGES = Object.freeze([
-  "index.html",
-  "uslugi.html",
-  "pakiety.html",
-  "materialy.html",
-  "postepy.html",
-  "thank-you.html",
-  "offline.html",
-  "404.html",
-]);
+const PUBLIC_PAGES = Object.freeze(ALL_PAGES.map(({ file }) => file));
 
 const FORBIDDEN_PUBLIC_PATTERNS = Object.freeze([
   {
@@ -68,9 +61,9 @@ const FORBIDDEN_PUBLIC_PATTERNS = Object.freeze([
     pattern: /data-netlify|data-contact-form|name="contact"|type="email"/iu,
   },
   {
-    label: "unsupported structured data",
+    label: "unsupported structured-data field",
     pattern:
-      /application\/ld\+json|"(?:telephone|email|openingHours|sameAs|aggregateRating|review)"\s*:/iu,
+      /"(?:address|telephone|email|openingHours|priceRange|sameAs|aggregateRating|review|offers|founder|employee)"\s*:/iu,
   },
   {
     label: "unsupported contact action",
@@ -108,5 +101,5 @@ assert(
 );
 
 console.log(
-  `Verified public-content integrity for ${PUBLIC_PAGES.length} pages: no unsupported claims, contact data collection, structured data, social profiles, or legal placeholders.`,
+  `Verified public-content integrity for ${PUBLIC_PAGES.length} pages: no unsupported claims, contact data collection, structured-data fields, social profiles, or legal placeholders.`,
 );

@@ -19,6 +19,7 @@ Profesjonalna, wielostronicowa strona edukacyjna dla nauczycielki języka angiel
 ```
 index.html + pozostałe pliki HTML       # samodzielne, złożone strony
 scripts/shared-shell.mjs                # kanoniczny header/nav/footer
+scripts/site-config.mjs                 # kanoniczny origin, trasy i metadane SEO
 scripts/build-html.mjs                  # assembler i walidator HTML
 css/style.css                           # kanoniczny entry CSS
 css/{tokens,base,utilities,...}/        # modułowe źródła CSS
@@ -38,6 +39,7 @@ service-worker.js                        # wygenerowany Service Worker
 - `npm run check:data` – sprawdza kanoniczne pakiety, materiały, dostęp i wyniki filtrów.
 - `npm run check:content` – sprawdza publiczne strony pod kątem niezweryfikowanych danych, atrap prawnych, opinii i aktywnego formularza danych osobowych.
 - `npm run check:css` – sprawdza kolejność warstw, semantyczne tokeny obu motywów, surowe kolory, selektory, duplikaty utilities i kontrast WCAG.
+- `npm run check:seo` – sprawdza trasy, metadane, JSON-LD, raster Open Graph, sitemapę, robots i politykę 404/noindex.
 - `npm run test:e2e` – buduje produkcyjne pliki, uruchamia lokalny serwer i pełny zestaw testów Chromium w widokach desktop oraz mobile.
 - `npm run build:html` – składa wspólny header, nawigację i footer w pięciu głównych stronach oraz statyczny katalog materiałów.
 - `npm run check:html` – bez zapisu sprawdza aktualność regionów generowanych, semantykę, ID i lokalne linki.
@@ -83,6 +85,7 @@ Dostępne polecenia skupione:
 - `npm run test:e2e:interactions` – nawigacja, drawer, focus, accordion i tabs.
 - `npm run test:e2e:theme` – light/dark, synchronizacja kontrolek i przywracanie zapisanego motywu.
 - `npm run test:e2e:responsive` – szerokości 320, 390, 768, 1024 i 1440 px, overflow i containment.
+- `npm run test:e2e:seo` – statusy tras i zasobów, prawdziwe 404, metadane runtime, sitemapę i robots.
 - `npm run test:e2e:headed` – pełny zestaw w widocznym Chromium.
 - `npm run test:e2e:ui` – interaktywny tryb Playwright UI.
 - `npm run test:e2e:report` – otwiera ostatni raport HTML.
@@ -133,6 +136,29 @@ Każda strona ma dokładnie jeden stan `aria-current="page"`: na stronie główn
 - Manifest i ikony w `/assets/icons/`.
 - Service worker z cache app shell i offline fallback (`offline.html`).
 - `robots.txt`, `sitemap.xml`, `_redirects`.
+
+## SEO i routing
+
+Kanoniczny origin wdrożenia to `https://education-pr-01-lauren-english.netlify.app`. Jedynym źródłem originu, publicznych tras i metadanych jest `scripts/site-config.mjs`.
+
+Indeksowane trasy to:
+
+- `/`
+- `/uslugi.html`
+- `/pakiety.html`
+- `/materialy.html`
+- `/postepy.html`
+
+Strony `/404.html`, `/offline.html` i `/thank-you.html` są dostępne technicznie, ale mają `noindex, nofollow`, bez canonical, Open Graph, Twitter Cards i JSON-LD. Każda indeksowana strona ma jeden absolutny canonical zgodny z `og:url`, unikalny tytuł i opis oraz minimalne dane `WebSite` albo `WebPage` bez niezweryfikowanych danych firmy.
+
+Edytowalnym źródłem grafiki społecznościowej jest `assets/og/og-default.svg`, a metadane crawlerów wskazują na śledzony raster `assets/og/og-default.png` o rozmiarze `1200 × 630`. `npm run build:html` generuje metadane w oznaczonych regionach oraz odświeża `sitemap.xml`, `robots.txt` i `_redirects` z rejestru. Sitemapa zawiera wyłącznie pięć indeksowanych canonicali i nie publikuje niewiarygodnych dat `lastmod`.
+
+`_redirects` nie zawiera fallbacku SPA do strony głównej. Na Netlify obecność głównego `404.html` zapewnia dedykowaną odpowiedź dla nieznanych tras z prawdziwym statusem `404`; lokalny serwer testowy zachowuje tę samą semantykę. `serve.json` wyłącza lokalne przepisywanie adresów `.html`, aby testy odwzorowywały udokumentowany styl canonical. Weryfikacja:
+
+```powershell
+npm run check:seo
+npm run test:e2e:seo
+```
 
 ## Uwagi
 

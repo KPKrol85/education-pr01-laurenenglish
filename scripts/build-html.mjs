@@ -17,6 +17,14 @@ import {
   renderPackagePageCards,
   validateContentData,
 } from "./content-renderers.mjs";
+import {
+  ALL_PAGES,
+  SEO_MARKERS,
+  renderRedirects,
+  renderRobots,
+  renderSeoHead,
+  renderSitemap,
+} from "./site-config.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const CHECK_ONLY = process.argv.includes("--check");
@@ -53,8 +61,18 @@ const replaceRegion = (source, startMarker, endMarker, replacement, file) => {
 };
 
 const assemblePage = (source, page) => {
-  const withHeader = replaceRegion(
+  const withSeo = replaceRegion(
     source,
+    SEO_MARKERS.start,
+    SEO_MARKERS.end,
+    renderSeoHead(page),
+    page.file,
+  );
+
+  if (!PRIMARY_PAGES.includes(page)) return withSeo;
+
+  const withHeader = replaceRegion(
+    withSeo,
     SHELL_MARKERS.headerStart,
     SHELL_MARKERS.headerEnd,
     renderSharedHeader(page.key),
@@ -358,7 +376,7 @@ const run = async () => {
   const sourcePages = new Map();
   const assembledPages = new Map();
 
-  for (const page of PRIMARY_PAGES) {
+  for (const page of ALL_PAGES) {
     const source = await readFile(resolve(ROOT, page.file), "utf8");
     sourcePages.set(page.file, source);
     assembledPages.set(page.file, assemblePage(source, page));
@@ -368,28 +386,44 @@ const run = async () => {
     await validatePage(assembledPages.get(page.file), page, assembledPages);
   }
 
-  const stalePages = PRIMARY_PAGES.filter(
+  const stalePages = ALL_PAGES.filter(
     ({ file }) => sourcePages.get(file) !== assembledPages.get(file),
   );
+  const generatedAssets = [
+    { file: "sitemap.xml", content: renderSitemap() },
+    { file: "robots.txt", content: renderRobots() },
+    { file: "_redirects", content: renderRedirects() },
+  ];
+  const staleAssets = [];
+  for (const asset of generatedAssets) {
+    const source = await readFile(resolve(ROOT, asset.file), "utf8");
+    if (source !== asset.content) staleAssets.push(asset);
+  }
 
   if (CHECK_ONLY) {
     assert(
-      stalePages.length === 0,
-      `Generated HTML is stale in: ${stalePages.map(({ file }) => file).join(", ")}. Run npm run build:html.`,
+      stalePages.length === 0 && staleAssets.length === 0,
+      `Generated output is stale in: ${[
+        ...stalePages.map(({ file }) => file),
+        ...staleAssets.map(({ file }) => file),
+      ].join(", ")}. Run npm run build:html.`,
     );
     console.log(
-      `Verified generated HTML regions and invariants for ${PRIMARY_PAGES.length} pages.`,
+      `Verified generated HTML regions for ${ALL_PAGES.length} pages, shared-shell invariants for ${PRIMARY_PAGES.length} primary pages, and ${generatedAssets.length} route assets.`,
     );
     return;
   }
 
-  await Promise.all(
-    stalePages.map(({ file }) =>
+  await Promise.all([
+    ...stalePages.map(({ file }) =>
       writeFile(resolve(ROOT, file), assembledPages.get(file), "utf8"),
     ),
-  );
+    ...staleAssets.map(({ file, content }) =>
+      writeFile(resolve(ROOT, file), content, "utf8"),
+    ),
+  ]);
   console.log(
-    `Assembled generated HTML for ${PRIMARY_PAGES.length} pages (${stalePages.length} updated).`,
+    `Assembled generated HTML and route assets (${stalePages.length} pages and ${staleAssets.length} route assets updated).`,
   );
 };
 

@@ -32,9 +32,11 @@ const initThemeToggle = () => {
 
   const applyTheme = (theme) => {
     const isDark = theme === "dark";
+    const actionLabel = isDark ? "Włącz tryb jasny" : "Włącz tryb ciemny";
     document.documentElement.dataset.theme = isDark ? "dark" : "light";
     toggles.forEach((toggle) => {
       toggle.setAttribute("aria-pressed", String(isDark));
+      toggle.setAttribute("aria-label", actionLabel);
     });
   };
 

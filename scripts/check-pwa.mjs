@@ -27,6 +27,7 @@ import {
   RUNTIME_CSS_PATHS,
   RUNTIME_JAVASCRIPT_PATHS,
   SHORTCUT_ICON_PATHS,
+  THEME_ICON_PATHS,
 } from "./pwa-config.mjs";
 import { ALL_PAGES, INDEXABLE_PAGES, SITE } from "./site-config.mjs";
 
@@ -699,6 +700,10 @@ const run = async () => {
   assert(
     PRECACHE_PATHS.includes(BRAND_LOGO_PATH),
     "Precache must contain the shared brand logo",
+  );
+  assert(
+    THEME_ICON_PATHS.every((path) => PRECACHE_PATHS.includes(path)),
+    "Precache must contain the shared theme icons",
   );
   assert(
     PRECACHE_PATHS.includes(MANIFEST_PATH) &&

@@ -110,6 +110,10 @@ export const MANIFEST_SCREENSHOT_PATHS = Object.freeze([
 
 export const HERO_IMAGE_PATH = "/assets/img/hero/hero-01.jpg";
 export const BRAND_LOGO_PATH = SITE.brandLogo.path;
+export const THEME_ICON_PATHS = Object.freeze([
+  "/assets/icons/sun.svg",
+  "/assets/icons/moon.svg",
+]);
 export const OFFLINE_PAGE_IMAGE_PATHS = Object.freeze([
   HERO_IMAGE_PATH,
   "/assets/img/about/lauren.jpg",
@@ -124,6 +128,7 @@ export const PRECACHE_PATHS = Object.freeze([
   ...MANIFEST_ICON_PATHS,
   ...SHORTCUT_ICON_PATHS,
   BRAND_LOGO_PATH,
+  ...THEME_ICON_PATHS,
   ...OFFLINE_PAGE_IMAGE_PATHS,
   MANIFEST_PATH,
 ]);

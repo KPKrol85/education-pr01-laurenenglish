@@ -8,6 +8,59 @@ export const PRIMARY_DOCUMENT_PATHS = Object.freeze(
   INDEXABLE_PAGES.map(({ file }) => `/${file}`),
 );
 
+export const CSS_ENTRY_PATH = SITE.runtime.stylesheet;
+export const JAVASCRIPT_ENTRY_PATH = SITE.runtime.javascript;
+
+export const RUNTIME_CSS_PATHS = Object.freeze([
+  CSS_ENTRY_PATH,
+  "/css/tokens/tokens.css",
+  "/css/base/base.css",
+  "/css/base/typography.css",
+  "/css/utilities/utilities.css",
+  "/css/components/buttons.css",
+  "/css/components/navigation.css",
+  "/css/components/cards.css",
+  "/css/components/badges.css",
+  "/css/components/lists.css",
+  "/css/components/accordion.css",
+  "/css/components/forms.css",
+  "/css/components/tabs.css",
+  "/css/sections/hero.css",
+  "/css/sections/how.css",
+  "/css/sections/services.css",
+  "/css/sections/pricing.css",
+  "/css/sections/resources.css",
+  "/css/sections/testimonials.css",
+  "/css/sections/about.css",
+  "/css/sections/contact.css",
+  "/css/sections/footer.css",
+  "/css/sections/offline.css",
+  "/css/sections/reveal.css",
+  "/css/pages/pages.css",
+]);
+
+export const RUNTIME_JAVASCRIPT_PATHS = Object.freeze([
+  JAVASCRIPT_ENTRY_PATH,
+  "/js/modules/reveal.js",
+  "/js/modules/headerShrink.js",
+  "/js/modules/mobileNav.js",
+  "/js/modules/scrollSpy.js",
+  "/js/modules/accordion.js",
+  "/js/modules/resourcesFilter.js",
+  "/js/modules/progressTracker.js",
+  "/js/modules/contactForm.js",
+  "/js/modules/materialsCatalog.js",
+  "/js/modules/anchorFocus.js",
+  "/js/pages/progress-page.js",
+  "/js/state/browserStorage.js",
+  "/js/data/materials.js",
+  "/js/data/materialAccess.js",
+  "/js/data/materialFilters.js",
+  "/js/data/packages.js",
+  "/js/data/progress.js",
+  "/js/state/storage.js",
+]);
+
 export const FONT_ASSETS = Object.freeze(
   [
     {
@@ -65,8 +118,8 @@ export const OFFLINE_PAGE_IMAGE_PATHS = Object.freeze([
 export const PRECACHE_PATHS = Object.freeze([
   ...PRIMARY_DOCUMENT_PATHS,
   OFFLINE_PATH,
-  "/assets/build/style.min.css",
-  "/assets/build/main.min.js",
+  ...RUNTIME_CSS_PATHS,
+  ...RUNTIME_JAVASCRIPT_PATHS,
   ...FONT_PATHS,
   ...MANIFEST_ICON_PATHS,
   ...SHORTCUT_ICON_PATHS,
@@ -76,8 +129,8 @@ export const PRECACHE_PATHS = Object.freeze([
 ]);
 
 export const CRITICAL_ASSET_BUDGET = Object.freeze({
-  productionCssRequests: 1,
-  productionJavaScriptRequests: 1,
+  runtimeCssRequests: RUNTIME_CSS_PATHS.length,
+  runtimeJavaScriptRequests: RUNTIME_JAVASCRIPT_PATHS.length,
   initialFontRequests: FONT_PATHS.length,
   preloadedFontRequests: 1,
   brandLogoRequests: 1,

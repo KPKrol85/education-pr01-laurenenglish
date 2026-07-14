@@ -70,6 +70,11 @@
   background: transparent;
 }
 
+
+.header__cta {
+  font-size: 14px;
+}
+
 .button__icon {
   font-size: 1rem;
   flex: 0 0 auto;
@@ -83,6 +88,7 @@
   flex: 0 0 auto;
   border: none;
 }
+
 
 .theme-toggle__icons {
   position: relative;

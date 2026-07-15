@@ -84,10 +84,6 @@ ${navToggleStart}
           <div class="nav__drawer" id="nav-drawer" data-drawer>
             <div class="nav__drawer-header">
               <span class="nav__drawer-title">Menu</span>
-              <button class="nav__close" type="button" data-drawer-close hidden>
-                <span aria-hidden="true">×</span>
-                <span class="sr-only">Zamknij menu</span>
-              </button>
             </div>
             <ul class="nav__list" role="list">
 ${renderNavItems(pageKey)}

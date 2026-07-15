@@ -5,6 +5,13 @@ import {
   expectCleanDiagnostics,
 } from "./helpers/runtime.mjs";
 
+const homepageAnchorCases = Object.freeze([
+  { id: "how", label: "Metodyka", sourcePath: "/uslugi.html" },
+  { id: "about", label: "O Lauren", sourcePath: "/uslugi.html" },
+  { id: "faq", label: "FAQ", sourcePath: "/index.html" },
+  { id: "contact", label: "Kontakt", sourcePath: "/index.html" },
+]);
+
 test("desktop navigation exposes its links and theme action", async ({
   page,
 }, testInfo) => {
@@ -18,6 +25,47 @@ test("desktop navigation exposes its links and theme action", async ({
   await expect(navigation.getByRole("link", { name: "Usługi" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Otwórz menu" })).toBeHidden();
   await expect(page.locator("[data-theme-toggle]:visible")).toHaveCount(1);
+  expectCleanDiagnostics(diagnostics);
+});
+
+test("homepage anchor targets clear the sticky header", async ({ page }) => {
+  const diagnostics = collectRuntimeDiagnostics(page);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+
+  for (const { id, label, sourcePath } of homepageAnchorCases) {
+    await page.goto(sourcePath, { waitUntil: "networkidle" });
+    const navigation = page.getByRole("navigation", {
+      name: "Główna nawigacja",
+    });
+    const mobileToggle = page.locator(".nav__toggle");
+
+    if (await mobileToggle.isVisible()) {
+      await mobileToggle.click();
+    }
+
+    await navigation.getByRole("link", { name: label, exact: true }).click();
+    await expect(page).toHaveURL(new RegExp(`/index\\.html#${id}$`));
+    await page.waitForLoadState("networkidle");
+
+    const geometry = await page.evaluate((targetId) => {
+      const header = document.querySelector(".header");
+      const target = document.getElementById(targetId);
+      const heading = target?.querySelector(".section__title");
+      if (!header || !target || !heading) return null;
+
+      return {
+        headerBottom: header.getBoundingClientRect().bottom,
+        headingTop: heading.getBoundingClientRect().top,
+      };
+    }, id);
+
+    expect(geometry, `Missing geometry for #${id}`).not.toBeNull();
+    expect(
+      geometry.headingTop,
+      `#${id} heading must clear the sticky header`,
+    ).toBeGreaterThan(geometry.headerBottom);
+  }
+
   expectCleanDiagnostics(diagnostics);
 });
 
@@ -38,6 +86,7 @@ test("mobile drawer is inert when closed and contains keyboard focus when open",
   await expect(toggle).toHaveAccessibleName("Otwórz menu");
   await expect(drawer).toHaveAttribute("aria-hidden", "true");
   expect(await drawer.evaluate((element) => element.inert)).toBe(true);
+  await expect(page.locator("[data-drawer-close]")).toHaveCount(0);
   await firstLink.evaluate((element) => element.focus());
   await expect(firstLink).not.toBeFocused();
 
@@ -46,18 +95,31 @@ test("mobile drawer is inert when closed and contains keyboard focus when open",
   await expect(drawer).toHaveAttribute("aria-hidden", "false");
   expect(await drawer.evaluate((element) => element.inert)).toBe(false);
 
-  const close = drawer.getByRole("button", { name: "Zamknij menu" });
   const drawerCta = drawer.getByRole("link", { name: "Informacje o zapisach" });
-  await expect(close).toBeFocused();
+  await expect(firstLink).toBeFocused();
   await page.keyboard.press("Shift+Tab");
   await expect(drawerCta).toBeFocused();
   await page.keyboard.press("Tab");
-  await expect(close).toBeFocused();
+  await expect(firstLink).toBeFocused();
+
+  await toggle.click();
+  await expect(toggle).toHaveAttribute("aria-expanded", "false");
+  await expect(drawer).toHaveAttribute("aria-hidden", "true");
+  await expect(toggle).toBeFocused();
+
+  await toggle.click();
+  await expect(toggle).toHaveAccessibleName("Zamknij menu");
 
   await page.keyboard.press("Escape");
   await expect(toggle).toHaveAttribute("aria-expanded", "false");
   await expect(drawer).toHaveAttribute("aria-hidden", "true");
   await expect(toggle).toBeFocused();
+
+  await toggle.click();
+  await drawerCta.click();
+  await expect(page).toHaveURL(/\/index\.html#contact$/);
+  await expect(toggle).toHaveAttribute("aria-expanded", "false");
+  await expect(drawer).toHaveAttribute("aria-hidden", "true");
   expectCleanDiagnostics(diagnostics);
 });
 

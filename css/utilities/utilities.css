@@ -7,6 +7,13 @@
   padding: var(--space-2xl) 0;
 }
 
+#how,
+#about,
+#faq,
+#contact {
+  scroll-margin-top: var(--anchor-scroll-offset);
+}
+
 .section__header {
   max-width: var(--content-measure);
   margin-bottom: var(--space-xl);

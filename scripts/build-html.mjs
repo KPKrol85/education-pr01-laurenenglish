@@ -336,12 +336,8 @@ const validatePage = async (html, page, assembledPages) => {
     `${page.file}: mobile drawer toggle baseline changed`,
   );
   assert(
-    (header.match(/data-drawer-close/g) ?? []).length === 1,
-    `${page.file}: mobile drawer close hook changed`,
-  );
-  assert(
-    (header.match(/data-drawer-close hidden/g) ?? []).length === 1,
-    `${page.file}: mobile drawer close baseline changed`,
+    (header.match(/data-drawer-close/g) ?? []).length === 0,
+    `${page.file}: redundant mobile drawer close hook returned`,
   );
   assert(
     (header.match(/aria-controls="nav-drawer"/g) ?? []).length === 1,

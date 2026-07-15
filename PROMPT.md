@@ -1,301 +1,236 @@
-You are a senior frontend tooling developer working on the Lauren English project.
+You are a senior frontend developer working on the Lauren English project.
 
 PROJECT CONTEXT
 
-You are working in the currently opened `education-pr01-laurenenglish` project.
+Lauren English is a static multi-page educational website using:
 
-Read the current repository state and authoritative documentation before editing, especially:
+* semantic HTML
+* token-first CSS
+* Vanilla JavaScript
+* a canonical shared shell
+* generated SEO metadata and route configuration
+* project-local validation and Playwright checks
 
-- `CONTEXT-PROJECT.md`
-- `README.md`
-- `INITIAL-AUDIT.md`
-- `package.json`
-- `scripts/shared-shell.mjs`
-- `scripts/build-html.mjs`
-- `scripts/site-config.mjs`
-- `scripts/content-renderers.mjs`
-- `scripts/pwa-config.mjs`
-- `service-worker.template.js`
-- `playwright.config.mjs`
-- existing HTML, PWA, SEO, and browser validation scripts
+Relevant architecture includes:
 
-All ten initial audit points are complete. Do not modify `INITIAL-AUDIT.md`.
+* `scripts/site-config.mjs`
+* `scripts/shared-shell.mjs`
+* `scripts/build-html.mjs`
+* existing page and section CSS
+* existing SEO, content, HTML, and PWA validators
+* generated standalone HTML pages
 
-The current runtime loads generated assets from:
+The current shared navigation and CTA still point to `/index.html#contact`.
 
-- `/assets/build/style.min.css`
-- `/assets/build/main.min.js`
+The homepage currently contains a temporary contact section stating that contact details and registration are unavailable. This must be replaced with a credible compact CTA section.
 
-This task intentionally replaces that temporary pre-Vite runtime contract with direct canonical source loading:
+The following contact data are approved for public use:
 
-- `/css/style.css`
-- `/js/main.js`
-
-The project will migrate to Vite and a generated `dist` directory later. Do not introduce Vite during this task.
-
-Preserve unrelated working-tree changes, including `PROMPT.md`.
+* phone: `+48 533 537 091`
+* telephone URI: `tel:+48533537091`
+* email: `kontakt@kp-code.pl`
+* email URI: `mailto:kontakt@kp-code.pl`
+* address: `ul. Marynarki Wojennej 12/31, 33-100 Tarnów, Polska`
 
 TASK OBJECTIVE
 
-Create a simple source-first development and current static-deployment workflow.
+Create a professional standalone contact page at:
 
-The final project must:
+`/kontakt.html`
 
-- load `/css/style.css` directly
-- load `/js/main.js` directly as an ES module
-- no longer depend on `/assets/build/style.min.css` or `/assets/build/main.min.js` at runtime
-- provide a clickable Windows launcher
-- run a Python development server on port `8181`
-- open the browser automatically
-- reload the browser when relevant project files change
-- regenerate shared HTML automatically when shell, metadata, package, or material sources change
-- disable Service Worker interference on the local `8181` development origin
-- preserve the existing shared shell, data renderers, SEO, PWA, accessibility, and Playwright architecture
-- keep Netlify compatible with publishing the repository root
+The page must contain:
+
+* clear contact information
+* information about the registration/contact process
+* accessible telephone and email links
+* the approved postal address
+* a professional contact form
+* truthful customer-facing content suitable for a real independent English teacher
+
+Also replace the temporary homepage contact section with a compact CTA section and remove the current duplicated CTA behavior.
+
+Use this final CTA contract:
+
+* shared navigation item `Kontakt` → `/kontakt.html`
+* shared header CTA label `Umów rozmowę` → `/kontakt.html#formularz`
+* homepage hero primary CTA label `Zobacz pakiety` → `/pakiety.html#pakiety`
+* homepage secondary materials CTA remains unchanged
+* homepage compact contact CTA:
+
+  * primary: `Przejdź do kontaktu` → `/kontakt.html`
+  * secondary: `Zadzwoń` → `tel:+48533537091`
 
 IMPLEMENTATION PLAN
 
-1. Inspect the current working tree, package scripts, HTML head generation, asset paths, CSS imports, JavaScript import graph, PWA precache, tests, and deployment configuration.
+1. Inspect the current route registry, shared shell, homepage contact section, hero CTAs, page templates, form patterns, thank-you page, validators, and PWA route contract.
 
-2. Confirm that `css/style.css` contains browser-compatible CSS imports and that `js/main.js` can run directly through `<script type="module">`.
+2. Add `/kontakt.html` as a first-class indexable page through the existing route and metadata source of truth.
 
-3. If PostCSS-only syntax prevents direct browser loading, make only the smallest standards-compatible source correction required. Do not redesign or broadly refactor CSS.
+3. Give the contact page:
 
-4. Update the canonical HTML/head generation source so all eight HTML documents load:
+   * unique title
+   * unique meta description
+   * canonical URL
+   * Open Graph and Twitter metadata
+   * supported `WebPage` structured data
+   * exactly one `h1`
+   * shared header and footer
+   * correct `aria-current="page"` on the `Kontakt` navigation link
 
-   `<link rel="stylesheet" href="/css/style.css" />`
+4. Build the page using existing layout, card, button, form, typography, spacing, and theme patterns.
 
-   `<script type="module" src="/js/main.js"></script>`
+5. Include a clear page introduction and three accessible contact methods:
 
-5. Regenerate HTML through the existing assembler. Do not manually maintain duplicated asset tags across generated pages.
+   * telephone link
+   * email link
+   * semantic postal address
 
-6. Remove runtime references and validation expectations for:
+6. Add a concise “Informacje o zapisach” section explaining that the first contact is used to discuss:
 
-   - `/assets/build/style.min.css`
-   - `/assets/build/main.min.js`
+   * learning goals
+   * current level
+   * preferred lesson format
+   * available next steps
 
-7. Do not delete `assets/build/` files unless they are confirmed unused, their repository policy is understood, and deletion is necessary for a clean final contract. Report the decision explicitly.
+   Do not invent lesson availability, opening hours, response times, prices, reviews, or guarantees.
 
-8. Refactor package scripts so normal development and current static deployment do not require CSS or JavaScript bundling.
+7. Add a professional contact form with:
 
-9. Preserve the HTML assembler, SEO route generation, sitemap, robots, manifest, screenshot tooling, and Service Worker generation.
+   * full name
+   * email address
+   * optional telephone number
+   * enquiry topic
+   * message
+   * required fields clearly marked
+   * accessible labels
+   * useful autocomplete attributes
+   * inline help or error relationships where needed
+   * honeypot protection
+   * keyboard-accessible submit button
+   * clear submission-purpose notice
 
-10. Add a standard-library-only Python development server, preferably:
+8. Use the project’s existing Netlify deployment architecture for real form submission if compatible with the current project.
 
-    `scripts/dev-server.py`
+9. Prefer the standard Netlify Forms contract:
 
-11. Add a clickable Windows launcher at the project root:
+   * `method="POST"`
+   * `data-netlify="true"`
+   * hidden `form-name`
+   * `netlify-honeypot`
+   * action to the existing `/thank-you.html`
 
-    `start-dev.bat`
+10. Inspect and update `/thank-you.html` only if required so its message accurately confirms a contact enquiry.
 
-12. The launcher must:
+11. Do not create a fake JavaScript submission flow or fake success notification.
 
-    - run from the project root regardless of where it was double-clicked
-    - try `py -3` and then `python`
-    - show a clear error if Python is unavailable
-    - detect whether port `8181` is already occupied
-    - run the required initial shared HTML assembly
-    - start the Python server on `127.0.0.1:8181`
-    - open the default browser at `http://127.0.0.1:8181/`
-    - remain open while the server is active
-    - stop cleanly with Ctrl+C
+12. If the current project has no real privacy-policy route, use a concise factual form notice without inventing a legal document or broken privacy link.
 
-13. The Python server must:
+13. Replace the current homepage contact section with a compact CTA section while preserving the existing `id="contact"` for backward compatibility.
 
-    - serve the project root
-    - use only the Python standard library
-    - send development-safe no-cache headers
-    - preserve correct MIME types for CSS, JS modules, fonts, SVG, PNG, WebP, JSON, and web manifest files
-    - preserve useful local 404 behavior
-    - provide automatic full-page reload without modifying committed HTML with development-only markup
-    - avoid exposing machine-specific paths
+14. The homepage CTA section should briefly invite the user to ask about lessons or registration and provide:
 
-14. Implement lightweight live reload through a focused server endpoint and runtime-injected development script, using either server-sent events or efficient polling.
+* `Przejdź do kontaktu`
+* `Zadzwoń`
 
-15. Watch relevant source files while excluding:
+15. Update the shared navigation `Kontakt` link to `/kontakt.html`.
 
-    - `.git/`
-    - `node_modules/`
-    - `assets/build/`
-    - Playwright reports and test artifacts
-    - generated `service-worker.js`
-    - temporary editor files
+16. Update both shared header CTA variants, desktop and mobile drawer, to:
 
-16. Directly reload the browser when regular HTML, CSS, JavaScript, image, font, or manifest files change.
+* label: `Umów rozmowę`
+* URL: `/kontakt.html#formularz`
 
-17. When canonical generated-content sources change, run `npm run build:html` before browser reload.
+17. Update the homepage hero primary CTA to:
 
-18. At minimum, treat these areas as HTML-generation dependencies:
+* label: `Zobacz pakiety`
+* URL: `/pakiety.html#pakiety`
 
-    - `scripts/shared-shell.mjs`
-    - `scripts/site-config.mjs`
-    - `scripts/content-renderers.mjs`
-    - relevant package, material, access, and filter data sources
+18. Preserve the homepage materials CTA.
 
-19. Prevent rebuild loops caused by generated HTML changes.
+19. Update footer contact navigation to `/kontakt.html`.
 
-20. If HTML generation fails:
+20. Regenerate all affected HTML through the canonical assembler.
 
-    - keep the server running
-    - print the command failure clearly
-    - do not reload the browser with a knowingly stale generated state
-    - wait for the next source change
+21. Update only the route, SEO, content, HTML, and PWA expectations directly affected by the new page.
 
-21. Disable Service Worker registration on `localhost` and `127.0.0.1` when using port `8181`.
+22. Add `/kontakt.html` to the PWA primary-document contract only if this matches the current explicit primary-page precache policy.
 
-22. Clean up an existing Lauren English Service Worker registration and only Lauren English project caches on the `8181` development origin when necessary.
+23. Add one focused Playwright test covering:
 
-23. Do not weaken production Service Worker registration or cache behavior.
+* `/kontakt.html` returns `200`
+* correct heading and contact links
+* accessible form fields
+* shared navigation current state
+* header and homepage CTA destinations
+* homepage compact CTA links
 
-24. Update the PWA source-of-truth configuration so offline production behavior uses the actual direct runtime asset contract.
+EXECUTION BUDGET
 
-25. Include only CSS and JavaScript source files actually requested by production pages and required for the documented offline behavior.
-
-26. Do not blindly precache entire directories.
-
-27. Update deterministic PWA validation, critical request budgets, and Service Worker fingerprinting for the direct CSS import and JavaScript module graphs.
-
-28. Preserve:
-
-    - real online 404 responses
-    - exact offline primary-page behavior
-    - scoped cache cleanup
-    - manifest shortcuts and screenshots
-    - SEO metadata
-    - local fonts
-    - accessible themes and interactions
-
-29. Update permanent checks and Playwright expectations so they assert:
-
-    - `/css/style.css` returns `200`
-    - `/js/main.js` returns `200` as a module
-    - all required imported CSS and JavaScript modules return `200`
-    - no page requests `/assets/build/style.min.css`
-    - no page requests `/assets/build/main.min.js`
-    - there are no missing module or MIME errors
-    - no remote runtime dependency is introduced
-
-30. Add a focused deterministic development-workflow check if useful, without creating a large test framework.
-
-31. Verify the Python server on port `8181`:
-
-    - starts from `start-dev.bat`
-    - serves all primary pages
-    - serves source CSS and JavaScript correctly
-    - sends no-cache headers
-    - exposes a working live-reload connection
-    - reloads after a normal source change
-    - runs HTML assembly before reload after a shared-shell or data-source change
-
-32. Inspect any repository-owned Netlify configuration.
-
-33. Ensure the intended deployment contract is documented as:
-
-    - repository root published directly
-    - runtime CSS at `/css/style.css`
-    - runtime JavaScript at `/js/main.js`
-    - no `dist` directory before the future Vite migration
-
-34. Do not guess or claim control over Netlify dashboard settings that are not stored in the repository. Document the required dashboard values when applicable.
-
-35. Update `README.md` and `docs/runtime-checklist.md` with:
-
-    - how to start development by double-clicking `start-dev.bat`
-    - the `8181` URL
-    - automatic reload behavior
-    - which changes trigger HTML regeneration
-    - Service Worker behavior during local development
-    - the direct source runtime contract
-    - current Netlify publish settings
-    - the distinction between the present workflow and the future Vite `dist` workflow
-
-36. Keep current static validation commands and project-local Playwright coverage working.
-
-37. Run all relevant verification, including:
-
-    - HTML assembly and idempotence
-    - data checks
-    - content checks
-    - HTML checks
-    - CSS checks
-    - SEO checks
-    - PWA checks
-    - JavaScript syntax checks
-    - focused source-runtime browser checks
-    - complete Playwright E2E suite
-    - relevant Prettier checks
-    - `git diff --check`
-
-38. Do not modify `INITIAL-AUDIT.md`.
+* Inspect only files directly relevant to this contact-page task.
+* Make one implementation pass.
+* Run each focused verification command once.
+* If verification reveals an unexpected issue, diagnose it once.
+* Apply at most one minimal corrective fix and rerun only the affected focused check once.
+* Do not perform repeated debugging or add temporary instrumentation.
+* Do not run the full E2E suite.
+* Do not expand into unrelated legal, design-system, backend, accessibility, PWA, or architecture work.
+* If an unrelated issue remains, report it and stop.
 
 CONSTRAINTS
 
-- Do not introduce Vite.
-- Do not create a `dist` directory.
-- Do not add a Node development-server dependency.
-- Do not add a Python package dependency.
-- Use only the Python standard library for the new server.
-- Do not redesign the website.
-- Do not change public content.
-- Do not change fonts, colors, layout, navigation, or component behavior.
-- Do not remove the shared shell or canonical data architecture.
-- Do not replace the existing HTML assembler.
-- Do not duplicate shared header, footer, metadata, package, or material content.
-- Do not allow Service Worker caching to interfere with local development.
-- Do not disable the production PWA.
-- Do not use global `overflow` or unrelated CSS workarounds.
-- Do not manually edit minified output or generated `service-worker.js`.
-- Do not create machine-specific absolute paths.
-- Do not create temporary test harnesses outside the project.
-- Do not modify completed audit states.
-- Preserve unrelated working-tree changes.
-- Keep the diff focused and review-friendly.
+* Do not create a backend or introduce a framework.
+* Do not add external form libraries.
+* Do not invent contact details beyond those explicitly provided.
+* Do not invent availability, prices, hours, response-time promises, reviews, or business claims.
+* Do not duplicate shared navigation or footer markup manually.
+* Do not manually edit generated HTML regions.
+* Do not redesign unrelated homepage sections.
+* Do not change the existing visual identity.
+* Do not remove the legacy `#contact` homepage anchor.
+* Do not modify `INITIAL-AUDIT.md`.
+* Preserve unrelated working-tree changes.
+* Keep the diff focused and review-friendly.
 
 TECHNICAL RULES
 
-- `css/style.css` remains the canonical CSS entry.
-- `js/main.js` remains the canonical JavaScript entry.
-- Load `js/main.js` with `type="module"`.
-- Use root-relative runtime asset paths.
-- Keep CSS imports and JavaScript module imports browser-valid.
-- Use no-cache development response headers.
-- Keep live reload development-only.
-- Do not commit injected live-reload markup into HTML.
-- Avoid rebuild loops.
-- Run shared HTML generation only for relevant dependencies.
-- Keep server logging concise and useful.
-- Preserve correct local MIME types.
-- Preserve semantic HTML, accessibility, progressive enhancement, responsive behavior, SEO, and PWA guarantees.
-- Use existing project-local Playwright infrastructure.
-- Report only verification actually performed.
+* Use `/kontakt.html` as the canonical contact route.
+* Use semantic `<address>` markup for contact details.
+* Use native links for telephone and email actions.
+* Use semantic form controls and native validation first.
+* Preserve keyboard access, visible focus, reduced motion, and theme support.
+* Use existing design tokens and BEM naming patterns.
+* Keep mobile-first responsive behavior.
+* Keep source files canonical.
+* Regenerate HTML and Service Worker output only through existing scripts.
+* Do not manually edit generated `service-worker.js`.
+* Keep the approved contact data exactly as provided.
+
+Run only the relevant focused commands:
+
+* `npm run build:html`
+* `npm run check:html`
+* `npm run check:content`
+* `npm run check:seo`
+* `npm run check:pwa` only if the PWA route contract changes
+* one focused contact-page Playwright test
+* focused Prettier validation for changed canonical source files
+* `git diff --check`
 
 OUTPUT EXPECTATION
 
 Return a concise summary with:
 
-- files and scripts inspected
-- previous runtime asset contract
-- final runtime asset contract
-- HTML/head generation changes
-- package script changes
-- Python server file created
-- Windows launcher created
-- port and browser-opening behavior
-- live-reload implementation
-- watched and excluded paths
-- shared-shell and data regeneration behavior
-- Service Worker development isolation
-- PWA precache and request-budget changes
-- Netlify repository configuration or required dashboard settings
-- validators and Playwright tests updated
-- files changed
-- generated files rebuilt
-- static checks executed
-- Python `8181` verification result
-- full E2E result
-- confirmation that no `/assets/build` runtime requests remain
-- confirmation that `INITIAL-AUDIT.md` was unchanged
-- confirmation that unrelated changes were preserved
-- any blocker encountered
+* files inspected
+* canonical route and metadata changes
+* contact page structure
+* exact contact details implemented
+* form submission contract
+* homepage CTA replacement
+* final shared navigation, header CTA, hero CTA, and footer destinations
+* generated pages refreshed
+* PWA changes, if required
+* focused verification performed
+* any remaining limitation
+* confirmation that no unsupported claims were added
+* confirmation that `INITIAL-AUDIT.md` and unrelated changes were preserved
 
 Do not include unrelated recommendations.

@@ -90,6 +90,17 @@ export const INDEXABLE_PAGES = Object.freeze([
       "Lokalny dziennik postępów w nauce angielskiego z celami tygodnia, check-inami i statystykami bez logowania.",
     schemaType: "WebPage",
   }),
+  freezePage({
+    key: "contact",
+    file: "kontakt.html",
+    path: "/kontakt.html",
+    runtimePath: "/kontakt.html",
+    currentHref: "/kontakt.html",
+    title: "Kontakt | Lauren – Clean English",
+    description:
+      "Kontakt w sprawie indywidualnej nauki angielskiego: telefon, e-mail, adres oraz formularz zapytania o cele, poziom i format lekcji.",
+    schemaType: "WebPage",
+  }),
 ]);
 
 export const UTILITY_PAGES = Object.freeze([
@@ -113,7 +124,7 @@ export const UTILITY_PAGES = Object.freeze([
     path: "/thank-you.html",
     runtimePath: "/thank-you.html",
     aliases: Object.freeze(["/thank-you"]),
-    title: "Kontakt niedostępny | Lauren – Clean English",
+    title: "Dziękuję za wiadomość | Lauren – Clean English",
   }),
 ]);
 

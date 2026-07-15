@@ -6,6 +6,13 @@ import { ALL_PAGES } from "./site-config.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const PUBLIC_PAGES = Object.freeze(ALL_PAGES.map(({ file }) => file));
+const APPROVED_CONTACT = Object.freeze({
+  address: "ul. Marynarki Wojennej 12/31, 33-100 Tarnów, Polska",
+  email: "kontakt@kp-code.pl",
+  emailUri: "mailto:kontakt@kp-code.pl",
+  phone: "+48 533 537 091",
+  telephoneUri: "tel:+48533537091",
+});
 
 const FORBIDDEN_PUBLIC_PATTERNS = Object.freeze([
   {
@@ -23,7 +30,7 @@ const FORBIDDEN_PUBLIC_PATTERNS = Object.freeze([
   },
   {
     label: "unsupported email address",
-    pattern: /lauren@cleanenglish\.pl|mailto:/iu,
+    pattern: /lauren@cleanenglish\.pl/iu,
   },
   {
     label: "unsupported phone or WhatsApp",
@@ -57,10 +64,6 @@ const FORBIDDEN_PUBLIC_PATTERNS = Object.freeze([
   { label: "unsupported popularity claim", pattern: /Najczęściej wybier/iu },
   { label: "developer catalogue terminology", pattern: /sklepik|gating/iu },
   {
-    label: "active personal-data form",
-    pattern: /data-netlify|data-contact-form|name="contact"|type="email"/iu,
-  },
-  {
     label: "unsupported structured-data field",
     pattern:
       /"(?:address|telephone|email|openingHours|priceRange|sameAs|aggregateRating|review|offers|founder|employee)"\s*:/iu,
@@ -87,19 +90,89 @@ for (const file of PUBLIC_PAGES) {
 }
 
 const home = pages.get("index.html");
+const contact = pages.get("kontakt.html");
 const contactSection = home.match(
   /<section\b[^>]*\bid="contact"[\s\S]*?<\/section>/u,
 )?.[0];
 assert(contactSection, "index.html: missing contact section");
 assert(
-  contactSection.includes("data-contact-status"),
-  "index.html: contact section must expose an honest informational state",
+  !contactSection.includes("data-contact-status") &&
+    /<a\b[^>]*href="\/kontakt\.html"[^>]*>\s*Przejdź do kontaktu\s*<\/a>/iu.test(
+      contactSection,
+    ) &&
+    new RegExp(
+      `<a\\b[^>]*href="${APPROVED_CONTACT.telephoneUri}"[^>]*>\\s*Zadzwoń\\s*<\\/a>`,
+      "iu",
+    ).test(contactSection),
+  "index.html: compact contact CTA contract changed",
 );
 assert(
   !contactSection.includes("<form"),
   "index.html: contact section must not submit personal data",
 );
 
+assert(contact, "kontakt.html: missing public contact page");
+assert(
+  contact.includes(`href="${APPROVED_CONTACT.telephoneUri}"`) &&
+    contact.includes(APPROVED_CONTACT.phone) &&
+    contact.includes(`href="${APPROVED_CONTACT.emailUri}"`) &&
+    contact.includes(APPROVED_CONTACT.email) &&
+    new RegExp(
+      `<address\\b[^>]*class="contact__address"[^>]*>\\s*${APPROVED_CONTACT.address}\\s*<\\/address>`,
+      "iu",
+    ).test(contact),
+  "kontakt.html: approved contact details changed",
+);
+
+const publicHtml = [...pages.values()].join("\n");
+const telephoneUris = [...publicHtml.matchAll(/href="(tel:[^"]+)"/giu)].map(
+  (match) => match[1],
+);
+const emailUris = [...publicHtml.matchAll(/href="(mailto:[^"]+)"/giu)].map(
+  (match) => match[1],
+);
+assert(
+  telephoneUris.length === 2 &&
+    telephoneUris.every((uri) => uri === APPROVED_CONTACT.telephoneUri),
+  "Public telephone links must use only the approved number",
+);
+assert(
+  emailUris.length === 1 && emailUris[0] === APPROVED_CONTACT.emailUri,
+  "Public email links must use only the approved address",
+);
+
+for (const [file, html] of pages) {
+  if (file !== "kontakt.html") {
+    assert(
+      !html.includes('data-netlify="true"'),
+      `${file}: personal-data form must remain limited to kontakt.html`,
+    );
+  }
+}
+
+const contactForm = contact.match(
+  /<form\b(?=[^>]*\bname="kontakt")[\s\S]*?<\/form>/iu,
+)?.[0];
+assert(contactForm, "kontakt.html: missing contact form");
+assert(
+  contactForm.includes('method="POST"') &&
+    contactForm.includes('action="/thank-you.html"') &&
+    contactForm.includes('data-netlify="true"') &&
+    contactForm.includes('netlify-honeypot="bot-field"') &&
+    contactForm.includes('name="form-name" value="kontakt"') &&
+    contactForm.includes('name="bot-field"'),
+  "kontakt.html: Netlify Forms contract changed",
+);
+for (const fieldName of ["name", "email", "topic", "message"]) {
+  assert(
+    new RegExp(
+      `<(?:input|select|textarea)\\b[^>]*name="${fieldName}"[^>]*required`,
+      "iu",
+    ).test(contactForm),
+    `kontakt.html: required ${fieldName} field changed`,
+  );
+}
+
 console.log(
-  `Verified public-content integrity for ${PUBLIC_PAGES.length} pages: no unsupported claims, contact data collection, structured-data fields, social profiles, or legal placeholders.`,
+  `Verified public-content integrity for ${PUBLIC_PAGES.length} pages: approved contact details and form contract are isolated to kontakt.html without unsupported claims, structured-data fields, social profiles, or legal placeholders.`,
 );

@@ -17,7 +17,7 @@ const NAV_ITEMS = Object.freeze([
   { label: "Metodyka", href: "/index.html#how" },
   { label: "O Lauren", href: "/index.html#about" },
   { label: "FAQ", href: "/index.html#faq" },
-  { label: "Kontakt", href: "/index.html#contact" },
+  { key: "contact", label: "Kontakt", href: "/kontakt.html" },
 ]);
 
 const FOOTER_LINKS = Object.freeze([
@@ -25,7 +25,7 @@ const FOOTER_LINKS = Object.freeze([
   { label: "Pakiety", href: "/pakiety.html#pakiety" },
   { label: "Materiały", href: "/materialy.html" },
   { label: "Postępy", href: "/postepy.html" },
-  { label: "Kontakt", href: "/index.html#contact" },
+  { label: "Kontakt", href: "/kontakt.html" },
 ]);
 
 const getPage = (pageKey) => {
@@ -54,7 +54,8 @@ const renderFooterLinks = (links) =>
 export const renderSharedHeader = (pageKey) => {
   getPage(pageKey);
   const logoCurrent = pageKey === "home" ? ' aria-current="page"' : "";
-  const preservedHomeAnnotation = pageKey === "home" ? "\n\n    <!-- Header -->" : "";
+  const preservedHomeAnnotation =
+    pageKey === "home" ? "\n\n    <!-- Header -->" : "";
   const navToggleStart =
     pageKey === "home"
       ? '          <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="nav-drawer" hidden>'
@@ -94,11 +95,11 @@ ${renderNavItems(pageKey)}
                 <img class="theme-toggle__icon theme-toggle__icon--moon" src="/assets/icons/moon.svg" alt="" width="24" height="24" />
               </span>
             </button>
-            <a class="button button--primary nav__cta" href="/index.html#contact">Informacje o zapisach</a>
+            <a class="button button--primary nav__cta" href="/kontakt.html#formularz">Umów rozmowę</a>
           </div>
         </nav>
         <div class="header__actions">
-        <a class="button button--primary header__cta" href="/index.html#contact">Informacje o zapisach</a>
+        <a class="button button--primary header__cta" href="/kontakt.html#formularz">Umów rozmowę</a>
           <button class="button button--ghost theme-toggle" type="button" aria-label="Włącz tryb ciemny" aria-pressed="false" data-theme-toggle hidden>
             <span class="theme-toggle__icons" aria-hidden="true">
               <img class="theme-toggle__icon theme-toggle__icon--sun" src="/assets/icons/sun.svg" alt="" width="24" height="24" />

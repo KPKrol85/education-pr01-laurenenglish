@@ -2,29 +2,17 @@ You are a senior frontend developer working on the Lauren English project.
 
 PROJECT CONTEXT
 
-Lauren English is a static multi-page educational website using:
+The project uses a canonical shared shell generated from:
 
-* semantic HTML
-* token-first CSS
-* Vanilla JavaScript
-* a canonical shared shell
-* generated SEO metadata and route configuration
-* project-local validation and Playwright checks
-
-Relevant architecture includes:
-
-* `scripts/site-config.mjs`
 * `scripts/shared-shell.mjs`
 * `scripts/build-html.mjs`
-* existing page and section CSS
-* existing SEO, content, HTML, and PWA validators
-* generated standalone HTML pages
+* existing footer CSS and layout tokens
 
-The current shared navigation and CTA still point to `/index.html#contact`.
+The current footer uses a four-column grid but only two columns are populated.
 
-The homepage currently contains a temporary contact section stating that contact details and registration are unavailable. This must be replaced with a credible compact CTA section.
+The footer must become a complete professional site footer without changing unrelated page content or the established visual identity.
 
-The following contact data are approved for public use:
+Approved public contact details:
 
 * phone: `+48 533 537 091`
 * telephone URI: `tel:+48533537091`
@@ -32,186 +20,203 @@ The following contact data are approved for public use:
 * email URI: `mailto:kontakt@kp-code.pl`
 * address: `ul. Marynarki Wojennej 12/31, 33-100 Tarnów, Polska`
 
+Approved social profiles:
+
+* GitHub: `https://github.com/KPKrol85`
+* Facebook: `https://www.facebook.com/kpkrol85`
+* X: `https://x.com/KP_Code_85`
+* LinkedIn: `https://www.linkedin.com/in/kp-code/`
+* Instagram: `https://www.instagram.com/kp_code_/`
+
+Required copyright:
+
+`© 2026 KP_Code Digital Studio | Wszelkie prawa zastrzeżone.`
+
 TASK OBJECTIVE
 
-Create a professional standalone contact page at:
+Implement a professional responsive footer with:
 
-`/kontakt.html`
+1. four primary columns
+2. one full-width social-media row below them
+3. one final copyright bar
 
-The page must contain:
+Use this information architecture:
 
-* clear contact information
-* information about the registration/contact process
-* accessible telephone and email links
-* the approved postal address
-* a professional contact form
-* truthful customer-facing content suitable for a real independent English teacher
-
-Also replace the temporary homepage contact section with a compact CTA section and remove the current duplicated CTA behavior.
-
-Use this final CTA contract:
-
-* shared navigation item `Kontakt` → `/kontakt.html`
-* shared header CTA label `Umów rozmowę` → `/kontakt.html#formularz`
-* homepage hero primary CTA label `Zobacz pakiety` → `/pakiety.html#pakiety`
-* homepage secondary materials CTA remains unchanged
-* homepage compact contact CTA:
-
-  * primary: `Przejdź do kontaktu` → `/kontakt.html`
-  * secondary: `Zadzwoń` → `tel:+48533537091`
+* Brand
+* Oferta
+* Kontakt
+* Informacje
+* KP_Code Digital Studio social links
+* Copyright
 
 IMPLEMENTATION PLAN
 
-1. Inspect the current route registry, shared shell, homepage contact section, hero CTAs, page templates, form patterns, thank-you page, validators, and PWA route contract.
+1. Inspect the current canonical footer renderer, footer CSS, route registry, legal-page state, contact route, HTML validator, and relevant focused tests.
 
-2. Add `/kontakt.html` as a first-class indexable page through the existing route and metadata source of truth.
+2. Update the canonical shared footer instead of editing generated HTML pages manually.
 
-3. Give the contact page:
+3. Build the first column as the brand section:
 
-   * unique title
-   * unique meta description
-   * canonical URL
-   * Open Graph and Twitter metadata
-   * supported `WebPage` structured data
-   * exactly one `h1`
-   * shared header and footer
-   * correct `aria-current="page"` on the `Kontakt` navigation link
+   * existing Lauren logo
+   * `Lauren – Clean English`
+   * short description:
+     `Profesjonalny angielski w spokojnym rytmie.`
 
-4. Build the page using existing layout, card, button, form, typography, spacing, and theme patterns.
+4. Build the second column with heading:
 
-5. Include a clear page introduction and three accessible contact methods:
+   `Oferta`
 
-   * telephone link
-   * email link
+   Include:
+
+   * Usługi
+   * Pakiety
+   * Materiały
+   * Postępy
+   * FAQ
+
+5. Build the third column with heading:
+
+   `Kontakt`
+
+   Include:
+
+   * clickable telephone
+   * clickable email
    * semantic postal address
+   * quiet text link to `/kontakt.html`
 
-6. Add a concise “Informacje o zapisach” section explaining that the first contact is used to discuss:
+6. Build the fourth column with heading:
 
-   * learning goals
-   * current level
-   * preferred lesson format
-   * available next steps
+   `Informacje`
 
-   Do not invent lesson availability, opening hours, response times, prices, reviews, or guarantees.
+   Include:
 
-7. Add a professional contact form with:
+   * O Lauren
+   * Kontakt
+   * Polityka prywatności
+   * Regulamin
+   * Polityka cookies
 
-   * full name
-   * email address
-   * optional telephone number
-   * enquiry topic
-   * message
-   * required fields clearly marked
-   * accessible labels
-   * useful autocomplete attributes
-   * inline help or error relationships where needed
-   * honeypot protection
-   * keyboard-accessible submit button
-   * clear submission-purpose notice
+7. Inspect whether the three legal routes already exist.
 
-8. Use the project’s existing Netlify deployment architecture for real form submission if compatible with the current project.
+8. If they do not exist, create minimal factual utility pages:
 
-9. Prefer the standard Netlify Forms contract:
+   * `/polityka-prywatnosci.html`
+   * `/regulamin.html`
+   * `/cookies.html`
 
-   * `method="POST"`
-   * `data-netlify="true"`
-   * hidden `form-name`
-   * `netlify-honeypot`
-   * action to the existing `/thank-you.html`
+9. Legal pages must:
 
-10. Inspect and update `/thank-you.html` only if required so its message accurately confirms a contact enquiry.
+   * describe only verified project behavior
+   * explain the portfolio/project nature transparently
+   * reflect the real Netlify contact form, localStorage, theme, progress storage, and actual cookie behavior
+   * avoid invented legal claims, company registration data, analytics, advertising, payment processing, or third-party services
+   * use `noindex, nofollow`
+   * use the shared shell
+   * contain one `h1`
+   * provide navigation back to the site
+   * not be added to the sitemap or primary PWA precache
 
-11. Do not create a fake JavaScript submission flow or fake success notification.
+10. Add a separate full-width social section below the four columns.
 
-12. If the current project has no real privacy-policy route, use a concise factual form notice without inventing a legal document or broken privacy link.
+11. Use a clear heading such as:
 
-13. Replace the current homepage contact section with a compact CTA section while preserving the existing `id="contact"` for backward compatibility.
+`KP_Code Digital Studio w sieci`
 
-14. The homepage CTA section should briefly invite the user to ask about lessons or registration and provide:
+12. Display the five social links horizontally on desktop and with clean wrapping on smaller screens.
 
-* `Przejdź do kontaktu`
-* `Zadzwoń`
+13. Social links must:
 
-15. Update the shared navigation `Kontakt` link to `/kontakt.html`.
+* use the exact approved URLs
+* have clear accessible names
+* open in a new tab
+* use `rel="noopener noreferrer"`
+* not imply that these are Lauren’s personal profiles
 
-16. Update both shared header CTA variants, desktop and mobile drawer, to:
+14. Use existing local social icons only if suitable assets already exist.
 
-* label: `Umów rozmowę`
-* URL: `/kontakt.html#formularz`
+15. Do not add an external icon library or remote runtime assets.
 
-17. Update the homepage hero primary CTA to:
+16. If suitable local icons do not exist, use professional text links and keep the structure ready for future icons.
 
-* label: `Zobacz pakiety`
-* URL: `/pakiety.html#pakiety`
+17. Replace the current footer-bottom text with exactly:
 
-18. Preserve the homepage materials CTA.
+`© 2026 KP_Code Digital Studio | Wszelkie prawa zastrzeżone.`
 
-19. Update footer contact navigation to `/kontakt.html`.
+18. Implement responsive behavior:
 
-20. Regenerate all affected HTML through the canonical assembler.
+* mobile: one column
+* tablet: two-column grid
+* desktop: four-column grid
+* social row spans the full footer width
+* copyright row spans the full footer width
 
-21. Update only the route, SEO, content, HTML, and PWA expectations directly affected by the new page.
+19. Refine footer spacing, headings, link rhythm, hover/focus states, separators, and theme surfaces using existing tokens and BEM conventions.
 
-22. Add `/kontakt.html` to the PWA primary-document contract only if this matches the current explicit primary-page precache policy.
+20. Keep the footer visually calm:
 
-23. Add one focused Playwright test covering:
+* no cards
+* no heavy borders
+* no oversized CTA buttons
+* no decorative clutter
 
-* `/kontakt.html` returns `200`
-* correct heading and contact links
-* accessible form fields
-* shared navigation current state
-* header and homepage CTA destinations
-* homepage compact CTA links
+21. Update the HTML assembler validation so the canonical footer structure, legal destinations, contact details, social URLs, and copyright remain mechanically protected.
+
+22. Regenerate all affected HTML pages through the existing assembler.
+
+23. Add or update one focused footer Playwright test covering:
+
+* four primary footer columns
+* contact links and address
+* legal links returning `200`
+* five social links and security attributes
+* responsive one/two/four-column behavior
+* exact copyright text
+* light and dark theme readability
 
 EXECUTION BUDGET
 
-* Inspect only files directly relevant to this contact-page task.
+* Inspect only files directly related to the footer and required legal destinations.
 * Make one implementation pass.
 * Run each focused verification command once.
-* If verification reveals an unexpected issue, diagnose it once.
-* Apply at most one minimal corrective fix and rerun only the affected focused check once.
-* Do not perform repeated debugging or add temporary instrumentation.
+* Diagnose at most one unexpected issue.
+* Apply at most one minimal correction and rerun only the affected focused check once.
 * Do not run the full E2E suite.
-* Do not expand into unrelated legal, design-system, backend, accessibility, PWA, or architecture work.
-* If an unrelated issue remains, report it and stop.
+* Do not perform repeated debugging or temporary instrumentation.
+* Report unrelated failures and stop.
 
 CONSTRAINTS
 
-* Do not create a backend or introduce a framework.
-* Do not add external form libraries.
-* Do not invent contact details beyond those explicitly provided.
-* Do not invent availability, prices, hours, response-time promises, reviews, or business claims.
-* Do not duplicate shared navigation or footer markup manually.
-* Do not manually edit generated HTML regions.
-* Do not redesign unrelated homepage sections.
-* Do not change the existing visual identity.
-* Do not remove the legacy `#contact` homepage anchor.
+* Do not redesign the header, navigation, homepage, contact page, or other sections.
+* Do not change approved contact details or social URLs.
+* Do not invent social profiles, legal claims, analytics, cookies, payments, or business information.
+* Do not add external icon libraries or remote assets.
+* Do not manually edit generated shared footer regions.
+* Do not add legal utility pages to the sitemap or primary PWA precache.
 * Do not modify `INITIAL-AUDIT.md`.
 * Preserve unrelated working-tree changes.
 * Keep the diff focused and review-friendly.
 
 TECHNICAL RULES
 
-* Use `/kontakt.html` as the canonical contact route.
-* Use semantic `<address>` markup for contact details.
-* Use native links for telephone and email actions.
-* Use semantic form controls and native validation first.
-* Preserve keyboard access, visible focus, reduced motion, and theme support.
-* Use existing design tokens and BEM naming patterns.
-* Keep mobile-first responsive behavior.
-* Keep source files canonical.
-* Regenerate HTML and Service Worker output only through existing scripts.
-* Do not manually edit generated `service-worker.js`.
-* Keep the approved contact data exactly as provided.
+* Use semantic footer headings, lists, links, and `<address>`.
+* Keep telephone and email as native links.
+* Use accessible link names.
+* Preserve visible `:focus-visible` states.
+* Preserve light/dark theme contrast.
+* Use existing tokens and BEM naming.
+* Keep CSS mobile-first.
+* Preserve shared-shell generation and HTML idempotence.
+* Use source files as canonical.
+* Do not edit generated Service Worker output manually.
 
-Run only the relevant focused commands:
+Run only:
 
 * `npm run build:html`
 * `npm run check:html`
 * `npm run check:content`
 * `npm run check:seo`
-* `npm run check:pwa` only if the PWA route contract changes
-* one focused contact-page Playwright test
+* one focused footer Playwright test
 * focused Prettier validation for changed canonical source files
 * `git diff --check`
 
@@ -219,17 +224,16 @@ OUTPUT EXPECTATION
 
 Return a concise summary with:
 
-* files inspected
-* canonical route and metadata changes
-* contact page structure
-* exact contact details implemented
-* form submission contract
-* homepage CTA replacement
-* final shared navigation, header CTA, hero CTA, and footer destinations
+* canonical footer files changed
+* final four-column structure
+* contact information implemented
+* legal routes created or reused
+* social row and exact URLs
+* responsive footer behavior
+* exact copyright text
 * generated pages refreshed
-* PWA changes, if required
-* focused verification performed
-* any remaining limitation
+* validator and focused browser results
+* any limitation
 * confirmation that no unsupported claims were added
 * confirmation that `INITIAL-AUDIT.md` and unrelated changes were preserved
 

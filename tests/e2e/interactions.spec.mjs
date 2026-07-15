@@ -6,11 +6,61 @@ import {
 } from "./helpers/runtime.mjs";
 
 const homepageAnchorCases = Object.freeze([
-  { id: "how", label: "Metodyka", sourcePath: "/uslugi.html" },
-  { id: "about", label: "O Lauren", sourcePath: "/uslugi.html" },
-  { id: "faq", label: "FAQ", sourcePath: "/index.html" },
-  { id: "contact", label: "Kontakt", sourcePath: "/index.html" },
+  {
+    destination: "/index.html#how",
+    id: "how",
+    sourcePath: "/uslugi.html",
+    sourceSelector: '.nav__link[href="/index.html#how"]',
+  },
+  {
+    destination: "/index.html#about",
+    id: "about",
+    sourcePath: "/uslugi.html",
+    sourceSelector: '.nav__link[href="/index.html#about"]',
+  },
+  {
+    destination: "/index.html#faq",
+    id: "faq",
+    sourcePath: "/index.html",
+    sourceSelector: '.nav__link[href="/index.html#faq"]',
+  },
+  {
+    destination: "/index.html#contact",
+    id: "contact",
+    sourcePath: "/uslugi.html",
+    sourceSelector: '.hero__actions a[href="index.html#contact"]',
+  },
 ]);
+
+const expectAnchorToClearHeader = async (page, id) => {
+  const geometry = await page.evaluate((targetId) => {
+    const header = document.querySelector(".header");
+    const target = document.getElementById(targetId);
+    const heading = target?.querySelector(
+      ".section__title, .card__title, h1, h2, h3",
+    );
+    if (!header || !target || !heading) return null;
+
+    return {
+      headerBottom: header.getBoundingClientRect().bottom,
+      headerHeight: header.getBoundingClientRect().height,
+      headingTop: heading.getBoundingClientRect().top,
+      scrollMarginTop: Number.parseFloat(
+        getComputedStyle(target).scrollMarginTop,
+      ),
+    };
+  }, id);
+
+  expect(geometry, `Missing geometry for #${id}`).not.toBeNull();
+  expect(
+    geometry.scrollMarginTop,
+    `#${id} needs clearance beyond the sticky-header height`,
+  ).toBeGreaterThan(geometry.headerHeight);
+  expect(
+    geometry.headingTop,
+    `#${id} heading must clear the sticky header`,
+  ).toBeGreaterThan(geometry.headerBottom);
+};
 
 test("desktop navigation exposes its links and theme action", async ({
   page,
@@ -28,43 +78,50 @@ test("desktop navigation exposes its links and theme action", async ({
   expectCleanDiagnostics(diagnostics);
 });
 
-test("homepage anchor targets clear the sticky header", async ({ page }) => {
+test("project anchor targets clear the sticky header", async ({ page }) => {
   const diagnostics = collectRuntimeDiagnostics(page);
   await page.emulateMedia({ reducedMotion: "reduce" });
 
-  for (const { id, label, sourcePath } of homepageAnchorCases) {
+  for (const {
+    destination,
+    id,
+    sourcePath,
+    sourceSelector,
+  } of homepageAnchorCases) {
     await page.goto(sourcePath, { waitUntil: "networkidle" });
-    const navigation = page.getByRole("navigation", {
-      name: "Główna nawigacja",
-    });
     const mobileToggle = page.locator(".nav__toggle");
 
-    if (await mobileToggle.isVisible()) {
+    if (
+      sourceSelector.includes("nav__link") &&
+      (await mobileToggle.isVisible())
+    ) {
       await mobileToggle.click();
     }
 
-    await navigation.getByRole("link", { name: label, exact: true }).click();
-    await expect(page).toHaveURL(new RegExp(`/index\\.html#${id}$`));
+    await page.locator(sourceSelector).click();
+    await expect
+      .poll(() => {
+        const url = new URL(page.url());
+        return `${url.pathname}${url.hash}`;
+      })
+      .toBe(destination);
     await page.waitForLoadState("networkidle");
-
-    const geometry = await page.evaluate((targetId) => {
-      const header = document.querySelector(".header");
-      const target = document.getElementById(targetId);
-      const heading = target?.querySelector(".section__title");
-      if (!header || !target || !heading) return null;
-
-      return {
-        headerBottom: header.getBoundingClientRect().bottom,
-        headingTop: heading.getBoundingClientRect().top,
-      };
-    }, id);
-
-    expect(geometry, `Missing geometry for #${id}`).not.toBeNull();
-    expect(
-      geometry.headingTop,
-      `#${id} heading must clear the sticky header`,
-    ).toBeGreaterThan(geometry.headerBottom);
+    await expectAnchorToClearHeader(page, id);
   }
+
+  await page.goto("/index.html", { waitUntil: "networkidle" });
+  await page.locator('.hero__actions a[href="/pakiety.html#pakiety"]').click();
+  await expect(page).toHaveURL(/\/pakiety\.html#pakiety$/);
+  await page.waitForLoadState("networkidle");
+  await expectAnchorToClearHeader(page, "pakiety");
+
+  await page.goto("/kontakt.html#formularz", { waitUntil: "networkidle" });
+  await expectAnchorToClearHeader(page, "formularz");
+
+  await page.goto("/index.html", { waitUntil: "networkidle" });
+  await page.locator('.hero__actions a[href="#resources"]').click();
+  await expect(page).toHaveURL(/\/index\.html#resources$/);
+  await expectAnchorToClearHeader(page, "resources");
 
   expectCleanDiagnostics(diagnostics);
 });

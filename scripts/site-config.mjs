@@ -103,6 +103,30 @@ export const INDEXABLE_PAGES = Object.freeze([
   }),
 ]);
 
+export const LEGAL_PAGES = Object.freeze([
+  freezePage({
+    key: "privacy",
+    file: "polityka-prywatnosci.html",
+    path: "/polityka-prywatnosci.html",
+    runtimePath: "/polityka-prywatnosci.html",
+    title: "Polityka prywatności | Lauren – Clean English",
+  }),
+  freezePage({
+    key: "terms",
+    file: "regulamin.html",
+    path: "/regulamin.html",
+    runtimePath: "/regulamin.html",
+    title: "Regulamin witryny | Lauren – Clean English",
+  }),
+  freezePage({
+    key: "cookies",
+    file: "cookies.html",
+    path: "/cookies.html",
+    runtimePath: "/cookies.html",
+    title: "Polityka cookies | Lauren – Clean English",
+  }),
+]);
+
 export const UTILITY_PAGES = Object.freeze([
   freezePage({
     key: "not-found",
@@ -126,6 +150,12 @@ export const UTILITY_PAGES = Object.freeze([
     aliases: Object.freeze(["/thank-you"]),
     title: "Dziękuję za wiadomość | Lauren – Clean English",
   }),
+  ...LEGAL_PAGES,
+]);
+
+export const SHARED_SHELL_PAGES = Object.freeze([
+  ...INDEXABLE_PAGES,
+  ...LEGAL_PAGES,
 ]);
 
 export const ALL_PAGES = Object.freeze([...INDEXABLE_PAGES, ...UTILITY_PAGES]);

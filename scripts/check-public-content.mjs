@@ -2,17 +2,17 @@ import { readFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { ALL_PAGES } from "./site-config.mjs";
+import { ALL_PAGES, SHARED_SHELL_PAGES } from "./site-config.mjs";
+import {
+  FOOTER_CONTACT,
+  FOOTER_COPYRIGHT,
+  FOOTER_LEGAL_LINKS,
+  FOOTER_SOCIAL_LINKS,
+} from "./shared-shell.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const PUBLIC_PAGES = Object.freeze(ALL_PAGES.map(({ file }) => file));
-const APPROVED_CONTACT = Object.freeze({
-  address: "ul. Marynarki Wojennej 12/31, 33-100 Tarnów, Polska",
-  email: "kontakt@kp-code.pl",
-  emailUri: "mailto:kontakt@kp-code.pl",
-  phone: "+48 533 537 091",
-  telephoneUri: "tel:+48533537091",
-});
+const APPROVED_CONTACT = FOOTER_CONTACT;
 
 const FORBIDDEN_PUBLIC_PATTERNS = Object.freeze([
   {
@@ -48,14 +48,6 @@ const FORBIDDEN_PUBLIC_PATTERNS = Object.freeze([
     label: "generic social profile",
     pattern:
       /href="https:\/\/(?:www\.)?(?:linkedin|instagram|youtube)\.com\/?"/iu,
-  },
-  {
-    label: "placeholder legal destination",
-    pattern: /href="\/offline\.html"[^>]*>(?:Polityka prywatności|Regulamin)/iu,
-  },
-  {
-    label: "unsupported legal link",
-    pattern: />\s*(?:Polityka prywatności|Regulamin)\s*</iu,
   },
   {
     label: "unsupported credentials",
@@ -97,11 +89,11 @@ const contactSection = home.match(
 assert(contactSection, "index.html: missing contact section");
 assert(
   !contactSection.includes("data-contact-status") &&
-    /<a\b[^>]*href="\/kontakt\.html"[^>]*>\s*Przejdź do kontaktu\s*<\/a>/iu.test(
+    /<a\b[^>]*href="\/kontakt\.html"[^>]*>\s*Przejdź do kontaktu\s*<\/a\s*>/iu.test(
       contactSection,
     ) &&
     new RegExp(
-      `<a\\b[^>]*href="${APPROVED_CONTACT.telephoneUri}"[^>]*>\\s*Zadzwoń\\s*<\\/a>`,
+      `<a\\b[^>]*href="${APPROVED_CONTACT.telephoneUri}"[^>]*>\\s*Zadzwoń\\s*<\\/a\\s*>`,
       "iu",
     ).test(contactSection),
   "index.html: compact contact CTA contract changed",
@@ -132,14 +124,26 @@ const emailUris = [...publicHtml.matchAll(/href="(mailto:[^"]+)"/giu)].map(
   (match) => match[1],
 );
 assert(
-  telephoneUris.length === 2 &&
+  telephoneUris.length > 0 &&
     telephoneUris.every((uri) => uri === APPROVED_CONTACT.telephoneUri),
   "Public telephone links must use only the approved number",
 );
 assert(
-  emailUris.length === 1 && emailUris[0] === APPROVED_CONTACT.emailUri,
+  emailUris.length > 0 &&
+    emailUris.every((uri) => uri === APPROVED_CONTACT.emailUri),
   "Public email links must use only the approved address",
 );
+
+for (const { file } of SHARED_SHELL_PAGES) {
+  const html = pages.get(file);
+  assert(
+    html.includes(FOOTER_COPYRIGHT) &&
+      html.includes(FOOTER_CONTACT.address) &&
+      FOOTER_LEGAL_LINKS.every(({ href }) => html.includes(`href="${href}"`)) &&
+      FOOTER_SOCIAL_LINKS.every(({ href }) => html.includes(`href="${href}"`)),
+    `${file}: shared footer content contract changed`,
+  );
+}
 
 for (const [file, html] of pages) {
   if (file !== "kontakt.html") {
@@ -174,5 +178,5 @@ for (const fieldName of ["name", "email", "topic", "message"]) {
 }
 
 console.log(
-  `Verified public-content integrity for ${PUBLIC_PAGES.length} pages: approved contact details and form contract are isolated to kontakt.html without unsupported claims, structured-data fields, social profiles, or legal placeholders.`,
+  `Verified public-content integrity for ${PUBLIC_PAGES.length} pages: approved contact, legal, social, and form contracts remain factual without unsupported claims, structured-data fields, profiles, or placeholders.`,
 );

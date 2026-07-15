@@ -46,10 +46,6 @@
   max-width: var(--content-measure);
 }
 
-#formularz {
-  scroll-margin-top: var(--anchor-scroll-offset);
-}
-
 .form__input--message {
   min-height: 160px;
   resize: vertical;

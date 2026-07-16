@@ -3,6 +3,7 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import {
+  FOOTER_BRAND_DESCRIPTION,
   FOOTER_CONTACT,
   FOOTER_COPYRIGHT,
   FOOTER_LEGAL_LINKS,
@@ -267,6 +268,27 @@ const validatePage = async (html, page, assembledPages) => {
     ).length === 4,
     `${page.file}: footer must contain four primary columns`,
   );
+  const brandBlockIndex = footer.indexOf('class="footer__brand-block"');
+  const brandLogoIndex = footer.indexOf(
+    'class="footer__logo-image"',
+    brandBlockIndex,
+  );
+  const brandNameIndex = footer.indexOf(
+    '<span class="footer__brand-text">Lauren – Clean English</span>',
+    brandLogoIndex,
+  );
+  const brandDescriptionIndex = footer.indexOf(
+    `<p class="footer__text">${FOOTER_BRAND_DESCRIPTION}</p>`,
+    brandNameIndex,
+  );
+  assert(
+    brandBlockIndex >= 0 &&
+      brandLogoIndex > brandBlockIndex &&
+      brandNameIndex > brandLogoIndex &&
+      brandDescriptionIndex > brandNameIndex &&
+      !footer.includes("Profesjonalny angielski w spokojnym rytmie."),
+    `${page.file}: footer brand block content or order changed`,
+  );
   assert(
     footer.includes(
       `href="${FOOTER_CONTACT.telephoneUri}">${FOOTER_CONTACT.phone}</a>`,
@@ -278,6 +300,11 @@ const validatePage = async (html, page, assembledPages) => {
         `<address class="footer__address">${FOOTER_CONTACT.address}</address>`,
       ),
     `${page.file}: footer contact details changed`,
+  );
+  assert(
+    !footer.includes('class="footer__quiet-link"') &&
+      !footer.includes("Przejdź do strony kontaktowej"),
+    `${page.file}: redundant footer contact link must remain removed`,
   );
   for (const { label, href } of FOOTER_LEGAL_LINKS) {
     assert(
@@ -333,7 +360,10 @@ const validatePage = async (html, page, assembledPages) => {
   assert(
     footer.includes(
       '<section class="container footer__social" aria-labelledby="footer-social-title">',
-    ),
+    ) &&
+      footer.includes(
+        '<h2 class="footer__social-title" id="footer-social-title">SOCIAL MEDIA</h2>',
+      ),
     `${page.file}: footer social row structure changed`,
   );
   assert(

@@ -88,6 +88,41 @@ test("shared footer exposes the approved responsive, legal, and social contract"
 
     const footer = page.locator(".footer");
     await expect(footer.locator(".footer__column")).toHaveCount(4);
+    const brandColumn = footer.locator(".footer__column--brand");
+    const brandBlock = brandColumn.locator(".footer__brand-block");
+    await expect(brandColumn.locator(".footer__brand-text")).toHaveText(
+      "Lauren – Clean English",
+    );
+    await expect(brandColumn.locator(".footer__text")).toHaveText(
+      "Indywidualna nauka angielskiego dopasowana do Twoich celów, poziomu i tempa. Spokojnie, konkretnie i bez chaosu.",
+    );
+    const brandLayout = await brandBlock.evaluate((block) => {
+      const column = block.closest(".footer__column--brand");
+      const logo = block.querySelector(".footer__logo-image");
+      const name = block.querySelector(".footer__brand-text");
+      const description = block.querySelector(".footer__text");
+      const blockRect = block.getBoundingClientRect();
+      const columnRect = column.getBoundingClientRect();
+      const logoRect = logo.getBoundingClientRect();
+      const nameRect = name.getBoundingClientRect();
+      const descriptionRect = description.getBoundingClientRect();
+
+      return {
+        blockMaxWidth: getComputedStyle(block).maxWidth,
+        blockWidth: blockRect.width,
+        columnWidth: columnRect.width,
+        descriptionTop: descriptionRect.top,
+        logoBottom: logoRect.bottom,
+        nameBottom: nameRect.bottom,
+        nameTop: nameRect.top,
+      };
+    });
+    expect(brandLayout.blockMaxWidth).not.toBe("none");
+    expect(brandLayout.blockWidth).toBeLessThanOrEqual(brandLayout.columnWidth);
+    expect(brandLayout.nameTop).toBeGreaterThanOrEqual(brandLayout.logoBottom);
+    expect(brandLayout.descriptionTop).toBeGreaterThanOrEqual(
+      brandLayout.nameBottom,
+    );
     await expect(footer.locator('a[href="tel:+48533537091"]')).toHaveText(
       "+48 533 537 091",
     );
@@ -97,6 +132,32 @@ test("shared footer exposes the approved responsive, legal, and social contract"
     await expect(footer.locator("address")).toHaveText(
       "ul. Marynarki Wojennej 12/31, 33-100 Tarnów, Polska",
     );
+    await expect(
+      footer.getByRole("link", { name: "Przejdź do strony kontaktowej" }),
+    ).toHaveCount(0);
+    await expect(
+      footer.getByRole("link", { name: "Kontakt", exact: true }),
+    ).toHaveCount(1);
+
+    const socialHeading = footer.getByRole("heading", {
+      name: "SOCIAL MEDIA",
+      exact: true,
+    });
+    await expect(socialHeading).toBeVisible();
+    const headingTypography = await socialHeading.evaluate((heading) => {
+      const columnHeading = document.querySelector(".footer__title");
+      const columnStyle = getComputedStyle(columnHeading);
+      const socialStyle = getComputedStyle(heading);
+      return {
+        columnSize: Number.parseFloat(columnStyle.fontSize),
+        letterSpacing: Number.parseFloat(socialStyle.letterSpacing),
+        socialSize: Number.parseFloat(socialStyle.fontSize),
+      };
+    });
+    expect(headingTypography.socialSize).toBeLessThan(
+      headingTypography.columnSize,
+    );
+    expect(headingTypography.letterSpacing).toBeGreaterThan(0);
 
     for (const path of LEGAL_PATHS) {
       await expect(footer.locator(`a[href="${path}"]`)).toHaveCount(1);
@@ -166,6 +227,17 @@ test("shared footer exposes the approved responsive, legal, and social contract"
           getComputedStyle(grid).gridTemplateColumns.split(/\s+/u).length,
       );
     expect(columnCount, viewport.name).toBe(viewport.columns);
+    if (viewport.name === "desktop") {
+      const columnWidths = await footer
+        .locator(".footer__column")
+        .evaluateAll((columns) =>
+          columns.map((column) => column.getBoundingClientRect().width),
+        );
+      expect(columnWidths[0]).toBeGreaterThan(columnWidths[1]);
+      expect(columnWidths[1]).toBeCloseTo(columnWidths[2], 1);
+      expect(columnWidths[2]).toBeCloseTo(columnWidths[3], 1);
+      expect(brandLayout.blockWidth).toBeLessThan(brandLayout.columnWidth);
+    }
 
     for (const theme of ["light", "dark"]) {
       await page.locator("html").evaluate((element, nextTheme) => {

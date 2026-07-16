@@ -92,6 +92,9 @@ const FOOTER_SOCIAL_ICON_ATTRIBUTION =
 export const FOOTER_COPYRIGHT =
   "© 2026 KP_Code Digital Studio | Wszelkie prawa zastrzeżone.";
 
+export const FOOTER_BRAND_DESCRIPTION =
+  "Indywidualna nauka angielskiego dopasowana do Twoich celów, poziomu i tempa. Spokojnie, konkretnie i bez chaosu.";
+
 const getPage = (pageKey) => {
   const page = SHARED_SHELL_PAGES.find(({ key }) => key === pageKey);
   if (!page) {
@@ -193,11 +196,13 @@ export const renderSharedFooter = () => `${SHELL_MARKERS.footerStart}
       <div class="container footer__grid">
         <section class="footer__column footer__column--brand" aria-labelledby="footer-brand-title">
           <h2 class="sr-only" id="footer-brand-title">Marka</h2>
-          <a class="footer__brand" href="/index.html">
-            <img class="footer__logo-image" src="${SITE.brandLogo.path}" alt="" width="${SITE.brandLogo.width}" height="${SITE.brandLogo.height}" />
-            <span class="footer__brand-text">Lauren – Clean English</span>
-          </a>
-          <p class="footer__text">Profesjonalny angielski w spokojnym rytmie.</p>
+          <div class="footer__brand-block">
+            <a class="footer__brand" href="/index.html">
+              <img class="footer__logo-image" src="${SITE.brandLogo.path}" alt="" width="${SITE.brandLogo.width}" height="${SITE.brandLogo.height}" />
+              <span class="footer__brand-text">Lauren – Clean English</span>
+            </a>
+            <p class="footer__text">${FOOTER_BRAND_DESCRIPTION}</p>
+          </div>
         </section>
         <section class="footer__column" aria-labelledby="footer-offer-title">
           <h2 class="footer__title" id="footer-offer-title">Oferta</h2>
@@ -211,7 +216,6 @@ ${renderFooterLinks(FOOTER_OFFER_LINKS)}
             <li><a class="footer__contact-link" href="${FOOTER_CONTACT.telephoneUri}">${FOOTER_CONTACT.phone}</a></li>
             <li><a class="footer__contact-link" href="${FOOTER_CONTACT.emailUri}">${FOOTER_CONTACT.email}</a></li>
             <li><address class="footer__address">${FOOTER_CONTACT.address}</address></li>
-            <li><a class="footer__quiet-link" href="/kontakt.html">Przejdź do strony kontaktowej</a></li>
           </ul>
         </section>
         <section class="footer__column" aria-labelledby="footer-information-title">
@@ -222,7 +226,7 @@ ${renderFooterLinks(FOOTER_INFORMATION_LINKS)}
         </section>
       </div>
       <section class="container footer__social" aria-labelledby="footer-social-title">
-        <h2 class="footer__social-title" id="footer-social-title">KP_Code Digital Studio w sieci</h2>
+        <h2 class="footer__social-title" id="footer-social-title">SOCIAL MEDIA</h2>
         <ul class="footer__social-list" role="list">
 ${renderSocialLinks()}
         </ul>

@@ -105,23 +105,56 @@ test("shared footer exposes the approved responsive, legal, and social contract"
     const socialLinks = await footer
       .locator(".footer__social-link")
       .evaluateAll((links) =>
-        links.map((link) => ({
-          ariaLabel: link.getAttribute("aria-label"),
-          href: link.getAttribute("href"),
-          rel: link.getAttribute("rel"),
-          target: link.getAttribute("target"),
-          text: link.textContent.trim(),
-        })),
+        links.map((link) => {
+          const icon = link.querySelector(":scope > svg.footer__social-icon");
+          const linkRect = link.getBoundingClientRect();
+          const iconRect = icon?.getBoundingClientRect();
+
+          return {
+            ariaLabel: link.getAttribute("aria-label"),
+            href: link.getAttribute("href"),
+            icon: icon
+              ? {
+                  ariaHidden: icon.getAttribute("aria-hidden"),
+                  fill: icon.getAttribute("fill"),
+                  focusable: icon.getAttribute("focusable"),
+                  height: iconRect.height,
+                  pathCount: icon.querySelectorAll(":scope > path").length,
+                  viewBox: icon.getAttribute("viewBox"),
+                  width: iconRect.width,
+                }
+              : null,
+            linkHeight: linkRect.height,
+            linkWidth: linkRect.width,
+            rel: link.getAttribute("rel"),
+            svgCount: link.querySelectorAll(":scope > svg").length,
+            target: link.getAttribute("target"),
+            text: link.textContent.trim(),
+          };
+        }),
       );
-    expect(socialLinks).toEqual(
-      SOCIAL_LINKS.map(({ label, href }) => ({
-        ariaLabel: `${label} – KP_Code Digital Studio (otwiera się w nowej karcie)`,
+    expect(socialLinks).toHaveLength(5);
+    for (const [index, { label, href }] of SOCIAL_LINKS.entries()) {
+      expect(socialLinks[index]).toMatchObject({
+        ariaLabel: `${label} — KP_Code Digital Studio`,
         href,
+        icon: {
+          ariaHidden: "true",
+          fill: "currentColor",
+          focusable: "false",
+          height: 24,
+          pathCount: 1,
+          viewBox: "0 0 448 512",
+          width: 24,
+        },
         rel: "noopener noreferrer",
+        svgCount: 1,
         target: "_blank",
-        text: label,
-      })),
-    );
+        text: "",
+      });
+      expect(socialLinks[index].linkHeight).toBeGreaterThanOrEqual(44);
+      expect(socialLinks[index].linkWidth).toBeGreaterThanOrEqual(44);
+    }
 
     await expect(footer.locator(".footer__bottom p")).toHaveText(
       "© 2026 KP_Code Digital Studio | Wszelkie prawa zastrzeżone.",
@@ -143,10 +176,51 @@ test("shared footer exposes the approved responsive, legal, and social contract"
         Math.min(...contrastRatios),
         `${viewport.name} ${theme} footer contrast`,
       ).toBeGreaterThanOrEqual(4.5);
+
+      const iconColors = await footer
+        .locator(".footer__social-link")
+        .evaluateAll((links) =>
+          links.map((link) => {
+            const icon = link.querySelector(".footer__social-icon");
+            return {
+              icon: getComputedStyle(icon).fill,
+              link: getComputedStyle(link).color,
+            };
+          }),
+        );
+      expect(iconColors.every(({ icon, link }) => icon === link)).toBe(true);
     }
+
+    const firstSocialLink = footer.locator(".footer__social-link").first();
+    await firstSocialLink.hover();
+    expect(
+      await firstSocialLink.evaluate(
+        (link) => getComputedStyle(link).transform !== "none",
+      ),
+    ).toBe(true);
+
+    await firstSocialLink.focus();
+    await page.keyboard.press("Shift+Tab");
+    await page.keyboard.press("Tab");
+    const focusState = await firstSocialLink.evaluate((link) => {
+      const style = getComputedStyle(link);
+      return {
+        focusVisible: link.matches(":focus-visible"),
+        outlineStyle: style.outlineStyle,
+        outlineWidth: Number.parseFloat(style.outlineWidth),
+      };
+    });
+    expect(focusState.focusVisible).toBe(true);
+    expect(focusState.outlineStyle).not.toBe("none");
+    expect(focusState.outlineWidth).toBeGreaterThan(0);
 
     await expectNoDocumentOverflow(page);
   }
+
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  const reducedMotionLink = page.locator(".footer__social-link").first();
+  await reducedMotionLink.hover();
+  await expect(reducedMotionLink).toHaveCSS("transform", "none");
 
   expectCleanDiagnostics(diagnostics);
 });

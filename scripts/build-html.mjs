@@ -285,20 +285,56 @@ const validatePage = async (html, page, assembledPages) => {
       `${page.file}: footer legal destination changed: ${label}`,
     );
   }
-  for (const { label, href } of FOOTER_SOCIAL_LINKS) {
+  const socialLinks = [
+    ...footer.matchAll(
+      /<a\b(?=[^>]*\bclass="footer__social-link")[^>]*>([\s\S]*?)<\/a>/gi,
+    ),
+  ];
+  assert(
+    socialLinks.length === FOOTER_SOCIAL_LINKS.length &&
+      socialLinks.length === 5,
+    `${page.file}: footer social row must contain exactly five links`,
+  );
+  for (const [
+    index,
+    { label, href, viewBox, pathData },
+  ] of FOOTER_SOCIAL_LINKS.entries()) {
+    const socialLink = socialLinks[index];
+    const linkMarkup = socialLink[0];
+    const linkContent = socialLink[1].trim();
+    const svgTags = linkContent.match(/<svg\b[\s\S]*?<\/svg>/gi) ?? [];
+
     assert(
-      footer.includes(
-        `<a class="footer__social-link" href="${href}" target="_blank" rel="noopener noreferrer" aria-label="${label} – KP_Code Digital Studio (otwiera się w nowej karcie)">${label}</a>`,
-      ),
+      getAttribute(linkMarkup, "href") === href &&
+        getAttribute(linkMarkup, "target") === "_blank" &&
+        getAttribute(linkMarkup, "rel") === "noopener noreferrer" &&
+        getAttribute(linkMarkup, "aria-label") ===
+          `${label} — KP_Code Digital Studio`,
       `${page.file}: footer social contract changed: ${label}`,
+    );
+    assert(
+      svgTags.length === 1 && linkContent.replace(svgTags[0], "").trim() === "",
+      `${page.file}: footer social link must contain one icon and no visible label: ${label}`,
+    );
+
+    const svgMarkup = svgTags[0];
+    const pathTags = svgMarkup.match(/<path\b[^>]*\/>/gi) ?? [];
+    assert(
+      getAttribute(svgMarkup, "class") === "footer__social-icon" &&
+        getAttribute(svgMarkup, "viewBox") === viewBox &&
+        getAttribute(svgMarkup, "aria-hidden") === "true" &&
+        getAttribute(svgMarkup, "focusable") === "false" &&
+        getAttribute(svgMarkup, "fill") === "currentColor" &&
+        pathTags.length === 1 &&
+        getAttribute(pathTags[0], "d") === pathData,
+      `${page.file}: footer social SVG changed: ${label}`,
     );
   }
   assert(
-    (footer.match(/class="footer__social-link"/g) ?? []).length === 5 &&
-      footer.includes(
-        '<section class="container footer__social" aria-labelledby="footer-social-title">',
-      ),
-    `${page.file}: footer social row must contain five links`,
+    footer.includes(
+      '<section class="container footer__social" aria-labelledby="footer-social-title">',
+    ),
+    `${page.file}: footer social row structure changed`,
   );
   assert(
     footer.includes(`<p>${FOOTER_COPYRIGHT}</p>`) &&

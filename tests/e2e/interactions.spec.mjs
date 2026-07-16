@@ -21,7 +21,7 @@ const homepageAnchorCases = Object.freeze([
   {
     destination: "/index.html#faq",
     id: "faq",
-    sourcePath: "/index.html",
+    sourcePath: "/uslugi.html",
     sourceSelector: '.nav__link[href="/index.html#faq"]',
   },
   {
@@ -60,6 +60,38 @@ const expectAnchorToClearHeader = async (page, id) => {
     geometry.headingTop,
     `#${id} heading must clear the sticky header`,
   ).toBeGreaterThan(geometry.headerBottom);
+};
+
+const expectCompactHomepageAnchorFocus = async (page, id) => {
+  const target = page.locator(`#${id}`);
+  const heading = target.locator(".section__title").first();
+
+  await expect
+    .poll(() =>
+      heading.evaluate((element) => document.activeElement === element),
+    )
+    .toBe(true);
+  await expect(heading).toHaveAttribute("tabindex", "-1");
+  await expect(heading).toHaveAttribute("data-anchor-focus-target", "");
+  await expect(target).not.toHaveAttribute("tabindex", "-1");
+
+  const focusState = await heading.evaluate((element) => {
+    const targetSection = element.closest("section");
+    const headingStyle = getComputedStyle(element);
+
+    return {
+      focusVisible: element.matches(":focus-visible"),
+      headingWidth: element.getBoundingClientRect().width,
+      outlineStyle: headingStyle.outlineStyle,
+      outlineWidth: Number.parseFloat(headingStyle.outlineWidth),
+      targetWidth: targetSection?.getBoundingClientRect().width ?? 0,
+    };
+  });
+
+  expect(focusState.focusVisible).toBe(true);
+  expect(focusState.outlineStyle).not.toBe("none");
+  expect(focusState.outlineWidth).toBeGreaterThan(0);
+  expect(focusState.headingWidth).toBeLessThan(focusState.targetWidth);
 };
 
 test("desktop navigation exposes its links and theme action", async ({
@@ -147,7 +179,33 @@ test("project anchor targets clear the sticky header", async ({ page }) => {
       .toBe(destination);
     await page.waitForLoadState("networkidle");
     await expectAnchorToClearHeader(page, id);
+    await expectCompactHomepageAnchorFocus(page, id);
   }
+
+  await page.goto("/uslugi.html", { waitUntil: "networkidle" });
+  const mobileToggle = page.locator(".nav__toggle");
+  if (await mobileToggle.isVisible()) await mobileToggle.click();
+  const aboutLink = page.locator('.nav__link[href="/index.html#about"]');
+  await aboutLink.focus();
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(/\/index\.html#about$/);
+  await page.waitForLoadState("networkidle");
+  await expectCompactHomepageAnchorFocus(page, "about");
+
+  await page.goto("/uslugi.html", { waitUntil: "networkidle" });
+  await page.goto("/index.html#faq", { waitUntil: "networkidle" });
+  await expectCompactHomepageAnchorFocus(page, "faq");
+  const lightOutlineColor = await page
+    .locator("#faq .section__title")
+    .evaluate((element) => getComputedStyle(element).outlineColor);
+  await page.evaluate(() => {
+    document.documentElement.dataset.theme = "dark";
+  });
+  await expectCompactHomepageAnchorFocus(page, "faq");
+  const darkOutlineColor = await page
+    .locator("#faq .section__title")
+    .evaluate((element) => getComputedStyle(element).outlineColor);
+  expect(darkOutlineColor).not.toBe(lightOutlineColor);
 
   await page.goto("/kontakt.html#formularz", { waitUntil: "networkidle" });
   await expectAnchorToClearHeader(page, "formularz");

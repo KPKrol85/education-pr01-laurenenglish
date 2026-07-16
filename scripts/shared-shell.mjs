@@ -11,7 +11,7 @@ export const SHELL_MARKERS = Object.freeze({
 
 const NAV_ITEMS = Object.freeze([
   { key: "services", label: "Usługi", href: "/uslugi.html" },
-  { key: "packages", label: "Pakiety", href: "/pakiety.html#pakiety" },
+  { key: "packages", label: "Pakiety", href: "/pakiety.html" },
   { key: "materials", label: "Materiały", href: "/materialy.html" },
   { key: "progress", label: "Postępy", href: "/postepy.html" },
   { label: "Metodyka", href: "/index.html#how" },
@@ -22,7 +22,7 @@ const NAV_ITEMS = Object.freeze([
 
 const FOOTER_OFFER_LINKS = Object.freeze([
   { label: "Usługi", href: "/uslugi.html" },
-  { label: "Pakiety", href: "/pakiety.html#pakiety" },
+  { label: "Pakiety", href: "/pakiety.html" },
   { label: "Materiały", href: "/materialy.html" },
   { label: "Postępy", href: "/postepy.html" },
   { label: "FAQ", href: "/index.html#faq" },

@@ -78,6 +78,46 @@ test("desktop navigation exposes its links and theme action", async ({
   expectCleanDiagnostics(diagnostics);
 });
 
+test("package navigation opens the hero while package CTAs target the cards", async ({
+  page,
+}, testInfo) => {
+  test.skip(testInfo.project.name !== "chromium-desktop");
+  const diagnostics = collectRuntimeDiagnostics(page);
+  const packageHeading = page.getByRole("heading", {
+    level: 1,
+    name: "Wybierz plan pracy, który daje spokój.",
+  });
+
+  await page.goto("/index.html", { waitUntil: "networkidle" });
+  const packageNavigationLink = page
+    .getByRole("navigation", { name: "Główna nawigacja" })
+    .getByRole("link", { name: "Pakiety", exact: true });
+  await expect(packageNavigationLink).toHaveAttribute("href", "/pakiety.html");
+  await packageNavigationLink.click();
+  await expect(page).toHaveURL(/\/pakiety\.html$/);
+  await expect(packageHeading).toBeVisible();
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
+
+  await page.goto("/index.html", { waitUntil: "networkidle" });
+  const packageCta = page.locator(
+    '.hero__actions a[href="/pakiety.html#pakiety"]',
+  );
+  await expect(packageCta).toHaveText("Zobacz pakiety");
+  await packageCta.click();
+  await expect(page).toHaveURL(/\/pakiety\.html#pakiety$/);
+  await page.waitForLoadState("networkidle");
+  await expectAnchorToClearHeader(page, "pakiety");
+
+  await page
+    .getByRole("navigation", { name: "Główna nawigacja" })
+    .getByRole("link", { name: "Pakiety", exact: true })
+    .click();
+  await expect(page).toHaveURL(/\/pakiety\.html$/);
+  await expect(packageHeading).toBeVisible();
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
+  expectCleanDiagnostics(diagnostics);
+});
+
 test("project anchor targets clear the sticky header", async ({ page }) => {
   const diagnostics = collectRuntimeDiagnostics(page);
   await page.emulateMedia({ reducedMotion: "reduce" });
@@ -108,12 +148,6 @@ test("project anchor targets clear the sticky header", async ({ page }) => {
     await page.waitForLoadState("networkidle");
     await expectAnchorToClearHeader(page, id);
   }
-
-  await page.goto("/index.html", { waitUntil: "networkidle" });
-  await page.locator('.hero__actions a[href="/pakiety.html#pakiety"]').click();
-  await expect(page).toHaveURL(/\/pakiety\.html#pakiety$/);
-  await page.waitForLoadState("networkidle");
-  await expectAnchorToClearHeader(page, "pakiety");
 
   await page.goto("/kontakt.html#formularz", { waitUntil: "networkidle" });
   await expectAnchorToClearHeader(page, "formularz");

@@ -180,7 +180,9 @@ test("mobile drawer is inert when closed and contains keyboard focus when open",
   expectCleanDiagnostics(diagnostics);
 });
 
-test("accordion synchronizes expanded and hidden state", async ({ page }) => {
+test("accordion preserves state and interactive corner geometry", async ({
+  page,
+}) => {
   const diagnostics = collectRuntimeDiagnostics(page);
   await page.goto("/index.html", { waitUntil: "networkidle" });
 
@@ -190,12 +192,95 @@ test("accordion synchronizes expanded and hidden state", async ({ page }) => {
   const panelId = await trigger.getAttribute("aria-controls");
   const panel = page.locator(`#${panelId}`);
 
-  await expect(trigger).toHaveAttribute("aria-expanded", "false");
-  await expect(panel).toBeHidden();
-  await trigger.click();
-  await expect(trigger).toHaveAttribute("aria-expanded", "true");
-  await expect(panel).toBeVisible();
-  await expect(panel).toHaveAttribute("aria-hidden", "false");
+  const readGeometry = () =>
+    trigger.evaluate((element) => {
+      const item = element.closest(".accordion__item");
+      if (!item) return null;
+
+      const itemRect = item.getBoundingClientRect();
+      const triggerRect = element.getBoundingClientRect();
+      const itemStyle = getComputedStyle(item);
+      const triggerStyle = getComputedStyle(element);
+
+      return {
+        focusVisible: element.matches(":focus-visible"),
+        hoverBackground: triggerStyle.backgroundColor,
+        itemRadii: [
+          itemStyle.borderTopLeftRadius,
+          itemStyle.borderTopRightRadius,
+          itemStyle.borderBottomRightRadius,
+          itemStyle.borderBottomLeftRadius,
+        ],
+        outlineStyle: triggerStyle.outlineStyle,
+        outlineWidth: Number.parseFloat(triggerStyle.outlineWidth),
+        triggerInsideItem:
+          triggerRect.left >= itemRect.left &&
+          triggerRect.right <= itemRect.right,
+        triggerRadii: [
+          triggerStyle.borderTopLeftRadius,
+          triggerStyle.borderTopRightRadius,
+          triggerStyle.borderBottomRightRadius,
+          triggerStyle.borderBottomLeftRadius,
+        ],
+      };
+    });
+
+  for (const theme of ["light", "dark"]) {
+    await page.locator("html").evaluate((element, nextTheme) => {
+      element.dataset.theme = nextTheme;
+    }, theme);
+
+    await expect(trigger).toHaveAttribute("aria-expanded", "false");
+    await expect(panel).toBeHidden();
+    await trigger.hover();
+
+    const closedGeometry = await readGeometry();
+    expect(closedGeometry).not.toBeNull();
+    expect(closedGeometry.triggerInsideItem).toBe(true);
+    expect(closedGeometry.triggerRadii).toEqual(closedGeometry.itemRadii);
+    expect(closedGeometry.hoverBackground).not.toBe("rgba(0, 0, 0, 0)");
+
+    await trigger.focus();
+    await page.keyboard.press("Shift+Tab");
+    await page.keyboard.press("Tab");
+
+    const closedFocus = await readGeometry();
+    expect(closedFocus.focusVisible).toBe(true);
+    expect(closedFocus.outlineStyle).not.toBe("none");
+    expect(closedFocus.outlineWidth).toBeGreaterThan(0);
+
+    await page.keyboard.press("Enter");
+    await expect(trigger).toHaveAttribute("aria-expanded", "true");
+    await expect(panel).toBeVisible();
+    await expect(panel).toHaveAttribute("aria-hidden", "false");
+    await trigger.hover();
+
+    const openGeometry = await readGeometry();
+    expect(openGeometry).not.toBeNull();
+    expect(openGeometry.triggerInsideItem).toBe(true);
+    expect(openGeometry.triggerRadii).toEqual([
+      openGeometry.itemRadii[0],
+      openGeometry.itemRadii[1],
+      "0px",
+      "0px",
+    ]);
+    expect(openGeometry.itemRadii[2]).not.toBe("0px");
+    expect(openGeometry.itemRadii[3]).not.toBe("0px");
+    expect(openGeometry.hoverBackground).not.toBe("rgba(0, 0, 0, 0)");
+
+    await trigger.focus();
+    await page.keyboard.press("Shift+Tab");
+    await page.keyboard.press("Tab");
+
+    const openFocus = await readGeometry();
+    expect(openFocus.focusVisible).toBe(true);
+    expect(openFocus.outlineStyle).not.toBe("none");
+    expect(openFocus.outlineWidth).toBeGreaterThan(0);
+
+    await page.keyboard.press("Enter");
+    await expect(trigger).toHaveAttribute("aria-expanded", "false");
+  }
+
   expectCleanDiagnostics(diagnostics);
 });
 

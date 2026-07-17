@@ -34,8 +34,9 @@
 
 .hero__subtitle {
   color: var(--color-text-muted);
+  font-size: clamp(var(--text-sm), 8vw, var(--text-md));
   max-width: var(--content-measure-narrow);
-  margin: 0 0 var(--space-lg);
+  margin: 0 0 var(--space-xl);
 }
 
 .hero__actions {
@@ -83,6 +84,58 @@
   border-radius: var(--radius-lg);
   padding: var(--space-lg);
   box-shadow: var(--shadow-md);
+}
+
+.hero__card--process {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.hero__process-title,
+.hero__process-description,
+.hero__process-list {
+  margin: 0;
+}
+
+.hero__process-title {
+  font-size: var(--text-xl);
+}
+
+.hero__process-description {
+  color: var(--color-text-muted);
+}
+
+.hero__process-list {
+  display: grid;
+  gap: var(--space-sm);
+  padding: 0;
+  list-style: none;
+  counter-reset: hero-process;
+}
+
+.hero__process-item {
+  display: grid;
+  grid-template-columns: var(--space-lg) minmax(0, 1fr);
+  gap: var(--space-sm);
+  align-items: start;
+  counter-increment: hero-process;
+}
+
+.hero__process-item::before {
+  content: counter(hero-process);
+  display: grid;
+  place-items: center;
+  width: var(--space-lg);
+  height: var(--space-lg);
+  border-radius: var(--radius-pill);
+  background: var(--color-interactive-surface);
+  color: var(--color-primary-dark);
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+.hero__process-link {
+  justify-self: start;
 }
 
 @media (min-width: 480px) {

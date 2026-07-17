@@ -14,7 +14,7 @@ const reportInitializationFailure = (name, error) => {
   console.error(`[Lauren English] ${name} initialization failed.`, error);
 };
 
-const PROJECT_CACHE_PREFIX = "clean-english-v";
+const PROJECT_CACHE_PREFIX = "lauren-english-v";
 const PROJECT_SERVICE_WORKER_PATH = "/service-worker.js";
 
 const runInitializer = (name, initializer) => {

@@ -21,7 +21,7 @@
   font-size: clamp(var(--text-2xl), 8vw, var(--text-3xl));
   line-height: 1.12;
   text-wrap: balance;
-  margin: 0 0 var(--space-md);
+  margin: 0 0 var(--space-lg);
 }
 
 .hero__eyebrow {
@@ -30,6 +30,7 @@
   text-transform: uppercase;
   letter-spacing: 0.08em;
   font-size: var(--text-xs);
+  margin: 0 0 var(--space-lg);
 }
 
 .hero__subtitle {
@@ -103,12 +104,14 @@
 
 .hero__process-description {
   color: var(--color-text-muted);
+  font-size: var(--text-md);
 }
 
 .hero__process-list {
   display: grid;
-  gap: var(--space-sm);
-  padding: 0;
+  gap: var(--space-xs);
+  font-size: var(--text-sm);
+  padding: var(--space-xs) 0;
   list-style: none;
   counter-reset: hero-process;
 }
@@ -154,7 +157,11 @@
 
 @media (min-width: 1024px) {
   .hero__title {
-    font-size: clamp(var(--text-3xl), 5vw, var(--text-4xl));
+    font-size: clamp(
+      var(--text-3xl),
+      calc(var(--text-2xl) + 2vw),
+      calc(var(--text-3xl) + var(--space-xs))
+    );
   }
 
   .hero__subtitle {

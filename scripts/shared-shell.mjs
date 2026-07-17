@@ -150,9 +150,9 @@ export const renderSharedHeader = (pageKey) => {
     <a class="skip-link" href="#main">Przejdź do treści</a>${preservedHomeAnnotation}
     <header class="header" id="top">
       <div class="container header__inner">
-        <a class="header__logo" href="/index.html" aria-label="Lauren – Clean English"${logoCurrent}>
+        <a class="header__logo" href="/index.html" aria-label="${SITE.name}"${logoCurrent}>
           <img class="header__logo-image" src="${SITE.brandLogo.path}" alt="" width="${SITE.brandLogo.width}" height="${SITE.brandLogo.height}" />
-          <span class="header__logo-text">Lauren – Clean English</span>
+          <span class="header__logo-text">${SITE.name}</span>
         </a>
         <nav class="nav" aria-label="Główna nawigacja">
 ${navToggleStart}
@@ -199,7 +199,7 @@ export const renderSharedFooter = () => `${SHELL_MARKERS.footerStart}
           <div class="footer__brand-block">
             <a class="footer__brand" href="/index.html">
               <img class="footer__logo-image" src="${SITE.brandLogo.path}" alt="" width="${SITE.brandLogo.width}" height="${SITE.brandLogo.height}" />
-              <span class="footer__brand-text">Lauren – Clean English</span>
+              <span class="footer__brand-text">${SITE.name}</span>
             </a>
             <p class="footer__text">${FOOTER_BRAND_DESCRIPTION}</p>
           </div>

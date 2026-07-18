@@ -15,7 +15,7 @@ const NAV_ITEMS = Object.freeze([
   { key: "materials", label: "Materiały", href: "/materialy.html" },
   { key: "progress", label: "Postępy", href: "/postepy.html" },
   { label: "Metodyka", href: "/index.html#how" },
-  { label: "O Lauren", href: "/index.html#about" },
+  { label: "O mnie", href: "/index.html#about" },
   { label: "FAQ", href: "/index.html#faq" },
   { key: "contact", label: "Kontakt", href: "/kontakt.html" },
 ]);
@@ -43,7 +43,7 @@ export const FOOTER_LEGAL_LINKS = Object.freeze([
 ]);
 
 const FOOTER_INFORMATION_LINKS = Object.freeze([
-  { label: "O Lauren", href: "/index.html#about" },
+  { label: "O mnie", href: "/index.html#about" },
   { label: "Kontakt", href: "/kontakt.html" },
   ...FOOTER_LEGAL_LINKS,
 ]);

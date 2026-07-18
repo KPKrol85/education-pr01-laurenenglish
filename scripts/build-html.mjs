@@ -14,7 +14,7 @@ import {
 } from "./shared-shell.mjs";
 import {
   CONTENT_MARKERS,
-  renderHomeMaterialPanels,
+  renderHomeMaterialCards,
   renderHomePackageCards,
   renderHomePackagesLink,
   renderMaterialsCatalog,
@@ -142,7 +142,7 @@ const assemblePage = (source, page) => {
       withContent,
       CONTENT_MARKERS.homeMaterials.start,
       CONTENT_MARKERS.homeMaterials.end,
-      renderHomeMaterialPanels(),
+      renderHomeMaterialCards(),
       page.file,
     );
     withContent = replaceRegion(
@@ -488,9 +488,9 @@ const validatePage = async (html, page, assembledPages) => {
         expected: renderHomePackageCards(),
       },
       {
-        label: "homepage material panels",
+        label: "homepage material cards",
         markers: CONTENT_MARKERS.homeMaterials,
-        expected: renderHomeMaterialPanels(),
+        expected: renderHomeMaterialCards(),
       },
       {
         label: "homepage package link",

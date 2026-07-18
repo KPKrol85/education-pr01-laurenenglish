@@ -67,6 +67,13 @@
   margin-bottom: var(--space-xs);
 }
 
+.card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-md);
+}
+
 .card--pricing > .button,
 .card--resource > .button {
   align-self: end;

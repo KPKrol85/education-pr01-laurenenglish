@@ -2,6 +2,85 @@
   grid-template-columns: minmax(0, 1fr);
 }
 
+.pricing__header {
+  max-inline-size: var(--content-measure);
+}
+
+.pricing__eyebrow {
+  margin: 0 0 var(--space-sm);
+  color: var(--color-primary);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.pricing__grid {
+  align-items: stretch;
+}
+
+.pricing__card {
+  grid-template-rows: auto auto auto auto minmax(0, 1fr) auto;
+  min-inline-size: 0;
+}
+
+.pricing__package-label,
+.pricing__package-name,
+.pricing__package-rhythm,
+.pricing__package-audience {
+  margin: 0;
+}
+
+.pricing__package-label {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.pricing__package-rhythm {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.pricing__benefits {
+  display: grid;
+  align-content: start;
+  gap: var(--space-sm);
+  margin: 0;
+  padding: 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-2sm);
+  list-style: none;
+}
+
+.pricing__benefits > li {
+  position: relative;
+  padding-inline-start: calc(var(--space-lg) + var(--space-2xs));
+}
+
+.pricing__benefits > li::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 0.2em;
+  inset-inline-start: 0;
+  inline-size: 18px;
+  block-size: 18px;
+  border: var(--size-1px) solid var(--color-primary);
+  border-radius: var(--radius-pill);
+  background: var(--color-interactive-surface);
+}
+
+.pricing__benefits > li::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 0.55em;
+  inset-inline-start: 5px;
+  inline-size: 7px;
+  block-size: 4px;
+  border-block-end: 2px solid var(--color-primary);
+  border-inline-start: 2px solid var(--color-primary);
+  transform: rotate(-45deg);
+}
+
 .pricing__overview {
   display: grid;
   gap: var(--space-md);
@@ -42,5 +121,14 @@
   .pricing__teaser {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: stretch;
+  }
+}
+
+@media (min-width: 1024px) {
+  .pricing > .container {
+    width: min(
+      calc(var(--layout-container-max) + var(--space-3xl)),
+      calc(100% - var(--space-xl))
+    );
   }
 }

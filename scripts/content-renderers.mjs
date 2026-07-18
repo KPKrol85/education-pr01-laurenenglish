@@ -53,16 +53,14 @@ const renderPackagePrice = (packageRecord) =>
     ? `\n              <p class="card__price">${escapeHtml(packageRecord.priceLabel)}</p>`
     : "";
 
-const renderPackageEyebrow = (packageRecord) =>
-  packageRecord.emphasisLabel
-    ? `\n              <p class="card__eyebrow">${escapeHtml(packageRecord.emphasisLabel)}</p>`
-    : "";
+const renderPackageLabel = (packageRecord) =>
+  `\n              <p class="card__eyebrow pricing__package-label">${escapeHtml(packageRecord.comparisonLabel)}</p>`;
 
 const getPackageCardClass = (packageRecord) =>
-  `card card--pricing${packageRecord.emphasisLabel ? " card--highlight" : ""}`;
+  `card card--pricing pricing__card${packageRecord.isHighlighted ? " card--highlight pricing__card--highlighted" : ""}`;
 
 const getPackageButtonClass = (packageRecord) =>
-  packageRecord.emphasisLabel ? "button--primary" : "button--secondary";
+  packageRecord.isHighlighted ? "button--primary" : "button--secondary";
 
 const renderHomePackageCard = (packageRecord) =>
   `            <article class="card card--pricing card--highlight pricing__package" data-package-key="${escapeHtml(packageRecord.key)}" data-reveal>
@@ -74,13 +72,13 @@ ${renderBenefits(packageRecord.homeTeaser.benefits)}
             </article>`;
 
 const renderFullPackageCard = (packageRecord) =>
-  `            <article class="${getPackageCardClass(packageRecord)}" id="pakiet-${escapeHtml(packageRecord.key)}" data-package-key="${escapeHtml(packageRecord.key)}" tabindex="-1" data-reveal>${renderPackageEyebrow(packageRecord)}
-              <h3 class="card__title">${escapeHtml(packageRecord.label)}</h3>${renderPackagePrice(packageRecord)}
-              <p class="card__text">${escapeHtml(packageRecord.summary)}</p>
-              <ul class="list" role="list">
+  `            <article class="${getPackageCardClass(packageRecord)}" id="pakiet-${escapeHtml(packageRecord.key)}" data-package-key="${escapeHtml(packageRecord.key)}" tabindex="-1" data-reveal>${renderPackageLabel(packageRecord)}
+              <h3 class="card__title pricing__package-name">${escapeHtml(packageRecord.label)}</h3>${renderPackagePrice(packageRecord)}
+              <p class="card__text pricing__package-rhythm">${escapeHtml(packageRecord.summary)}</p>
+              <p class="card__text pricing__package-audience">${escapeHtml(packageRecord.audience)}</p>
+              <ul class="pricing__benefits" role="list">
 ${renderBenefits(packageRecord.benefits)}
               </ul>
-              <p class="card__text"><strong>Dla kogo:</strong> ${escapeHtml(packageRecord.audience)}</p>
               <a class="button ${getPackageButtonClass(packageRecord)}" href="${escapeHtml(packageRecord.cta.href)}">${escapeHtml(packageRecord.cta.label)}</a>
             </article>`;
 
@@ -207,6 +205,14 @@ export const validateContentData = () => {
     );
     assert(packageRecord.label, `${packageRecord.key}: missing public label`);
     assert(
+      packageRecord.comparisonLabel,
+      `${packageRecord.key}: missing comparison label`,
+    );
+    assert(
+      typeof packageRecord.isHighlighted === "boolean",
+      `${packageRecord.key}: invalid highlight state`,
+    );
+    assert(
       packageRecord.href === `/pakiety.html#pakiet-${packageRecord.key}`,
       `${packageRecord.key}: invalid package route`,
     );
@@ -228,6 +234,15 @@ export const validateContentData = () => {
       `${packageRecord.key}: invalid CTA route`,
     );
   });
+
+  assert(
+    JSON.stringify(
+      packageList
+        .filter((packageRecord) => packageRecord.isHighlighted)
+        .map((packageRecord) => packageRecord.key),
+    ) === JSON.stringify(["regular"]),
+    "Regular must be the only highlighted package",
+  );
 
   assert(
     packages.regular.homeTeaser?.description,

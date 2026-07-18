@@ -12,6 +12,7 @@
 
 .footer__column {
   min-width: 0;
+  padding-right: var(--space-xl);
 }
 
 .footer__brand-block {
@@ -32,8 +33,8 @@
 .footer__logo-image {
   display: block;
   flex: 0 0 auto;
-  width: var(--brand-logo-size);
-  height: var(--brand-logo-size);
+  width: var(--brand-logo-size-footer);
+  height: var(--brand-logo-size-footer);
   object-fit: contain;
 }
 
@@ -45,6 +46,8 @@
   margin: var(--space-sm) 0 0;
   color: var(--color-text-muted);
   line-height: 1.6;
+  max-width: 20ch;
+  font-size: var(--text-2sm);
 }
 
 .footer__title {
@@ -173,6 +176,6 @@
 
 @media (min-width: 1280px) {
   .footer__grid {
-    grid-template-columns: minmax(0, 1.25fr) repeat(3, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1.5fr) repeat(3, minmax(0, 1fr));
   }
 }

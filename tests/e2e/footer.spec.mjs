@@ -87,7 +87,15 @@ test("shared footer exposes the approved responsive, legal, and social contract"
     await page.goto("/index.html", { waitUntil: "networkidle" });
 
     const footer = page.locator(".footer");
-    await expect(footer.locator(".footer__column")).toHaveCount(4);
+    const columns = footer.locator(".footer__column");
+    await expect(columns).toHaveCount(4);
+    const columnOrder = await columns.evaluateAll((footerColumns) =>
+      footerColumns.map((column) => {
+        const headingId = column.getAttribute("aria-labelledby");
+        return document.getElementById(headingId)?.textContent.trim();
+      }),
+    );
+    expect(columnOrder).toEqual(["Marka", "Oferta", "Informacje", "Kontakt"]);
     const brandColumn = footer.locator(".footer__column--brand");
     const brandBlock = brandColumn.locator(".footer__brand-block");
     await expect(brandColumn.locator(".footer__brand-text")).toHaveText(

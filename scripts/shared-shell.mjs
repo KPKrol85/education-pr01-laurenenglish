@@ -210,18 +210,18 @@ export const renderSharedFooter = () => `${SHELL_MARKERS.footerStart}
 ${renderFooterLinks(FOOTER_OFFER_LINKS)}
           </ul>
         </section>
+        <section class="footer__column" aria-labelledby="footer-information-title">
+          <h2 class="footer__title" id="footer-information-title">Informacje</h2>
+          <ul class="footer__list" role="list">
+${renderFooterLinks(FOOTER_INFORMATION_LINKS)}
+          </ul>
+        </section>
         <section class="footer__column" aria-labelledby="footer-contact-title">
           <h2 class="footer__title" id="footer-contact-title">Kontakt</h2>
           <ul class="footer__list footer__list--contact" role="list">
             <li><a class="footer__contact-link" href="${FOOTER_CONTACT.telephoneUri}">${FOOTER_CONTACT.phone}</a></li>
             <li><a class="footer__contact-link" href="${FOOTER_CONTACT.emailUri}">${FOOTER_CONTACT.email}</a></li>
             <li><address class="footer__address">${FOOTER_CONTACT.address}</address></li>
-          </ul>
-        </section>
-        <section class="footer__column" aria-labelledby="footer-information-title">
-          <h2 class="footer__title" id="footer-information-title">Informacje</h2>
-          <ul class="footer__list" role="list">
-${renderFooterLinks(FOOTER_INFORMATION_LINKS)}
           </ul>
         </section>
       </div>

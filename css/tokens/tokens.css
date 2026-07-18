@@ -78,6 +78,7 @@
   --size-1px: 1px;
   --control-min-size: 44px;
   --brand-logo-size: 40px;
+  --brand-logo-size-footer: 52px;
   --anchor-scroll-offset: calc(var(--brand-logo-size) + var(--space-md) + var(--space-md) + var(--space-xs));
 }
 

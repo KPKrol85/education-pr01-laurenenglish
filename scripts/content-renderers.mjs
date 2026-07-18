@@ -8,6 +8,7 @@ import {
   PACKAGE_KEYS,
   packageList,
   packages,
+  packagesPageHref,
   packagesSectionHref,
 } from "../js/data/packages.js";
 
@@ -64,13 +65,12 @@ const getPackageButtonClass = (packageRecord) =>
   packageRecord.emphasisLabel ? "button--primary" : "button--secondary";
 
 const renderHomePackageCard = (packageRecord) =>
-  `            <article class="${getPackageCardClass(packageRecord)}" data-package-key="${escapeHtml(packageRecord.key)}" data-reveal>${renderPackageEyebrow(packageRecord)}
-              <h3 class="card__title">${escapeHtml(packageRecord.label)}</h3>${renderPackagePrice(packageRecord)}
-              <p class="card__text">${escapeHtml(packageRecord.summary)}</p>
-              <ul class="list" role="list">
-${renderBenefits(packageRecord.benefits)}
+  `            <article class="card card--pricing card--highlight pricing__package" data-package-key="${escapeHtml(packageRecord.key)}" data-reveal>
+              <h3 class="card__title">Pakiet ${escapeHtml(packageRecord.label)}</h3>
+              <p class="card__text">${escapeHtml(packageRecord.homeTeaser.description)}</p>
+              <ul class="list pricing__package-list" role="list">
+${renderBenefits(packageRecord.homeTeaser.benefits)}
               </ul>
-              <a class="button ${getPackageButtonClass(packageRecord)}" href="${escapeHtml(packageRecord.cta.href)}">${escapeHtml(packageRecord.cta.label)}</a>
             </article>`;
 
 const renderFullPackageCard = (packageRecord) =>
@@ -93,7 +93,7 @@ export const renderHomePackageCards = () =>
 export const renderHomePackagesLink = () =>
   wrapRegion(
     CONTENT_MARKERS.homePackagesLink,
-    `            <a class="button button--secondary" href="${escapeHtml(packagesSectionHref)}">Zobacz pakiety</a>`,
+    `            <a class="button button--secondary" href="${escapeHtml(packagesPageHref)}">Porównaj wszystkie pakiety</a>`,
   );
 
 export const renderPackagePageCards = () =>
@@ -207,6 +207,7 @@ export const validateContentData = () => {
     "Package records do not match the canonical key order",
   );
   assert(isUsableHref(packagesSectionHref), "Invalid packages section route");
+  assert(packagesPageHref === "/pakiety.html", "Invalid packages page route");
 
   packageList.forEach((packageRecord) => {
     assert(
@@ -236,6 +237,15 @@ export const validateContentData = () => {
       `${packageRecord.key}: invalid CTA route`,
     );
   });
+
+  assert(
+    packages.regular.homeTeaser?.description,
+    "regular: missing homepage teaser description",
+  );
+  assert(
+    packages.regular.homeTeaser?.benefits.length > 0,
+    "regular: missing homepage teaser benefits",
+  );
 
   const materialIds = materials.map((item) => item.id);
   assert(

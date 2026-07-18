@@ -26,12 +26,66 @@
   border-bottom: var(--size-1px) solid var(--color-border);
 } 
 
+.hero__process-list,
 .timeline__list {
   display: grid;
   gap: var(--space-xs);
-  padding-left: var(--space-md);
+  margin: 0;
+  padding: var(--space-xs) 0;
+  list-style: none;
+  counter-reset: process-step;
+}
+
+.hero__process-item,
+.timeline__item {
+  display: grid;
+  grid-template-columns: var(--space-lg) minmax(0, 1fr);
+  gap: var(--space-sm);
+  align-items: start;
+  counter-increment: process-step;
+}
+
+.hero__process-item::before,
+.timeline__item::before {
+  content: counter(process-step);
+  display: grid;
+  place-items: center;
+  width: var(--space-lg);
+  height: var(--space-lg);
+  border-radius: var(--radius-pill);
+  background: var(--color-interactive-surface);
+  color: var(--color-primary-dark);
+  font-size: var(--text-xs);
+  font-weight: 700;
+}
+
+.timeline__list {
   color: var(--color-text-muted);
   font-size: var(--text-sm);
+}
+
+.timeline__item {
+  grid-template-columns: var(--space-md) minmax(0, 1fr);
+  gap: var(--space-2xs) var(--space-xs);
+}
+
+.timeline__item::before {
+  width: var(--space-md);
+  height: var(--space-md);
+}
+
+.timeline__item > span,
+.timeline__item > small {
+  grid-column: 2;
+}
+
+.timeline__item > span {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.timeline__item > small {
+  font-size: inherit;
 }
 
 .progress {

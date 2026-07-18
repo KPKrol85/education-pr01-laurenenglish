@@ -136,7 +136,7 @@
 
 .hero--services .hero__services-list {
   display: grid;
-  gap: var(--space-md);
+  gap: var(--space-xs);
   padding: 0;
   list-style: none;
   font-size: var(--text-sm);
@@ -161,6 +161,10 @@
   .hero__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: center;
+  }
+  .hero--services .hero__services-list {
+    gap: var(--space-sm);
+    margin-top: var(--space-md);
   }
 }
 

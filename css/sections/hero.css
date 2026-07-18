@@ -157,6 +157,66 @@
   color: var(--color-primary);
 }
 
+.hero--packages .hero__decision-card {
+  display: grid;
+  width: 100%;
+  max-width: 520px;
+  gap: var(--space-md);
+}
+
+.hero--packages .hero__decision-title,
+.hero--packages .hero__decision-description,
+.hero--packages .hero__decision-list,
+.hero--packages .hero__decision-item-title,
+.hero--packages .hero__decision-item-description {
+  margin: 0;
+}
+
+.hero--packages .hero__decision-title {
+  font-size: var(--text-lg);
+}
+
+.hero--packages .hero__decision-description,
+.hero--packages .hero__decision-item-description {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.hero--packages .hero__decision-list {
+  display: grid;
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  padding: 0;
+  list-style: none;
+}
+
+.hero--packages .hero__decision-item {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-sm);
+  min-width: 0;
+  padding-block: var(--space-xs);
+}
+
+.hero--packages .hero__decision-icon {
+  display: block;
+  width: 28px;
+  height: 28px;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.hero--packages .hero__decision-content {
+  display: grid;
+  gap: var(--space-2xs);
+  min-width: 0;
+}
+
+.hero--packages .hero__decision-item-title {
+  font-size: var(--text-sm);
+  line-height: 1.35;
+}
+
 @media (min-width: 780px) {
   .hero__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));

@@ -214,6 +214,7 @@
   margin: var(--space-md) 0 0;
   color: var(--color-text-muted);
   line-height: var(--line-height-relaxed);
+   font-size: var(--text-2sm);
 }
 
 .materials-access__types {
@@ -252,7 +253,7 @@
 .materials-access__type-description {
   max-inline-size: var(--content-measure);
   color: var(--color-text-muted);
-  line-height: var(--line-height-relaxed);
+  font-size: var(--text-2sm);
 }
 
 .materials-access__type .badge--access {

@@ -157,6 +157,11 @@
   color: var(--color-primary);
 }
 
+.hero--packages,
+.hero--materials {
+  --hero-guide-icon-size: 26px;
+}
+
 .hero--packages .hero__decision-card {
   display: grid;
   width: 100%;
@@ -191,7 +196,7 @@
 
 .hero--packages .hero__decision-item {
   display: grid;
-  grid-template-columns: 20px minmax(0, 1fr);
+  grid-template-columns: var(--hero-guide-icon-size) minmax(0, 1fr);
   align-items: start;
   gap: var(--space-sm);
   min-width: 0;
@@ -200,8 +205,8 @@
 
 .hero--packages .hero__decision-icon {
   display: block;
-  width: 28px;
-  height: 28px;
+  width: var(--hero-guide-icon-size);
+  height: var(--hero-guide-icon-size);
   color: var(--color-primary);
   flex-shrink: 0;
 }
@@ -251,7 +256,7 @@
 
 .hero--materials .hero__materials-guide-item {
   display: grid;
-  grid-template-columns: 20px minmax(0, 1fr);
+  grid-template-columns: var(--hero-guide-icon-size) minmax(0, 1fr);
   align-items: start;
   gap: var(--space-sm);
   min-width: 0;
@@ -260,8 +265,8 @@
 
 .hero--materials .hero__materials-guide-icon {
   display: block;
-  width: 20px;
-  height: 20px;
+  width: var(--hero-guide-icon-size);
+  height: var(--hero-guide-icon-size);
   flex-shrink: 0;
   color: var(--color-primary);
 }

@@ -144,23 +144,33 @@ export const renderHomeMaterialCards = () => {
   );
 };
 
+const renderCatalogMaterialMeta = (item, presentation) => {
+  const metadata = [
+    presentation.categoryLabel,
+    presentation.levelLabel,
+    presentation.formatLabel,
+    item.duration,
+  ].filter(Boolean);
+
+  return `              <ul class="card__tags materials__meta" aria-label="Informacje o materiale">
+${metadata.map((label) => `                <li class="badge">${escapeHtml(label)}</li>`).join("\n")}
+              </ul>`;
+};
+
 const renderCatalogMaterialCard = (item) => {
   const presentation = getMaterialPresentation(item);
-  const durationBadge = item.duration
-    ? `\n                <span class="badge">${escapeHtml(item.duration)}</span>`
-    : "";
 
   return `            <article class="card card--resource materials__card" data-material-id="${escapeHtml(item.id)}">
               <h3 class="card__title">${escapeHtml(item.title)}</h3>
-              <div class="card__tags materials__meta">
-                <span class="badge">${escapeHtml(presentation.categoryLabel)}</span>
-                <span class="badge">${escapeHtml(presentation.levelLabel)}</span>
-                <span class="badge">${escapeHtml(item.format)}</span>${durationBadge}
-              </div>
+${renderCatalogMaterialMeta(item, presentation)}
               <p class="card__text">${escapeHtml(item.description)}</p>
               <div class="materials__footer">
-                ${renderAccessBadge(item, presentation)}
-                ${renderMaterialAction(item, presentation)}
+                <div class="materials__footer-access">
+                  ${renderAccessBadge(item, presentation)}
+                </div>
+                <div class="materials__footer-action">
+                  ${renderMaterialAction(item, presentation)}
+                </div>
               </div>
             </article>`;
 };

@@ -9,17 +9,24 @@ const createBadge = (label, className = "") => {
   return badge;
 };
 
-const createMetaBadges = (item) => {
+const createMetaItem = (label) => {
+  const item = document.createElement("li");
+  item.className = "badge";
+  item.textContent = label;
+  return item;
+};
+
+const createMetaItems = (item) => {
   const presentation = getMaterialPresentation(item);
   const fragment = document.createDocumentFragment();
   fragment.append(
-    createBadge(presentation.categoryLabel),
-    createBadge(presentation.levelLabel),
-    createBadge(item.format),
+    createMetaItem(presentation.categoryLabel),
+    createMetaItem(presentation.levelLabel),
+    createMetaItem(presentation.formatLabel),
   );
 
   if (item.duration) {
-    fragment.append(createBadge(item.duration));
+    fragment.append(createMetaItem(item.duration));
   }
 
   return fragment;
@@ -46,9 +53,10 @@ const renderMaterials = (list, container, emptyState) => {
     title.className = "card__title";
     title.textContent = item.title;
 
-    const meta = document.createElement("div");
+    const meta = document.createElement("ul");
     meta.className = "card__tags materials__meta";
-    meta.append(createMetaBadges(item));
+    meta.setAttribute("aria-label", "Informacje o materiale");
+    meta.append(createMetaItems(item));
 
     const description = document.createElement("p");
     description.className = "card__text";
@@ -75,9 +83,17 @@ const renderMaterials = (list, container, emptyState) => {
       action.textContent = presentation.action.label;
     }
 
+    const accessRegion = document.createElement("div");
+    accessRegion.className = "materials__footer-access";
+    accessRegion.append(accessBadge);
+
+    const actionRegion = document.createElement("div");
+    actionRegion.className = "materials__footer-action";
+    actionRegion.append(action);
+
     const footer = document.createElement("div");
     footer.className = "materials__footer";
-    footer.append(accessBadge, action);
+    footer.append(accessRegion, actionRegion);
 
     card.append(title, meta, description, footer);
     fragment.append(card);

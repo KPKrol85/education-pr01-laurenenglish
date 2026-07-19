@@ -11,12 +11,14 @@
   margin-bottom: 0;
 }
 
-.materials__select {
+.materials__select,
+.form__select {
   position: relative;
   display: block;
 }
 
-.materials__select::after {
+.materials__select::after,
+.form__select::after {
   position: absolute;
   top: 50%;
   right: var(--space-md);
@@ -30,7 +32,8 @@
   transform: translateY(-65%) rotate(45deg);
 }
 
-.materials__select .form__input {
+.materials__select .form__input,
+.form__select .form__input {
   width: 100%;
   padding-right: calc(var(--space-lg) + var(--space-md));
   appearance: none;

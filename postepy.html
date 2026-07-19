@@ -183,10 +183,10 @@
         <section class="section" id="cele">
           <div class="container">
             <div class="section__header" data-reveal>
-              <h2 class="section__title">Cele tygodnia</h2>
+              <h2 class="section__title">Ustal cele na ten tydzień</h2>
               <p class="section__subtitle">
-                Ustaw liczbę sesji na tydzień i zaznacz dzisiejszą aktywność. Dane są zapisywane
-                lokalnie, gdy przeglądarka udostępnia pamięć witryny.
+                Wybierz planowaną liczbę sesji dla każdego obszaru i zaznaczaj wykonaną aktywność.
+                Postęp zapisuje się lokalnie w tej przeglądarce.
               </p>
             </div>
             <div class="grid grid--cards progress-grid" data-progress-tracks>
@@ -203,7 +203,7 @@
             <div class="section__header" data-reveal>
               <h2 class="section__title">Tydzień w skrócie</h2>
               <p class="section__subtitle">
-                Zobacz, jak wygląda bieżący tydzień w podziale na trzy główne tracki.
+                Sprawdź wykonane sesje w każdym obszarze i zobacz rytm nauki w bieżącym tygodniu.
               </p>
             </div>
             <div class="progress-week-section__content" data-progress-week>
@@ -217,9 +217,10 @@
         <section class="section" id="statystyki">
           <div class="container">
             <div class="section__header" data-reveal>
-              <h2 class="section__title">Statystyki</h2>
+              <p class="progress-section__eyebrow">POSTĘP W LICZBACH</p>
+              <h2 class="section__title">Podsumowanie tygodnia</h2>
               <p class="section__subtitle">
-                Proste liczby, które pomagają utrzymać rytm nauki bez presji.
+                Zobacz realizację celów w każdym obszarze oraz długość bieżącej serii nauki.
               </p>
             </div>
             <div data-progress-stats>
@@ -232,29 +233,31 @@
 
         <section class="section progress-tools">
           <div class="container progress-tools__inner">
-            <div>
-              <h2 class="section__title">Narzędzia danych</h2>
+            <div class="progress-tools__content">
+              <p class="progress-tools__eyebrow">PRYWATNOŚĆ I KOPIA DANYCH</p>
+              <h2 class="section__title">Zarządzaj danymi dziennika</h2>
               <p class="section__subtitle">
-                Reset czyści dane bieżącej sesji i, gdy jest dostępna, pamięć witryny. Eksport
-                pobiera JSON na Twoje urządzenie.
+                Dane pozostają lokalnie w tej przeglądarce. Możesz pobrać ich kopię na swoje
+                urządzenie albo usunąć cały zapis dziennika.
               </p>
+              <p class="progress-tools__note">Eksport nie wysyła danych do żadnego serwera.</p>
             </div>
             <div class="progress-tools__actions">
-              <button
-                class="button button--ghost"
-                type="button"
-                data-progress-action="reset"
-                disabled
-              >
-                Wyczyść dane
-              </button>
               <button
                 class="button button--primary"
                 type="button"
                 data-progress-action="export"
                 disabled
               >
-                Eksportuj JSON
+                Eksportuj kopię JSON
+              </button>
+              <button
+                class="button button--ghost"
+                type="button"
+                data-progress-action="reset"
+                disabled
+              >
+                Wyczyść dane dziennika
               </button>
             </div>
           </div>

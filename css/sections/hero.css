@@ -158,7 +158,8 @@
 }
 
 .hero--packages,
-.hero--materials {
+.hero--materials,
+.hero--progress {
   --hero-guide-icon-size: 26px;
 }
 
@@ -278,6 +279,69 @@
 }
 
 .hero--materials .hero__materials-guide-item-title {
+  font-size: var(--text-sm);
+  line-height: 1.35;
+}
+
+.hero--progress .hero__progress-guide {
+  display: grid;
+  width: 100%;
+  max-width: 520px;
+  gap: var(--space-md);
+}
+
+.hero--progress .hero__progress-guide-title,
+.hero--progress .hero__progress-guide-description,
+.hero--progress .hero__progress-guide-list,
+.hero--progress .hero__progress-guide-item-title,
+.hero--progress .hero__progress-guide-item-description {
+  margin: 0;
+}
+
+.hero--progress .hero__progress-guide-title {
+  font-size: var(--text-lg);
+}
+
+.hero--progress .hero__progress-guide-description,
+.hero--progress .hero__progress-guide-item-description {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.hero--progress .hero__progress-guide-list {
+  display: grid;
+  padding: 0;
+  list-style: none;
+}
+
+.hero--progress .hero__progress-guide-item {
+  display: grid;
+  grid-template-columns: var(--hero-guide-icon-size) minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-sm);
+  min-width: 0;
+  padding-block: var(--space-sm);
+}
+
+.hero--progress .hero__progress-guide-item + .hero__progress-guide-item {
+  border-block-start: var(--size-1px) solid var(--color-border);
+}
+
+.hero--progress .hero__progress-guide-icon {
+  display: block;
+  width: var(--hero-guide-icon-size);
+  height: var(--hero-guide-icon-size);
+  flex-shrink: 0;
+  color: var(--color-primary);
+}
+
+.hero--progress .hero__progress-guide-content {
+  display: grid;
+  gap: var(--space-2xs);
+  min-width: 0;
+}
+
+.hero--progress .hero__progress-guide-item-title {
   font-size: var(--text-sm);
   line-height: 1.35;
 }

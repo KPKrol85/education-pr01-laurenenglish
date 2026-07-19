@@ -217,6 +217,66 @@
   line-height: 1.35;
 }
 
+.hero--materials .hero__materials-guide {
+  display: grid;
+  width: 100%;
+  max-width: 520px;
+  gap: var(--space-md);
+}
+
+.hero--materials .hero__materials-guide-title,
+.hero--materials .hero__materials-guide-description,
+.hero--materials .hero__materials-guide-list,
+.hero--materials .hero__materials-guide-item-title,
+.hero--materials .hero__materials-guide-item-description {
+  margin: 0;
+}
+
+.hero--materials .hero__materials-guide-title {
+  font-size: var(--text-lg);
+}
+
+.hero--materials .hero__materials-guide-description,
+.hero--materials .hero__materials-guide-item-description {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.hero--materials .hero__materials-guide-list {
+  display: grid;
+  gap: var(--space-xs);
+  padding: 0;
+  list-style: none;
+}
+
+.hero--materials .hero__materials-guide-item {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-sm);
+  min-width: 0;
+  padding-block: var(--space-xs);
+}
+
+.hero--materials .hero__materials-guide-icon {
+  display: block;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: var(--color-primary);
+}
+
+.hero--materials .hero__materials-guide-content {
+  display: grid;
+  gap: var(--space-2xs);
+  min-width: 0;
+}
+
+.hero--materials .hero__materials-guide-item-title {
+  font-size: var(--text-sm);
+  line-height: 1.35;
+}
+
 @media (min-width: 780px) {
   .hero__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));

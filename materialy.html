@@ -135,42 +135,60 @@
     <!-- Main Content -->
     <main id="main">
       <!-- Hero Section -->
-      <section class="section hero">
+      <section class="section hero hero--materials">
         <div class="container hero__grid">
           <div class="hero__content" data-reveal>
-            <p class="hero__eyebrow">Materiały do pracy własnej</p>
-            <h1 class="hero__title">Praktyczne zestawy do nauki angielskiego.</h1>
-            <p class="hero__subtitle">Ebooki, karty pracy i zestawy ćwiczeń, które ułatwiają samodzielną naukę. Wybierz kategorię i pracuj we własnym tempie.</p>
+            <p class="hero__eyebrow">MATERIAŁY DO SAMODZIELNEJ NAUKI</p>
+            <h1 class="hero__title">Ucz się angielskiego we własnym tempie.</h1>
+            <p class="hero__subtitle">Wybieraj spośród e-booków, kart pracy i krótkich zestawów ćwiczeń. Filtruj materiały według kategorii, poziomu i dostępności, aby szybciej znaleźć to, czego potrzebujesz.</p>
             <div class="hero__actions">
               <a class="button button--primary" href="#materials-catalog">Przejdź do katalogu</a>
-              <a class="button button--secondary" href="uslugi.html">Poznaj usługi</a>
+              <a class="button button--secondary" href="/pakiety.html">Zobacz pakiety</a>
             </div>
           </div>
           <div class="hero__visual" data-reveal>
-            <div class="hero__card">
-              <h3 class="hero__card-title">Co znajdziesz w środku?</h3>
-              <p class="hero__card-text">Krótkie moduły, checklisty i praktyczne ćwiczenia.</p>
-              <ul class="progress" role="list">
-                <li class="progress__item">
-                  <span class="progress__status is-complete">
-                    <span class="progress__icon" aria-hidden="true">✓</span>
-                    <span class="progress__label">Checklisty słówek i zwrotów</span>
-                  </span>
+            <aside class="hero__card hero__materials-guide" aria-labelledby="materials-guide-title">
+              <h2 class="hero__materials-guide-title" id="materials-guide-title">Jak znaleźć materiał dla siebie?</h2>
+              <p class="hero__materials-guide-description">Skorzystaj z filtrów, aby dopasować materiały do swojego celu i aktualnego etapu nauki.</p>
+              <ul class="hero__materials-guide-list">
+                <li class="hero__materials-guide-item">
+                  <svg class="hero__materials-guide-icon" viewBox="0 0 192 192" aria-hidden="true" focusable="false" fill="currentColor">
+                    <path d="M45 61c20-6 37-1 51 12v66c-14-13-31-18-51-12V61Z" />
+                    <path d="M147 61c-20-6-37-1-51 12v66c14-13 31-18 51-12V61Z" opacity="0.28" stroke="currentColor" stroke-width="6" stroke-linejoin="round" />
+                    <path d="M96 73v66" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" />
+                  </svg>
+                  <div class="hero__materials-guide-content">
+                    <h3 class="hero__materials-guide-item-title">Wybierz obszar</h3>
+                    <p class="hero__materials-guide-item-description">Znajdź materiały związane z gramatyką, słownictwem, mówieniem lub konkretnym celem.</p>
+                  </div>
                 </li>
-                <li class="progress__item">
-                  <span class="progress__status">
-                    <span class="progress__icon" aria-hidden="true">○</span>
-                    <span class="progress__label">Ćwiczenia utrwalające</span>
-                  </span>
+                <li class="hero__materials-guide-item">
+                  <svg class="hero__materials-guide-icon" viewBox="0 0 192 192" aria-hidden="true" focusable="false" fill="currentColor">
+                    <rect x="48" y="106" width="22" height="37" rx="7" opacity="0.28" />
+                    <rect x="84" y="82" width="22" height="61" rx="7" opacity="0.72" />
+                    <rect x="120" y="57" width="22" height="86" rx="7" />
+                    <path d="m52 89 24-19 21 11 34-32" fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="m118 48 14 1-1 14" fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                  <div class="hero__materials-guide-content">
+                    <h3 class="hero__materials-guide-item-title">Dopasuj poziom</h3>
+                    <p class="hero__materials-guide-item-description">Wybierz treści odpowiednie do swojego obecnego etapu nauki.</p>
+                  </div>
                 </li>
-                <li class="progress__item">
-                  <span class="progress__status">
-                    <span class="progress__icon" aria-hidden="true">○</span>
-                    <span class="progress__label">Podsumowania gramatyczne</span>
-                  </span>
+                <li class="hero__materials-guide-item">
+                  <svg class="hero__materials-guide-icon" viewBox="0 0 192 192" aria-hidden="true" focusable="false" fill="currentColor">
+                    <rect x="52" y="48" width="88" height="25" rx="9" />
+                    <rect x="46" y="84" width="100" height="25" rx="9" opacity="0.72" />
+                    <rect x="40" y="120" width="112" height="25" rx="9" />
+                    <circle cx="96" cy="96" r="10" />
+                  </svg>
+                  <div class="hero__materials-guide-content">
+                    <h3 class="hero__materials-guide-item-title">Sprawdź dostępność</h3>
+                    <p class="hero__materials-guide-item-description">Zobacz, które materiały są bezpłatne, a które są dostępne w ramach pakietów.</p>
+                  </div>
                 </li>
               </ul>
-            </div>
+            </aside>
           </div>
         </div>
       </section>

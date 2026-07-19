@@ -87,38 +87,73 @@ const renderMaterials = (list, container, emptyState) => {
   emptyState.hidden = true;
 };
 
+const getMaterialCountLabel = (count) => {
+  if (count === 1) return "materiał";
+
+  const lastDigit = count % 10;
+  const lastTwoDigits = count % 100;
+  if (
+    lastDigit >= 2 &&
+    lastDigit <= 4 &&
+    (lastTwoDigits < 12 || lastTwoDigits > 14)
+  ) {
+    return "materiały";
+  }
+
+  return "materiałów";
+};
+
 const updateCount = (count, element) => {
   if (!element) return;
-  element.textContent = `Wyników: ${count}`;
+  element.textContent = `Znaleziono ${count} ${getMaterialCountLabel(count)}`;
 };
 
 const initMaterialsFilters = ({
   categorySelect,
   levelSelect,
-  freeToggle,
+  accessSelect,
+  resetButton,
   listContainer,
   emptyState,
   countElement,
 }) => {
+  const defaultFilters = Object.freeze({
+    category: "all",
+    level: "all",
+    access: "all",
+  });
   const filters = {
     category: categorySelect.value,
     level: levelSelect.value,
-    freeOnly: freeToggle.checked,
+    access: accessSelect.value,
+  };
+
+  const updateResetState = () => {
+    resetButton.disabled = Object.entries(defaultFilters).every(
+      ([key, value]) => filters[key] === value,
+    );
   };
 
   const applyFilters = () => {
     filters.category = categorySelect.value;
     filters.level = levelSelect.value;
-    filters.freeOnly = freeToggle.checked;
+    filters.access = accessSelect.value;
 
     const filtered = getFilteredMaterials(filters);
     renderMaterials(filtered, listContainer, emptyState);
     updateCount(filtered.length, countElement);
+    updateResetState();
   };
 
   categorySelect.addEventListener("change", applyFilters);
   levelSelect.addEventListener("change", applyFilters);
-  freeToggle.addEventListener("change", applyFilters);
+  accessSelect.addEventListener("change", applyFilters);
+  resetButton.addEventListener("click", () => {
+    categorySelect.value = defaultFilters.category;
+    levelSelect.value = defaultFilters.level;
+    accessSelect.value = defaultFilters.access;
+    applyFilters();
+  });
 
   applyFilters();
 };
@@ -129,7 +164,8 @@ export const initMaterialsCatalog = () => {
 
   const categorySelect = document.querySelector("[data-materials-category]");
   const levelSelect = document.querySelector("[data-materials-level]");
-  const freeToggle = document.querySelector("[data-materials-free]");
+  const accessSelect = document.querySelector("[data-materials-access]");
+  const resetButton = document.querySelector("[data-materials-reset]");
   const emptyState = document.querySelector("[data-materials-empty]");
   const countElement = document.querySelector("[data-materials-count]");
   const filtersForm = document.querySelector("[data-materials-filters]");
@@ -137,7 +173,8 @@ export const initMaterialsCatalog = () => {
   if (
     !categorySelect ||
     !levelSelect ||
-    !freeToggle ||
+    !accessSelect ||
+    !resetButton ||
     !emptyState ||
     !filtersForm
   )
@@ -146,7 +183,8 @@ export const initMaterialsCatalog = () => {
   initMaterialsFilters({
     categorySelect,
     levelSelect,
-    freeToggle,
+    accessSelect,
+    resetButton,
     listContainer,
     emptyState,
     countElement,
@@ -159,4 +197,5 @@ export {
   getMaterialPresentation,
   renderMaterials,
   initMaterialsFilters,
+  getMaterialCountLabel,
 };

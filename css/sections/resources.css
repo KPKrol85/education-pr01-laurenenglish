@@ -7,18 +7,33 @@
   gap: var(--space-md);
 }
 
-.materials__checkbox {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-xs);
-  font-weight: 600;
-  color: var(--color-text-muted);
+.materials__filters .form__field {
+  margin-bottom: 0;
 }
 
-.materials__checkbox input {
-  width: 18px;
-  height: 18px;
-  accent-color: var(--color-primary);
+.materials__select {
+  position: relative;
+  display: block;
+}
+
+.materials__select::after {
+  position: absolute;
+  top: 50%;
+  right: var(--space-md);
+  width: var(--space-xs);
+  height: var(--space-xs);
+  border-right: var(--size-1px) solid currentColor;
+  border-bottom: var(--size-1px) solid currentColor;
+  color: var(--color-text-muted);
+  content: "";
+  pointer-events: none;
+  transform: translateY(-65%) rotate(45deg);
+}
+
+.materials__select .form__input {
+  width: 100%;
+  padding-right: calc(var(--space-lg) + var(--space-md));
+  appearance: none;
 }
 
 .materials__grid {
@@ -43,6 +58,35 @@
   margin: 0;
   color: var(--color-text-muted);
   font-size: var(--text-sm);
+}
+
+.materials__filter-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+
+.materials__reset {
+  padding: var(--space-xs) 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-primary);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.materials__reset:hover:not(:disabled) {
+  color: var(--color-primary-dark);
+}
+
+.materials__reset:disabled {
+  color: var(--color-disabled-text);
+  cursor: not-allowed;
 }
 
 .materials__empty {
@@ -95,7 +139,21 @@
 
 @media (min-width: 780px) {
   .materials__row {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: end;
+  }
+
+  .materials__access-field {
+    grid-column: span 2;
+  }
+}
+
+@media (min-width: 1024px) {
+  .materials__row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .materials__access-field {
+    grid-column: auto;
   }
 }

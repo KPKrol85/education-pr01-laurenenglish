@@ -329,7 +329,6 @@ export const validateContentData = () => {
     b2IncludingAll: filterMaterials(materials, { level: "B2" }).length,
     pdf: filterMaterials(materials, { format: "PDF" }).length,
     free: filterMaterials(materials, { access: "free" }).length,
-    freeOnly: filterMaterials(materials, { freeOnly: true }).length,
     combined: filterMaterials(materials, {
       category: "speaking",
       level: "B2",
@@ -342,7 +341,6 @@ export const validateContentData = () => {
   assertExactCount("B2 filter", filterResults.b2IncludingAll, 6);
   assertExactCount("PDF filter", filterResults.pdf, 9);
   assertExactCount("Free access filter", filterResults.free, 6);
-  assertExactCount("Free-only filter", filterResults.freeOnly, 6);
   assertExactCount("Combined filter", filterResults.combined, 1);
 
   const contactAction = resolveMaterialAction({

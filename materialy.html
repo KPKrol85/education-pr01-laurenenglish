@@ -192,43 +192,55 @@
         <div class="container">
           <div class="section__header" data-reveal>
             <h2 class="section__title">Katalog materiałów</h2>
-            <p class="section__subtitle">Przeglądaj materiały według kategorii, poziomu i dostępności. Każda pozycja ma jasno opisany status dostępu.</p>
+            <p class="section__subtitle">
+              Wybierz kategorię, poziom i sposób dostępu, aby szybciej znaleźć materiał dopasowany do Twojego celu. Przy każdej pozycji zobaczysz, czy jest bezpłatna, czy dostępna w ramach pakietu.
+            </p>
           </div>
           <form class="materials__filters" aria-label="Filtry katalogu materiałów" data-materials-filters data-reveal hidden>
             <div class="materials__row">
               <div class="form__field">
                 <label class="form__label" for="materials-category">Kategoria</label>
-                <select class="form__input" id="materials-category" name="category" data-materials-category>
-                  <option value="all">Wszystkie</option>
-                  <option value="grammar">Gramatyka</option>
-                  <option value="vocabulary">Słownictwo</option>
-                  <option value="speaking">Speaking</option>
-                  <option value="writing">Writing</option>
-                  <option value="exam">Egzaminy</option>
-                  <option value="business">Biznes</option>
-                </select>
+                <span class="materials__select">
+                  <select class="form__input" id="materials-category" name="category" data-materials-category>
+                    <option value="all">Wszystkie kategorie</option>
+                    <option value="grammar">Gramatyka</option>
+                    <option value="vocabulary">Słownictwo</option>
+                    <option value="speaking">Speaking</option>
+                    <option value="writing">Writing</option>
+                    <option value="exam">Egzaminy</option>
+                    <option value="business">Biznes</option>
+                  </select>
+                </span>
               </div>
               <div class="form__field">
                 <label class="form__label" for="materials-level">Poziom</label>
-                <select class="form__input" id="materials-level" name="level" data-materials-level>
-                  <option value="all">Wszystkie</option>
-                  <option value="A1">A1</option>
-                  <option value="A2">A2</option>
-                  <option value="B1">B1</option>
-                  <option value="B2">B2</option>
-                  <option value="C1">C1</option>
-                  <option value="All">Ogólny</option>
-                </select>
+                <span class="materials__select">
+                  <select class="form__input" id="materials-level" name="level" data-materials-level>
+                    <option value="all">Wszystkie poziomy</option>
+                    <option value="A1">A1</option>
+                    <option value="A2">A2</option>
+                    <option value="B1">B1</option>
+                    <option value="B2">B2</option>
+                    <option value="C1">C1</option>
+                    <option value="All">Ogólny</option>
+                  </select>
+                </span>
               </div>
-              <div class="form__field">
-                <span class="form__label">Dostęp</span>
-                <label class="materials__checkbox" for="materials-free">
-                  <input type="checkbox" id="materials-free" name="freeOnly" data-materials-free />
-                  <span>Tylko darmowe</span>
-                </label>
+              <div class="form__field materials__access-field">
+                <label class="form__label" for="materials-access">Dostępność</label>
+                <span class="materials__select">
+                  <select class="form__input" id="materials-access" name="access" data-materials-access>
+                    <option value="all">Wszystkie materiały</option>
+                    <option value="free">Bezpłatne</option>
+                    <option value="premium">Dostępne w pakietach</option>
+                  </select>
+                </span>
               </div>
             </div>
-            <p class="materials__count" aria-live="polite" data-materials-count></p>
+            <div class="materials__filter-summary">
+              <p class="materials__count" aria-live="polite" data-materials-count></p>
+              <button class="materials__reset" type="button" data-materials-reset disabled>Wyczyść filtry</button>
+            </div>
           </form>
           <div id="materials-list" class="materials__grid grid grid--resources" data-reveal>
             <!-- materials-catalog:start -->

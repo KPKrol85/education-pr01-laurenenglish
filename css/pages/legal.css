@@ -92,12 +92,11 @@
   text-underline-offset: 0.18em;
 }
 
-.legal-document__updated {
-  margin-block-start: var(--space-2xl);
+.legal-document p.legal-document__updated {
+  margin-block-start: var(--space-lg);
   padding-block-start: var(--space-md);
   border-block-start: 1px solid var(--color-border);
   font-size: var(--text-sm);
-
 }
 
 .legal-document__updated strong {

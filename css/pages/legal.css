@@ -7,15 +7,6 @@
   margin-block-end: var(--space-xl);
 }
 
-.legal-page__eyebrow {
-  margin: 0 0 var(--space-xs);
-  color: var(--color-primary);
-  font-size: var(--text-xs);
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
 .legal-page__title {
   margin: 0 0 var(--space-sm);
   font-size: clamp(var(--text-2xl), 7vw, var(--text-3xl));
@@ -25,7 +16,7 @@
   max-width: var(--content-measure);
   margin: 0;
   color: var(--color-text-muted);
-  font-size: var(--text-lg);
+  font-size: var(--text-2sm);
   line-height: 1.7;
 }
 
@@ -51,6 +42,7 @@
 .legal-document p {
   margin: 0;
   color: var(--color-text-muted);
+  font-size: var(--text-2sm);
 }
 
 .legal-document p + p {
@@ -60,7 +52,7 @@
 .legal-document__list {
   display: grid;
   gap: var(--space-xs);
-  margin: var(--space-sm) 0 0;
+  margin: var(--space-sm) 0;
   padding-inline-start: var(--space-lg);
   color: var(--color-text-muted);
 }

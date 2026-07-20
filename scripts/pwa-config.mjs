@@ -22,6 +22,7 @@ export const RUNTIME_CSS_PATHS = Object.freeze([
   "/css/base/base.css",
   "/css/base/typography.css",
   "/css/utilities/utilities.css",
+  "/css/components/eyebrow.css",
   "/css/components/buttons.css",
   "/css/components/navigation.css",
   "/css/components/cards.css",

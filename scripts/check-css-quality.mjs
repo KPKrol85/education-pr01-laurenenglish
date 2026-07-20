@@ -32,6 +32,7 @@ const expectedImports = [
   "base/base.css",
   "base/typography.css",
   "utilities/utilities.css",
+  "components/eyebrow.css",
   "components/buttons.css",
   "components/navigation.css",
   "components/cards.css",

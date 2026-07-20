@@ -128,6 +128,11 @@
                 płatności.
               </p>
               <p>
+                Operatorem Serwisu jest KP_Code Digital Studio. Opisane
+                mechanizmy odpowiadają technologiom rzeczywiście używanym w
+                obecnej wersji Serwisu.
+              </p>
+              <p>
                 W sprawach nieuregulowanych w tym dokumencie zastosowanie mają
                 <a href="/polityka-prywatnosci.html">Polityka prywatności</a>
                 oraz <a href="/regulamin.html">Regulamin serwisu</a>.
@@ -161,7 +166,7 @@
               aria-labelledby="cookies-types-title"
             >
               <h2 class="legal-document__heading" id="cookies-types-title">
-                3. Rodzaje plików cookies
+                3. Rodzaje wykorzystywanych technologii
               </h2>
               <p>
                 Kod obecnej wersji Serwisu nie ustawia plików cookie. Nie
@@ -172,11 +177,12 @@
               <ul class="legal-document__list">
                 <li>
                   localStorage pod kluczem <code>theme</code> – do zapamiętania
-                  jasnego lub ciemnego motywu,
+                  jasnego lub ciemnego motywu po wybraniu go przez Użytkownika,
                 </li>
                 <li>
                   localStorage pod kluczem <code>lauren_progress_v1</code> – do
-                  lokalnego przechowywania celów i wpisów dziennika postępów,
+                  lokalnego przechowywania celów i wpisów dziennika po
+                  skorzystaniu z funkcji postępów,
                 </li>
                 <li>
                   Cache Storage – do przechowywania lokalnych plików Serwisu
@@ -186,7 +192,9 @@
               <p>
                 Dane w localStorage pozostają zapisane do czasu ich usunięcia
                 przez Użytkownika lub funkcję Serwisu. Zawartość Cache Storage
-                jest zarządzana przez Service Worker i przeglądarkę.
+                jest zarządzana przez Service Worker i przeglądarkę. Serwis nie
+                korzysta z sessionStorage, lokalnych baz danych przeglądarki ani
+                identyfikatorów analitycznych.
               </p>
             </section>
 
@@ -195,7 +203,7 @@
               aria-labelledby="cookies-purposes-title"
             >
               <h2 class="legal-document__heading" id="cookies-purposes-title">
-                4. Cele wykorzystywania plików cookies
+                4. Cele wykorzystywania technologii przechowywania danych
               </h2>
               <p>
                 Obecna implementacja nie wykorzystuje plików cookie. Podobne
@@ -222,15 +230,22 @@
               aria-labelledby="cookies-legal-title"
             >
               <h2 class="legal-document__heading" id="cookies-legal-title">
-                5. Podstawy prawne stosowania plików cookies
+                5. Podstawy prawne stosowania plików cookies i podobnych
+                technologii
               </h2>
               <p>
                 Technologie pamięci przeglądarki są stosowane zgodnie z
-                obowiązującymi przepisami prawa, w tym RODO i właściwymi
-                przepisami dotyczącymi prywatności w łączności elektronicznej. W
-                obecnej wersji Serwisu są to mechanizmy funkcjonalne i
-                techniczne uruchamiane w związku z wyborem Użytkownika lub
-                działaniem aplikacji.
+                obowiązującymi przepisami prawa, w szczególności ustawą z dnia
+                12 lipca 2024 r. – Prawo komunikacji elektronicznej oraz RODO w
+                zakresie, w jakim ich używanie wiąże się z przetwarzaniem danych
+                osobowych.
+              </p>
+              <p>
+                Zgoda nie jest wymagana, gdy zapisanie informacji lub uzyskanie
+                do niej dostępu jest konieczne do dostarczenia usługi wyraźnie
+                żądanej przez Użytkownika. W obecnej wersji Serwisu zapis motywu
+                i dziennika wynika z bezpośredniego działania Użytkownika, a
+                Cache Storage wspiera techniczne działanie Serwisu offline.
               </p>
               <p>
                 Serwis nie stosuje mechanizmu zgody na cookies, ponieważ nie
@@ -246,7 +261,7 @@
               aria-labelledby="cookies-management-title"
             >
               <h2 class="legal-document__heading" id="cookies-management-title">
-                6. Zarządzanie ustawieniami cookies
+                6. Zarządzanie ustawieniami cookies i podobnych technologii
               </h2>
               <p>
                 Użytkownik może zarządzać danymi witryny w ustawieniach swojej
@@ -275,7 +290,7 @@
                 class="legal-document__heading"
                 id="cookies-third-party-title"
               >
-                7. Pliki cookies podmiotów trzecich
+                7. Technologie i usługi podmiotów trzecich
               </h2>
               <p>
                 Obecna wersja Serwisu nie osadza zewnętrznych narzędzi
@@ -286,8 +301,10 @@
               </p>
               <p>
                 Serwis zawiera odnośniki do zewnętrznych profili
-                społecznościowych. Po przejściu na taką stronę zastosowanie mają
-                zasady określone przez jej administratora.
+                społecznościowych. Samo wyświetlenie odnośnika nie przekazuje
+                danych operatorowi zewnętrznej strony. Po wybraniu odnośnika i
+                przejściu na taką stronę zastosowanie mają zasady określone
+                przez jej administratora.
               </p>
             </section>
 

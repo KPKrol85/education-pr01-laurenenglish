@@ -52,6 +52,7 @@ const expectedImports = [
   "sections/offline.css",
   "sections/reveal.css",
   "pages/pages.css",
+  "pages/legal.css",
 ];
 const styleSource = sources.get("style.css");
 const actualImports = [...styleSource.matchAll(/@import\s+"([^"]+)"/gu)].map(

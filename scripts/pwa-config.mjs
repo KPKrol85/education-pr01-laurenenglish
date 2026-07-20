@@ -42,6 +42,7 @@ export const RUNTIME_CSS_PATHS = Object.freeze([
   "/css/sections/offline.css",
   "/css/sections/reveal.css",
   "/css/pages/pages.css",
+  "/css/pages/legal.css",
 ]);
 
 export const RUNTIME_JAVASCRIPT_PATHS = Object.freeze([

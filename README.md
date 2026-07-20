@@ -197,6 +197,10 @@ npm run test:e2e:seo
 
 Repozytorium nie zawiera `netlify.toml`, dlatego ustawienia wdrożenia pozostają w panelu Netlify. Dla obecnej architektury wymagane są: base directory = root repozytorium, build command = `npm run build`, publish directory = `.`. Nie ustawiaj `dist/`: taki katalog nie jest obecnie tworzony i stanie się publish directory dopiero w osobnej, planowanej migracji do Vite. Główny `_redirects` jest generowany przez `npm run build:html` i musi pozostać w katalogu publikowanym.
 
+## Licencja
+
+Lauren English jest projektem własnościowym KP_Code. Kod źródłowy jest publiczny wyłącznie do przeglądu portfolio oraz prywatnej, niekomercyjnej oceny. Kopiowanie, redystrybucja, publiczne wdrożenie, tworzenie utworów zależnych lub wykorzystanie komercyjne wymagają uprzedniej pisemnej zgody. Pełne warunki zawiera plik [LICENSE.md](LICENSE.md).
+
 ## Uwagi
 
 Typografia używa tokenów `--font-family-heading: "Literata", serif` dla semantycznych nagłówków oraz `--font-family-body: "Inter", sans-serif` dla treści i UI. Projekt dostarcza lokalnie Inter 400/600/700 oraz wyłącznie używaną wagę Literata 700; Inter 500 nie jest deklarowany ani requestowany. Kanoniczne deklaracje `@font-face` znajdują się w `css/base/base.css`, używają `font-display: swap` i root-relative URL. Literata pochodzi z oficjalnego repozytorium `googlefonts/literata` (commit `0c2761b727a1b3a7cffd313c37f0f5163dfc7a63`), a licencja SIL Open Font License 1.1 jest zapisana w `assets/fonts/OFL-Literata.txt`. Wygenerowany head preloaduje wyłącznie Literata 700, ponieważ ten jeden plik obsługuje krytyczne tytuły stron i pomiar wykazał przesunięcia powiązane z wymianą fontu przy węższych viewportach; pozostałe wagi nie są preloadowane.

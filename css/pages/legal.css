@@ -55,6 +55,7 @@
   margin: var(--space-sm) 0;
   padding-inline-start: var(--space-lg);
   color: var(--color-text-muted);
+  font-size: var(--text-2sm);
 }
 
 .legal-document__list li::marker {
@@ -92,10 +93,11 @@
 }
 
 .legal-document__updated {
-  margin-block-start: var(--space-xl);
+  margin-block-start: var(--space-2xl);
   padding-block-start: var(--space-md);
   border-block-start: 1px solid var(--color-border);
   font-size: var(--text-sm);
+
 }
 
 .legal-document__updated strong {

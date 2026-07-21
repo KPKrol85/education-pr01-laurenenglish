@@ -1,7 +1,7 @@
 # Daily Front-End Audit — Lauren English
 
-**Audit date:** 2026-07-21  
-**Project type:** static multi-page educational website / build-based front-end project  
+**Audit date:** 2026-07-21
+**Project type:** static multi-page educational website / build-based front-end project
 **Audit mode:** static repository review
 
 ## Overall assessment
@@ -21,12 +21,6 @@ None detected.
 ## P1 — Important issues worth fixing next
 
 ### [P1-01] Generated package page is stale
-
-- **Classification:** Contract mismatch
-- **Evidence:** `scripts/build-html.mjs:653`; `npm run check:html`
-- **Current behavior:** The check reports `pakiety.html` as stale relative to its canonical assembly inputs.
-- **Impact:** The tracked page can drift from shared-shell, metadata, or data-renderer sources and the HTML release gate cannot pass.
-- **Recommended direction:** Regenerate the page through the documented HTML assembler, then review the resulting generated diff.
 
 ### [P1-02] Homepage CTA no longer satisfies its public-content contract
 
@@ -67,6 +61,16 @@ None detected.
 - **Current behavior:** The focused Chromium run fails the heading layout-shift limit at 390px and detects a homepage heading whose `scrollWidth` exceeds its `clientWidth` by 78px at 1440px.
 - **Impact:** The responsive quality gate is red and the typography can visibly reflow or overflow at supported viewport widths.
 - **Recommended direction:** Identify the responsible homepage heading in the browser and refine its local width, wrapping, or fluid typography without changing global heading behavior.
+
+## Resolved after audit
+
+### [P1-01] Generated package page was stale
+
+- **Status:** Resolved on 2026-07-21
+- **Original classification:** Contract mismatch
+- **Resolution:** Regenerated `pakiety.html` through the canonical HTML assembler using `npm run build:html`.
+- **Verification:** `npm run check:html` passed for 12 generated pages, 9 shared-shell pages, and 3 route assets.
+- **Additional checks:** `git diff --check` passed and `git status --short` confirmed a clean working tree after commit.
 
 ## P2 — Minor refinements
 

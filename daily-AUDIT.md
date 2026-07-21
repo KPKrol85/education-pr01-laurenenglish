@@ -6,7 +6,7 @@
 
 ## Overall assessment
 
-The project has a coherent source-first architecture, centralized public data and metadata, and focused accessibility-oriented JavaScript modules. No P0 risk was evidenced. However, release confidence is currently limited by six P1 failures across generated output, validation tooling, PWA configuration, and responsive typography. The project is suitable for continued development, but not currently a clean verification baseline.
+The project has a coherent source-first architecture, centralized public data and metadata, and focused accessibility-oriented JavaScript modules. No P0 risk was evidenced. However, release confidence is currently limited by four P1 failures across generated output, validation tooling, PWA configuration, and responsive typography. The project is suitable for continued development, but not currently a clean verification baseline.
 
 ## Verified strengths
 
@@ -24,11 +24,7 @@ None detected.
 
 ### [P1-02] Homepage CTA no longer satisfies its public-content contract
 
-- **Classification:** Contract mismatch
-- **Evidence:** `index.html:658`; `scripts/check-public-content.mjs:82`
-- **Current behavior:** The homepage contains the compact `cta-panel` contact CTA with the approved direct contact and telephone destinations, but `npm run check:content` rejects the section as changed.
-- **Impact:** The content-quality gate cannot validate the current canonical CTA and no longer provides reliable regression coverage for it.
-- **Recommended direction:** Align the focused checker with the approved CTA markup and invariant destinations without weakening its content safeguards.
+
 
 ### [P1-03] PWA critical-hero configuration does not match the homepage
 
@@ -71,6 +67,13 @@ None detected.
 - **Resolution:** Regenerated `pakiety.html` through the canonical HTML assembler using `npm run build:html`.
 - **Verification:** `npm run check:html` passed for 12 generated pages, 9 shared-shell pages, and 3 route assets.
 - **Additional checks:** `git diff --check` passed and `git status --short` confirmed a clean working tree after commit.
+
+### [P1-02] Homepage CTA public-content contract was outdated
+
+- **Status:** Resolved on 2026-07-21
+- **Original classification:** Contract mismatch
+- **Resolution:** Escaped the approved telephone URI before inserting it into the dynamic regular expression in `scripts/check-public-content.mjs`.
+- **Verification:** `npm run check:content` passed for all 12 public pages, and `git diff --check` completed without whitespace errors.
 
 ## P2 — Minor refinements
 

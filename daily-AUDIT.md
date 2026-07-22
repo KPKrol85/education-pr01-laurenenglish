@@ -20,14 +20,6 @@ None detected.
 
 ## P1 — Important issues worth fixing next
 
-### [P1-04] CSS architecture check rejects canonical anchor-offset styles
-
-- **Classification:** Contract mismatch
-- **Evidence:** `css/utilities/utilities.css:10`; `scripts/check-css-quality.mjs:106`
-- **Current behavior:** The canonical utilities stylesheet uses ID selectors for intentional hash-target scroll offsets, while the quality checker rejects every ID selector.
-- **Impact:** `npm run check:css` stops before its contrast stage, so the documented CSS quality gate cannot complete.
-- **Recommended direction:** Preserve the anchor-offset behavior while reconciling the selector implementation and checker policy through one documented approach.
-
 ### [P1-05] Declared JavaScript lint command is incompatible with the locked ESLint version
 
 - **Classification:** Contract mismatch
@@ -67,6 +59,13 @@ None detected.
 - **Original classification:** Contract mismatch
 - **Resolution:** Restored the homepage hero source to `/assets/img/hero/hero-01.jpg`, matching `HERO_IMAGE_PATH` in `scripts/pwa-config.mjs`, the critical-asset budget, precache contract, and runtime checklist. The selected JPEG is `1600 × 1200` and 1,058,463 bytes, within the existing 1.1 MB hero budget. The PWA checker now normalizes whitespace in equivalent `unicode-range` declarations before validating configured local font sources, and the precache graph no longer includes the unimported `/js/modules/progressTracker.js` module.
 - **Verification:** `npm run build:sw` regenerated `service-worker.js`; `npm run check:pwa` passed the hero, budget, precache, and generated-worker contracts. `npm run check:html` and `npm run check:content` also passed.
+
+### [P1-04] CSS architecture check rejects canonical anchor-offset styles
+
+- **Status:** Resolved on 2026-07-22
+- **Original classification:** Contract mismatch
+- **Resolution:** Replaced the ID-selector list in `css/utilities/utilities.css` with the low-specificity `.u-anchor-offset` utility. Applied it only to the existing intentional fragment targets, including generated package-card anchors through `scripts/content-renderers.mjs`, while preserving every HTML ID and the responsive `--anchor-scroll-offset` token.
+- **Verification:** `npm run build:html` regenerated the package page and `npm run check:html` passed for 12 pages, 9 shared-shell pages, and 3 route assets. `npm run build:css` regenerated the legacy CSS output. `npm run check:css` passed both the CSS architecture gate (28 canonical files, no ID selectors) and 40 light/dark contrast checks. The focused Playwright anchor-navigation test passed in Chromium desktop and mobile.
 
 ## P2 — Minor refinements
 

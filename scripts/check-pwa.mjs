@@ -40,8 +40,10 @@ const readText = (path) => readFile(path, "utf8");
 const publicFile = (path) => resolve(ROOT, `.${path}`);
 const sha256 = (buffer) =>
   createHash("sha256").update(buffer).digest("hex").toUpperCase();
+const normalizeUnicodeRange = (unicodeRange) =>
+  unicodeRange?.replace(/\s+/g, " ").trim() ?? "all";
 const fontAssetKey = ({ family, style, weight, unicodeRange }) =>
-  `${family}:${weight}:${style}:${unicodeRange ?? "all"}`;
+  `${family}:${weight}:${style}:${normalizeUnicodeRange(unicodeRange)}`;
 
 const LITERATA_FONT_SHA256 =
   "DACE38D75534603D7B2E727E3A5979B6C53BEDB9DB9E14D4263EF92CFCB5F3D3";

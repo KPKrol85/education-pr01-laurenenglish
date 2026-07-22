@@ -20,20 +20,6 @@ None detected.
 
 ## P1 — Important issues worth fixing next
 
-### [P1-01] Generated package page is stale
-
-### [P1-02] Homepage CTA no longer satisfies its public-content contract
-
-
-
-### [P1-03] PWA critical-hero configuration does not match the homepage
-
-- **Classification:** Contract mismatch
-- **Evidence:** `index.html:162`; `scripts/pwa-config.mjs:145`; `scripts/check-pwa.mjs:483`
-- **Current behavior:** The homepage loads `/assets/img/hero/hero-06.jpg`, while the critical PWA asset contract, budget, and precache target `/assets/img/hero/hero-01.jpg`.
-- **Impact:** `npm run check:pwa` fails and the configured offline/critical-asset contract does not represent the image actually used by the public homepage.
-- **Recommended direction:** Select the intended canonical hero asset, synchronize the PWA configuration and source markup, then regenerate the Service Worker.
-
 ### [P1-04] CSS architecture check rejects canonical anchor-offset styles
 
 - **Classification:** Contract mismatch
@@ -74,6 +60,13 @@ None detected.
 - **Original classification:** Contract mismatch
 - **Resolution:** Escaped the approved telephone URI before inserting it into the dynamic regular expression in `scripts/check-public-content.mjs`.
 - **Verification:** `npm run check:content` passed for all 12 public pages, and `git diff --check` completed without whitespace errors.
+
+### [P1-03] PWA critical-hero configuration did not match the homepage
+
+- **Status:** Resolved on 2026-07-22
+- **Original classification:** Contract mismatch
+- **Resolution:** Restored the homepage hero source to `/assets/img/hero/hero-01.jpg`, matching `HERO_IMAGE_PATH` in `scripts/pwa-config.mjs`, the critical-asset budget, precache contract, and runtime checklist. The selected JPEG is `1600 × 1200` and 1,058,463 bytes, within the existing 1.1 MB hero budget. The PWA checker now normalizes whitespace in equivalent `unicode-range` declarations before validating configured local font sources, and the precache graph no longer includes the unimported `/js/modules/progressTracker.js` module.
+- **Verification:** `npm run build:sw` regenerated `service-worker.js`; `npm run check:pwa` passed the hero, budget, precache, and generated-worker contracts. `npm run check:html` and `npm run check:content` also passed.
 
 ## P2 — Minor refinements
 

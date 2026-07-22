@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "lauren-english-v";
-const CACHE_REVISION = "1.0.0-4e8a6b1a463b";
+const CACHE_REVISION = "1.0.0-058d6b863d6a";
 const CACHE_NAME = `${CACHE_PREFIX}${CACHE_REVISION}`;
 const OFFLINE_PATH = "/offline.html";
 const PRECACHE_PATHS = [
@@ -70,7 +70,14 @@ const PRECACHE_PATHS = [
   "/assets/icons/sun.svg",
   "/assets/icons/moon.svg",
   "/assets/img/hero/hero-01.jpg",
+  "/assets/img/hero/hero-01.avif",
+  "/assets/img/hero/hero-01.webp",
+  "/assets/img/hero/hero-08.jpg",
+  "/assets/img/hero/hero-08.avif",
+  "/assets/img/hero/hero-08.webp",
   "/assets/img/about/lauren.jpg",
+  "/assets/img/about/lauren.avif",
+  "/assets/img/about/lauren.webp",
   "/site.webmanifest",
 ];
 const PRIMARY_DOCUMENT_PATHS = [

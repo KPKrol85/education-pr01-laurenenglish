@@ -32,7 +32,7 @@
     "build:sw": "node scripts/build-service-worker.mjs",
     "build:pwa-screenshots": "node scripts/capture-pwa-screenshots.mjs",
     "build": "npm run build:html && npm run build:sw",
-    "images": "imagemin assets/img/* --out-dir=assets/img --plugin=webp --plugin=avif",
+    "images": "node scripts/optimize-images.mjs",
     "lint:js": "eslint js --ext .js",
     "format": "prettier --write \"**/*.{html,css,js,mjs,md,json,webmanifest,xml}\""
   },

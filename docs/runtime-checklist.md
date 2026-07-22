@@ -72,13 +72,13 @@
 - Instalacja jest atomowa z perspektywy aktywnego workera: `skipWaiting` następuje dopiero po pełnym precache, a błąd usuwa niekompletny nowy cache. Aktywacja przejmuje klientów i usuwa wyłącznie starsze cache zaczynające się od `lauren-english-v`; inne cache originu muszą pozostać.
 - Online pięć głównych tras działa network-first. Tylko pełna, nieprzekierowana odpowiedź HTML `200` znanej trasy może odświeżyć jej wpis. Nieznana trasa online pozostaje realnym `404` i nie jest zapisywana.
 - Offline znana główna trasa korzysta ze swojej kopii precache. Inna nawigacja pokazuje `offline.html`; nie używaj homepage jako fallbacku.
-- Statyczne cache-first dotyczy wyłącznie jawnych assetów precache, w tym bezpośrednich źródeł CSS/JS, ikon instalacyjnych i trzech ikon skrótów, współdzielonego logo oraz hero i portretu wymaganych do kompletnych głównych stron offline. Screenshoty manifestu, katalog materiałów i outputy `assets/build/` nie są precachowane. Zapisywane są tylko same-origin żądania `GET` HTTP(S) z pełną odpowiedzią `200`; query string jest normalizowany do jednej ścieżki. Nie zapisuj `206`, 4xx/5xx, redirectów, opaque, cross-origin ani innych metod.
+- Statyczne cache-first dotyczy wyłącznie jawnych assetów precache, w tym bezpośrednich źródeł CSS/JS, ikon instalacyjnych i trzech ikon skrótów, współdzielonego logo oraz fallbacków JPEG i wariantów AVIF/WebP obrazów treści wymaganych do kompletnych głównych stron offline. Screenshoty manifestu, katalog materiałów i outputy `assets/build/` nie są precachowane. Zapisywane są tylko same-origin żądania `GET` HTTP(S) z pełną odpowiedzią `200`; query string jest normalizowany do jednej ścieżki. Nie zapisuj `206`, 4xx/5xx, redirectów, opaque, cross-origin ani innych metod.
 
 ## Manifest i krytyczne zasoby
 
 - `/site.webmanifest` musi zwrócić `application/manifest+json`, zawierać komplet wymaganych pól, dokładnie trzy unikalne skróty do `/pakiety.html`, `/materialy.html` i `/postepy.html`, instalacyjne PNG `192 × 192` i `512 × 512` oraz screenshoty `1280 × 720` (`wide`) i `720 × 1280` (`narrow`). Wszystkie trasy i assety muszą zwracać `200`, a rozmiary i MIME muszą odpowiadać deklaracjom.
 - Nie deklaruj `maskable`, dopóki osobna ikona nie ma zweryfikowanej strefy bezpiecznej.
-- Hero ma być pobrane raz jako `/assets/img/hero/hero-01.jpg`, z wymiarami `1600 × 1200`, `loading="eager"`, `fetchpriority="high"` i bez przesunięcia layoutu.
+- Hero ma używać `<picture>` z kolejnością AVIF, WebP i fallbackiem JPEG `/assets/img/hero/hero-01.jpg`; przeglądarka ma pobrać dokładnie jeden obsługiwany wariant o wymiarach `1600 × 1200`, z `loading="eager"`, `fetchpriority="high"` i bez przesunięcia layoutu.
 - Budżet krytyczny homepage: dokładnie 26 lokalnych requestów CSS, 19 lokalnych requestów JavaScript, 4 fonty (Inter 400/600/700 i Literata 700, razem maks. 185 kB), 1 współdzielone logo, 1 hero (maks. 1,1 MB), zero requestów `assets/build/`, zewnętrznych fontów i duplikatów.
 
 ## Netlify

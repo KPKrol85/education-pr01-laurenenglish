@@ -157,16 +157,20 @@
           </div>
           <div class="hero__visual" data-reveal>
             <div class="hero__media">
-              <img
-                class="hero__image"
-                src="/assets/img/hero/hero-01.jpg"
-                alt="Nauczycielka języka angielskiego trzymająca książki na tle brytyjskiej flagi"
-                width="1600"
-                height="1200"
-                loading="eager"
-                fetchpriority="high"
-                decoding="async"
-              />
+              <picture>
+                <source srcset="/assets/img/hero/hero-01.avif" type="image/avif" />
+                <source srcset="/assets/img/hero/hero-01.webp" type="image/webp" />
+                <img
+                  class="hero__image"
+                  src="/assets/img/hero/hero-01.jpg"
+                  alt="Nauczycielka języka angielskiego trzymająca książki na tle brytyjskiej flagi"
+                  width="1600"
+                  height="1200"
+                  loading="eager"
+                  fetchpriority="high"
+                  decoding="async"
+                />
+              </picture>
             </div>
             <div class="hero__card hero__card--process">
               <h2 class="hero__process-title">Od celu do postępu</h2>
@@ -451,13 +455,17 @@
           </div>
           <div class="about__visual" data-reveal>
             <div class="about__portrait">
-              <img
-                src="assets/img/about/lauren.jpg"
-                alt="Portret Lauren"
-                loading="lazy"
-                width="420"
-                height="480"
-              />
+              <picture>
+                <source srcset="/assets/img/about/lauren.avif" type="image/avif" />
+                <source srcset="/assets/img/about/lauren.webp" type="image/webp" />
+                <img
+                  src="/assets/img/about/lauren.jpg"
+                  alt="Portret Lauren"
+                  loading="lazy"
+                  width="420"
+                  height="480"
+                />
+              </picture>
             </div>
             <div class="card card--soft about__card">
               <h3 class="card__title">Jak pracuję</h3>

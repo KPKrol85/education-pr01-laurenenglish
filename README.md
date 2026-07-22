@@ -117,7 +117,7 @@ npm run serve
 - `npm run test:e2e:smoke`, `npm run test:e2e:interactions`, `npm run test:e2e:theme`, `npm run test:e2e:responsive`, `npm run test:e2e:seo`, `npm run test:e2e:pwa` — uruchamiają skupione zestawy przeglądarkowe;
 - `npm run build:css` / `npm run build:js` — odświeża pomocnicze pliki w `assets/build/`;
 - `npm run build:pwa-screenshots` — odtwarza screenshoty zadeklarowane w manifeście;
-- `npm run images` — generuje warianty WebP i AVIF dla obsługiwanych obrazów;
+- `npm run images` — generuje deterministyczne warianty WebP i AVIF dla rastrowych obrazów treści;
 - `npm run format` — formatuje obsługiwane źródła przez Prettier.
 
 ### Build produkcyjny
@@ -129,6 +129,12 @@ npm run build
 Build działa bez katalogu `dist/`. `build:html` aktualizuje oznaczone regiony dwunastu samodzielnych dokumentów HTML oraz generuje `sitemap.xml`, `robots.txt` i `_redirects`. Następnie `build:sw` waliduje listę precache i tworzy `service-worker.js` na podstawie szablonu, konfiguracji PWA, wersji pakietu i fingerprintu zawartości.
 
 Aktualny runtime nadal korzysta z `/css/style.css` i `/js/main.js`. Śledzone pliki `assets/build/style.min.css` oraz `assets/build/main.min.js` są generowane wyłącznie przez jawne skrypty `build:css` i `build:js`; strony i precache ich nie używają. Wygenerowanych regionów oraz plików produkcyjnych nie należy poprawiać ręcznie.
+
+### Obrazy
+
+Rastrowe fallbacki i ich śledzone warianty produkcyjne leżą razem w `assets/img/`; nie ma osobnego katalogu źródłowego, ponieważ skrypt przetwarza wyłącznie jawnie skonfigurowane pliki JPEG/PNG i nigdy nie czyta własnych outputów WebP ani AVIF. Kanoniczna lista obrazów znajduje się w `scripts/image-config.mjs` i obecnie obejmuje hero strony głównej, hero kontaktu oraz portret Lauren.
+
+Uruchom `npm run images`, aby utworzyć obok każdego fallbacku pliki `.avif` i `.webp`. W HTML używaj natywnego `<picture>` w kolejności AVIF, WebP, a następnie niezmienionego `<img>` JPEG/PNG z zachowanymi atrybutami dostępności, wymiarami i strategią ładowania. Optymalizacja nie jest częścią `npm run build`; wygenerowane warianty są celowo śledzone w repozytorium i należy je odświeżyć przed buildem po zmianie skonfigurowanego obrazu.
 
 ### Testy i walidacja
 
@@ -315,7 +321,7 @@ npm run serve
 - `npm run test:e2e:smoke`, `npm run test:e2e:interactions`, `npm run test:e2e:theme`, `npm run test:e2e:responsive`, `npm run test:e2e:seo`, `npm run test:e2e:pwa` — run focused browser suites;
 - `npm run build:css` / `npm run build:js` — refresh the auxiliary files in `assets/build/`;
 - `npm run build:pwa-screenshots` — recreates the screenshots declared by the manifest;
-- `npm run images` — generates WebP and AVIF variants for supported images;
+- `npm run images` — generates deterministic WebP and AVIF variants for raster content images;
 - `npm run format` — formats supported source files with Prettier.
 
 ### Production Build
@@ -327,6 +333,12 @@ npm run build
 The build does not create a `dist/` directory. `build:html` updates marked regions in twelve standalone HTML documents and generates `sitemap.xml`, `robots.txt`, and `_redirects`. `build:sw` then validates the precache and creates `service-worker.js` from its template, the PWA configuration, the package version, and a content fingerprint.
 
 The current runtime still uses `/css/style.css` and `/js/main.js`. Tracked files `assets/build/style.min.css` and `assets/build/main.min.js` are generated only by the explicit `build:css` and `build:js` scripts; pages and the precache do not use them. Generated regions and production files must not be edited manually.
+
+### Images
+
+Raster fallbacks and their tracked production variants live together in `assets/img/`; there is no separate source directory because the optimizer processes only explicitly configured JPEG/PNG files and never reads its own WebP or AVIF output. The canonical image list is `scripts/image-config.mjs` and currently covers the homepage hero, contact hero, and Lauren portrait.
+
+Run `npm run images` to create `.avif` and `.webp` files alongside each fallback. In HTML, use native `<picture>` in AVIF, WebP, then unchanged JPEG/PNG `<img>` order while preserving accessibility attributes, dimensions, and loading strategy. Image optimization is not part of `npm run build`; generated variants are intentionally tracked and must be refreshed before a build when a configured image changes.
 
 ### Testing and Validation
 

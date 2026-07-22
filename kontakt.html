@@ -145,16 +145,20 @@
           </div>
           <div class="hero__visual hero__visual--contact" data-reveal>
             <div class="hero__media hero__media--contact">
-              <img
-                class="hero__image hero__image--contact"
-                src="/assets/img/hero/hero-08.jpg"
-                alt=""
-                width="1600"
-                height="1200"
-                decoding="async"
-                loading="eager"
-                fetchpriority="high"
-              />
+              <picture>
+                <source srcset="/assets/img/hero/hero-08.avif" type="image/avif" />
+                <source srcset="/assets/img/hero/hero-08.webp" type="image/webp" />
+                <img
+                  class="hero__image hero__image--contact"
+                  src="/assets/img/hero/hero-08.jpg"
+                  alt=""
+                  width="1600"
+                  height="1200"
+                  decoding="async"
+                  loading="eager"
+                  fetchpriority="high"
+                />
+              </picture>
             </div>
           </div>
         </div>

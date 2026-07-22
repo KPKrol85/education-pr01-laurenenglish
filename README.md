@@ -34,8 +34,8 @@ Każda trasa jest samodzielnym dokumentem HTML. Wspólny shell, metadane, treśc
 
 ### Architektura
 
-- `scripts/shared-shell.mjs` generuje współdzielony skip link, header, nawigację i footer dla sześciu stron publicznych oraz trzech stron prawnych.
-- `scripts/site-config.mjs` jest rejestrem tras, metadanych, polityki indeksowania i publicznych zasobów SEO.
+- `scripts/shared-shell.mjs` generuje współdzielony skip link, header, nawigację, footer i informacyjny dialog projektu dla sześciu stron publicznych oraz trzech stron prawnych.
+- `scripts/site-config.mjs` jest rejestrem tras, metadanych, polityki indeksowania, publicznych zasobów SEO i konfiguracji `PROJECT_DISCLOSURE`.
 - `scripts/content-renderers.mjs` łączy dane z `js/data/` z oznaczonymi regionami pakietów i materiałów w HTML.
 - `css/style.css` zachowuje kolejność warstw `tokens → base → utilities → components → sections → pages`.
 - `js/main.js` inicjalizuje odseparowane moduły funkcjonalne; każdy moduł chroni zapytania DOM i kończy działanie, gdy jego komponent nie występuje na stronie.
@@ -184,6 +184,12 @@ Precache obejmuje główne dokumenty, offline fallback, bezpośredni graf CSS i 
 
 Sekcja opisuje zastosowane mechanizmy; repozytorium nie przechowuje wyniku Lighthouse ani innej aktualnej metryki wydajnościowej.
 
+### Informacja o projekcie
+
+Publiczna wersja portfolio wyświetla na pierwszej wizycie informacyjny dialog Project Disclosure Modal. Nie jest on zgodą na cookies, akceptacją regulaminu ani zgodą marketingową. Konfiguracja `PROJECT_DISCLOSURE` w `scripts/site-config.mjs` określa flagę `enabled`, bieżący `version`, klucz `laurenEnglishProjectDisclosure` oraz dopuszczone trasy. Modal otwiera się tylko na sześciu stronach indeksowanych; strony prawne, 404, offline i podziękowanie pozostają nieblokowane.
+
+Po użyciu przycisku „Przejdź do strony” w `localStorage` zapisywana jest bieżąca wersja. Zmiana `version` wyświetla informację ponownie, a niedostępny Web Storage nie blokuje przejścia do serwisu. Dla wdrożenia rzeczywistego klienta ustaw `enabled: false` i uruchom `npm run build:html`; nie trzeba usuwać markup ani modułu JavaScript.
+
 ### Dane i trwałość stanu
 
 - `js/data/packages.js` przechowuje trzy pakiety `start`, `regular` i `intensive`; homepage i `pakiety.html` korzystają z tych samych rekordów.
@@ -238,8 +244,8 @@ Each route is a standalone HTML document. The shared shell, metadata, data-backe
 
 ### Architecture
 
-- `scripts/shared-shell.mjs` generates the shared skip link, header, navigation, and footer for six public pages and three legal pages.
-- `scripts/site-config.mjs` is the registry for routes, metadata, indexing policy, and public SEO assets.
+- `scripts/shared-shell.mjs` generates the shared skip link, header, navigation, footer, and informational project dialog for six public pages and three legal pages.
+- `scripts/site-config.mjs` is the registry for routes, metadata, indexing policy, public SEO assets, and `PROJECT_DISCLOSURE` configuration.
 - `scripts/content-renderers.mjs` connects data from `js/data/` with marked package and material regions in HTML.
 - `css/style.css` preserves the `tokens → base → utilities → components → sections → pages` layer order.
 - `js/main.js` initializes isolated feature modules; each module guards its DOM queries and exits when its component is absent from the page.
@@ -387,6 +393,12 @@ The precache includes primary documents, the offline fallback, the direct CSS an
 - auxiliary bundles under `assets/build/` stay outside the current request graph and precache.
 
 This section describes implemented mechanisms; the repository does not store a Lighthouse result or another current performance metric.
+
+### Project Disclosure
+
+The public portfolio deployment shows an informational Project Disclosure Modal on a first visit. It is not cookie consent, terms acceptance, or marketing consent. `PROJECT_DISCLOSURE` in `scripts/site-config.mjs` defines `enabled`, the current `version`, the `laurenEnglishProjectDisclosure` storage key, and eligible routes. The dialog opens only on the six indexable pages; legal, 404, offline, and thank-you pages remain unblocked.
+
+Using “Przejdź do strony” stores the current version in `localStorage`. Changing `version` intentionally displays the notice again, and unavailable Web Storage never prevents entry to the site. For a real-client deployment, set `enabled: false` and run `npm run build:html`; neither the markup nor the JavaScript module needs to be removed.
 
 ### Data and State Persistence
 

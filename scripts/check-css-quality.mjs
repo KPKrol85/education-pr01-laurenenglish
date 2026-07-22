@@ -34,6 +34,7 @@ const expectedImports = [
   "utilities/utilities.css",
   "components/eyebrow.css",
   "components/cta-panel.css",
+  "components/project-disclosure.css",
   "components/buttons.css",
   "components/navigation.css",
   "components/cards.css",
@@ -68,6 +69,7 @@ assert(
 const tokensSource = sources.get("tokens/tokens.css");
 const themeTokens = [
   "color-surface-overlay",
+  "color-modal-backdrop",
   "color-header-overlay",
   "color-hero-surface-start",
   "color-hero-surface-end",

@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "lauren-english-v";
-const CACHE_REVISION = "1.0.0-c57a3573660c";
+const CACHE_REVISION = "1.0.0-f0746707e875";
 const CACHE_NAME = `${CACHE_PREFIX}${CACHE_REVISION}`;
 const OFFLINE_PATH = "/offline.html";
 const PRECACHE_PATHS = [
@@ -17,6 +17,7 @@ const PRECACHE_PATHS = [
   "/css/utilities/utilities.css",
   "/css/components/eyebrow.css",
   "/css/components/cta-panel.css",
+  "/css/components/project-disclosure.css",
   "/css/components/buttons.css",
   "/css/components/navigation.css",
   "/css/components/cards.css",
@@ -48,6 +49,7 @@ const PRECACHE_PATHS = [
   "/js/modules/contactForm.js",
   "/js/modules/materialsCatalog.js",
   "/js/modules/anchorFocus.js",
+  "/js/modules/projectDisclosure.js",
   "/js/pages/progress-page.js",
   "/js/state/browserStorage.js",
   "/js/data/materials.js",

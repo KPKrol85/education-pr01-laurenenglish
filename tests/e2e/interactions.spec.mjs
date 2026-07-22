@@ -388,9 +388,6 @@ test("mobile drawer is inert when closed and contains keyboard focus when open",
   const diagnostics = collectRuntimeDiagnostics(page);
   await page.goto("/index.html", { waitUntil: "networkidle" });
 
-  const navigation = page.getByRole("navigation", {
-    name: "Główna nawigacja",
-  });
   const drawer = page.locator("[data-drawer]");
   const firstLink = drawer.locator('a[href="/uslugi.html"]');
   const toggle = page.locator(".nav__toggle");

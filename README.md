@@ -112,7 +112,7 @@ npm run serve
 - `npm run check:css` — sprawdza architekturę CSS, tokeny motywów i zdefiniowane pary kontrastu;
 - `npm run check:seo` / `npm run check:pwa` — sprawdza odpowiednio kontrakt metadanych i routingu oraz manifest, cache i zasoby PWA;
 - `npm run check:dev` — weryfikuje serwer lokalny, MIME, 404, live reload, rebuild HTML i lokalne czyszczenie PWA;
-- `npm run lint:js` — uruchamia ESLint dla katalogu `js/`;
+- `npm run lint:js` — uruchamia ESLint dla kanonicznych źródeł JavaScript i modułów projektu;
 - `npm run test:e2e` — wykonuje build i pełny zestaw testów Playwright;
 - `npm run test:e2e:smoke`, `npm run test:e2e:interactions`, `npm run test:e2e:theme`, `npm run test:e2e:responsive`, `npm run test:e2e:seo`, `npm run test:e2e:pwa` — uruchamiają skupione zestawy przeglądarkowe;
 - `npm run build:css` / `npm run build:js` — odświeża pomocnicze pliki w `assets/build/`;
@@ -316,7 +316,7 @@ npm run serve
 - `npm run check:css` — checks CSS architecture, theme tokens, and defined contrast pairs;
 - `npm run check:seo` / `npm run check:pwa` — checks the metadata and routing contract, then the manifest, cache, and PWA assets;
 - `npm run check:dev` — verifies the local server, MIME types, 404 handling, live reload, HTML rebuilds, and local PWA cleanup;
-- `npm run lint:js` — runs ESLint for `js/`;
+- `npm run lint:js` — runs ESLint for the project’s canonical JavaScript and module sources;
 - `npm run test:e2e` — runs the build and the complete Playwright suite;
 - `npm run test:e2e:smoke`, `npm run test:e2e:interactions`, `npm run test:e2e:theme`, `npm run test:e2e:responsive`, `npm run test:e2e:seo`, `npm run test:e2e:pwa` — run focused browser suites;
 - `npm run build:css` / `npm run build:js` — refresh the auxiliary files in `assets/build/`;

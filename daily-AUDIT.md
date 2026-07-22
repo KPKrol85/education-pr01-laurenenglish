@@ -20,14 +20,6 @@ None detected.
 
 ## P1 — Important issues worth fixing next
 
-### [P1-05] Declared JavaScript lint command is incompatible with the locked ESLint version
-
-- **Classification:** Contract mismatch
-- **Evidence:** `.eslintrc.cjs:1`; `package-lock.json:3756`; `package.json:29`
-- **Current behavior:** The repository locks ESLint 9.39.5 but provides only legacy `.eslintrc.cjs` configuration; `npm run lint:js` exits before linting source files.
-- **Impact:** JavaScript linting is unavailable in the documented local quality workflow.
-- **Recommended direction:** Align the configuration format and declared ESLint major version, then confirm the lint script checks the current source tree.
-
 ### [P1-06] Responsive typography contract fails at mobile and desktop widths
 
 - **Classification:** Defect
@@ -66,6 +58,13 @@ None detected.
 - **Original classification:** Contract mismatch
 - **Resolution:** Replaced the ID-selector list in `css/utilities/utilities.css` with the low-specificity `.u-anchor-offset` utility. Applied it only to the existing intentional fragment targets, including generated package-card anchors through `scripts/content-renderers.mjs`, while preserving every HTML ID and the responsive `--anchor-scroll-offset` token.
 - **Verification:** `npm run build:html` regenerated the package page and `npm run check:html` passed for 12 pages, 9 shared-shell pages, and 3 route assets. `npm run build:css` regenerated the legacy CSS output. `npm run check:css` passed both the CSS architecture gate (28 canonical files, no ID selectors) and 40 light/dark contrast checks. The focused Playwright anchor-navigation test passed in Chromium desktop and mobile.
+
+### [P1-05] Declared JavaScript lint command is incompatible with the locked ESLint version
+
+- **Status:** Resolved on 2026-07-22
+- **Original classification:** Contract mismatch
+- **Resolution:** Replaced the legacy `.eslintrc.cjs` with the ESM flat configuration `eslint.config.js`, compatible with the locked ESLint 9 release. Added direct `@eslint/js` and `globals` dependencies, preserved `eslint:recommended` and the warning-level `no-unused-vars` rule, and changed `lint:js` to `eslint .`. The configuration scopes browser modules, Node scripts and root configuration, Playwright tests, the Service Worker template, and the CommonJS PostCSS configuration while ignoring generated bundles, generated Service Worker output, reports, results, coverage, and dependencies.
+- **Verification:** `npm run lint:js` completed without errors or warnings across the canonical source scope. Explicit lint checks confirmed that `assets/build/main.min.js` and `service-worker.js` are ignored. Removed two genuine unused test variables without changing test behavior. `npm run build` passed and regenerated `service-worker.js`. `npm run check:dev` was attempted but could not start because Python 3 was unavailable in the local environment.
 
 ## P2 — Minor refinements
 

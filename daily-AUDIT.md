@@ -20,14 +20,6 @@ None detected.
 
 ## P1 — Important issues worth fixing next
 
-### [P1-06] Responsive typography contract fails at mobile and desktop widths
-
-- **Classification:** Defect
-- **Evidence:** `tests/e2e/responsive.spec.mjs:179`; `tests/e2e/responsive.spec.mjs:189`
-- **Current behavior:** The focused Chromium run fails the heading layout-shift limit at 390px and detects a homepage heading whose `scrollWidth` exceeds its `clientWidth` by 78px at 1440px.
-- **Impact:** The responsive quality gate is red and the typography can visibly reflow or overflow at supported viewport widths.
-- **Recommended direction:** Identify the responsible homepage heading in the browser and refine its local width, wrapping, or fluid typography without changing global heading behavior.
-
 ## Resolved after audit
 
 ### [P1-01] Generated package page was stale
@@ -65,6 +57,13 @@ None detected.
 - **Original classification:** Contract mismatch
 - **Resolution:** Replaced the legacy `.eslintrc.cjs` with the ESM flat configuration `eslint.config.js`, compatible with the locked ESLint 9 release. Added direct `@eslint/js` and `globals` dependencies, preserved `eslint:recommended` and the warning-level `no-unused-vars` rule, and changed `lint:js` to `eslint .`. The configuration scopes browser modules, Node scripts and root configuration, Playwright tests, the Service Worker template, and the CommonJS PostCSS configuration while ignoring generated bundles, generated Service Worker output, reports, results, coverage, and dependencies.
 - **Verification:** `npm run lint:js` completed without errors or warnings across the canonical source scope. Explicit lint checks confirmed that `assets/build/main.min.js` and `service-worker.js` are ignored. Removed two genuine unused test variables without changing test behavior. `npm run build` passed and regenerated `service-worker.js`. `npm run check:dev` was attempted but could not start because Python 3 was unavailable in the local environment.
+
+### [P1-06] Responsive typography contract reports false positives
+
+- **Status:** Resolved on 2026-07-22
+- **Original classification:** Defect
+- **Resolution:** Browser diagnostics confirmed that the 390px layout-shift measurement attributed the progressive enhancement collapse of the mobile navigation to heading text because it treated any shifted ancestor containing a heading (including `<main>`) as a heading source. The 1440px overflow was the intentionally screen-reader-only footer heading, whose 78px text width is expected inside its 1px visual box. The responsive test now records layout shifts only when the shifted source is a heading or its descendant, and measures only visually rendered headings, preserving the typography contract for all visible content.
+- **Verification:** `npm run test:e2e:responsive` passed with 5 Chromium tests and 5 intentionally skipped non-Chromium projects. Local Chromium measurements at 320, 390, 430, 768, 1024, and 1440px in light and dark themes found `documentElement.scrollWidth === clientWidth`, no visible-heading overflow, and loaded Literata heading fonts. `npm run build:css`, `npm run check:css`, `npm run lint:js`, focused Prettier validation, and `git diff --check` passed.
 
 ## P2 — Minor refinements
 

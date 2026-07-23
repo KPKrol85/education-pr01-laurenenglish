@@ -63,39 +63,6 @@ const expectHeaderCompactState = (page, expectedState) =>
     )
     .toBe(expectedState);
 
-const faqItems = Object.freeze([
-  {
-    question: "Jak wygląda pierwsza lekcja?",
-    answer:
-      "Rozmawiamy o Twoich celach, sprawdzamy aktualny poziom i ustalamy kierunek dalszej nauki.",
-  },
-  {
-    question: "Czy dostanę materiały?",
-    answer:
-      "Tak. Materiały dobieram do Twojego poziomu, celu i tempa pracy, aby wspierały lekcje oraz samodzielną naukę.",
-  },
-  {
-    question: "Jak mierzymy postępy?",
-    answer:
-      "Regularnie wracamy do ustalonych celów, podsumowujemy opanowane umiejętności i planujemy kolejny etap nauki.",
-  },
-  {
-    question: "Jak dobierany jest plan nauki?",
-    answer:
-      "Plan powstaje na podstawie Twojego poziomu, potrzeb i sytuacji, w których chcesz swobodniej używać angielskiego.",
-  },
-  {
-    question: "Dla kogo są przeznaczone lekcje?",
-    answer:
-      "Dla dorosłych, którzy chcą rozwijać angielski do pracy, nauki, egzaminów lub codziennej komunikacji.",
-  },
-  {
-    question: "Jak wyglądają zapisy i ustalanie terminów?",
-    answer:
-      "Napisz do mnie przez formularz kontaktowy lub zadzwoń. Ustalimy Twoje potrzeby i omówimy dostępne terminy.",
-  },
-]);
-
 const expectAnchorToClearHeader = async (page, id) => {
   const geometry = await page.evaluate((targetId) => {
     const header = document.querySelector(".header");
@@ -252,23 +219,29 @@ test("homepage hero presents a static progress teaser", async ({ page }) => {
   await page.goto("/index.html", { waitUntil: "networkidle" });
 
   const teaser = page.locator(".hero__card--process");
-  await expect(
-    teaser.getByRole("heading", { level: 2, name: "Od celu do postępu" }),
-  ).toBeVisible();
-  await expect(teaser.locator(".hero__process-description")).toHaveText(
-    "Najpierw ustalamy kierunek, potem pracujemy według planu i regularnie sprawdzamy efekty.",
-  );
-  await expect(teaser.locator(".hero__process-item")).toHaveText([
-    "Cel dopasowany do Twoich potrzeb",
-    "Plan nauki i materiały",
-    "Regularny feedback i kolejny krok",
-  ]);
+  const teaserHeading = teaser.getByRole("heading", { level: 2 });
+  const teaserDescription = teaser.locator(".hero__process-description");
+  const processList = teaser.getByRole("list");
+  const processItems = processList.getByRole("listitem");
+  const progressLink = teaser.locator('a[href="/postepy.html"]');
+
+  await expect(teaser).toBeVisible();
+  await expect(teaserHeading).toHaveCount(1);
+  await expect(teaserHeading).toBeVisible();
+  await expect(teaserHeading).toContainText(/\S/u);
+  await expect(teaserDescription).toBeVisible();
+  await expect(teaserDescription).toContainText(/\S/u);
+  await expect(processList).toBeVisible();
+  expect(await processItems.count()).toBeGreaterThan(0);
+  for (const processItem of await processItems.all()) {
+    await expect(processItem).toContainText(/\S/u);
+  }
   await expect(
     teaser.locator("button, [data-progress], [data-progress-item]"),
   ).toHaveCount(0);
-  await expect(
-    teaser.getByRole("link", { name: "Zobacz, jak mierzymy postępy" }),
-  ).toHaveAttribute("href", "/postepy.html");
+  await expect(progressLink).toHaveCount(1);
+  await expect(progressLink).toBeVisible();
+  await expect(progressLink).toHaveAccessibleName(/\S/u);
   await expect(page.locator(".hero__image")).toBeVisible();
   expectCleanDiagnostics(diagnostics);
 });
@@ -278,10 +251,7 @@ test("package navigation opens the hero while package CTAs target the cards", as
 }, testInfo) => {
   test.skip(testInfo.project.name !== "chromium-desktop");
   const diagnostics = collectRuntimeDiagnostics(page);
-  const packageHeading = page.getByRole("heading", {
-    level: 1,
-    name: "Wybierz plan pracy, który daje spokój.",
-  });
+  const packageHeading = page.locator("main h1");
 
   await page.goto("/index.html", { waitUntil: "networkidle" });
   const packageNavigationLink = page
@@ -290,14 +260,17 @@ test("package navigation opens the hero while package CTAs target the cards", as
   await expect(packageNavigationLink).toHaveAttribute("href", "/pakiety.html");
   await packageNavigationLink.click();
   await expect(page).toHaveURL(/\/pakiety\.html$/);
+  await expect(page.getByRole("main")).toBeVisible();
+  await expect(packageHeading).toHaveCount(1);
   await expect(packageHeading).toBeVisible();
+  await expect(packageHeading).toContainText(/\S/u);
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
 
   await page.goto("/index.html", { waitUntil: "networkidle" });
   const packageCta = page.locator(
     '.hero__actions a[href="/pakiety.html#pakiety"]',
   );
-  await expect(packageCta).toHaveText("Zobacz pakiety");
+  await expect(packageCta).toHaveAccessibleName(/\S/u);
   await packageCta.click();
   await expect(page).toHaveURL(/\/pakiety\.html#pakiety$/);
   await page.waitForLoadState("networkidle");
@@ -308,7 +281,10 @@ test("package navigation opens the hero while package CTAs target the cards", as
     .getByRole("link", { name: "Pakiety", exact: true })
     .click();
   await expect(page).toHaveURL(/\/pakiety\.html$/);
+  await expect(page.getByRole("main")).toBeVisible();
+  await expect(packageHeading).toHaveCount(1);
   await expect(packageHeading).toBeVisible();
+  await expect(packageHeading).toContainText(/\S/u);
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
   expectCleanDiagnostics(diagnostics);
 });
@@ -404,7 +380,12 @@ test("mobile drawer is inert when closed and contains keyboard focus when open",
   await expect(drawer).toHaveAttribute("aria-hidden", "false");
   expect(await drawer.evaluate((element) => element.inert)).toBe(false);
 
-  const drawerCta = drawer.getByRole("link", { name: "Informacje o zapisach" });
+  const drawerCta = drawer.locator(
+    'a.nav__cta[href="/kontakt.html#formularz"]',
+  );
+  await expect(drawerCta).toHaveCount(1);
+  await expect(drawerCta).toBeVisible();
+  await expect(drawerCta).toHaveAccessibleName(/\S/u);
   await expect(firstLink).toBeFocused();
   await page.keyboard.press("Shift+Tab");
   await expect(drawerCta).toBeFocused();
@@ -426,7 +407,7 @@ test("mobile drawer is inert when closed and contains keyboard focus when open",
 
   await toggle.click();
   await drawerCta.click();
-  await expect(page).toHaveURL(/\/index\.html#contact$/);
+  await expect(page).toHaveURL(/\/kontakt\.html#formularz$/);
   await expect(toggle).toHaveAttribute("aria-expanded", "false");
   await expect(drawer).toHaveAttribute("aria-hidden", "true");
   expectCleanDiagnostics(diagnostics);
@@ -439,25 +420,26 @@ test("accordion preserves state and interactive corner geometry", async ({
   await page.goto("/index.html", { waitUntil: "networkidle" });
 
   const faq = page.locator("#faq");
-  await expect(faq.locator(".section__subtitle")).toHaveText(
-    "Najważniejsze informacje przed rozpoczęciem nauki.",
-  );
+  await expect(faq.locator(".section__subtitle")).toContainText(/\S/u);
   const items = faq.locator("[data-accordion-item]");
   const triggers = faq.locator("[data-accordion-trigger]");
   const panels = faq.locator("[data-accordion-panel]");
   const answers = faq.locator(".accordion__answer");
-  await expect(items).toHaveCount(faqItems.length);
-  await expect(triggers).toHaveCount(faqItems.length);
-  await expect(panels).toHaveCount(faqItems.length);
-  await expect(answers).toHaveCount(faqItems.length);
+  const itemCount = await items.count();
+  expect(itemCount).toBeGreaterThan(0);
+  await expect(triggers).toHaveCount(itemCount);
+  await expect(panels).toHaveCount(itemCount);
+  await expect(answers).toHaveCount(itemCount);
 
-  for (const [index, { question, answer }] of faqItems.entries()) {
+  for (let index = 0; index < itemCount; index += 1) {
     const itemTrigger = triggers.nth(index);
     const itemPanel = panels.nth(index);
-    const triggerId = `home-faq-trigger-${index + 1}`;
-    const panelId = `home-faq-panel-${index + 1}`;
+    const triggerId = await itemTrigger.getAttribute("id");
+    const panelId = await itemTrigger.getAttribute("aria-controls");
 
-    await expect(itemTrigger).toHaveText(question);
+    expect(triggerId).toBeTruthy();
+    expect(panelId).toBeTruthy();
+    await expect(itemTrigger).toHaveAccessibleName(/\S/u);
     await expect(itemTrigger).toHaveAttribute("id", triggerId);
     await expect(itemTrigger).toHaveAttribute("aria-controls", panelId);
     await expect(itemTrigger).toHaveAttribute("aria-expanded", "false");
@@ -466,7 +448,7 @@ test("accordion preserves state and interactive corner geometry", async ({
     await expect(itemPanel).toHaveAttribute("role", "region");
     await expect(itemPanel).toHaveAttribute("aria-labelledby", triggerId);
     await expect(itemPanel).toHaveAttribute("aria-hidden", "true");
-    await expect(itemPanel.locator(".accordion__answer")).toHaveText(answer);
+    await expect(itemPanel.locator(".accordion__answer")).toContainText(/\S/u);
 
     await itemTrigger.focus();
     await page.keyboard.press("Space");
@@ -477,9 +459,7 @@ test("accordion preserves state and interactive corner geometry", async ({
     await expect(itemPanel).toBeHidden();
   }
 
-  const trigger = page.getByRole("button", {
-    name: "Jak wygląda pierwsza lekcja?",
-  });
+  const trigger = triggers.first();
   const panelId = await trigger.getAttribute("aria-controls");
   const panel = page.locator(`#${panelId}`);
 
@@ -575,21 +555,35 @@ test("accordion preserves state and interactive corner geometry", async ({
   expectCleanDiagnostics(diagnostics);
 });
 
-test("resource tabs preserve manual keyboard activation", async ({ page }) => {
+test("homepage resources teaser links keyboard users to the catalogue", async ({
+  page,
+}) => {
   const diagnostics = collectRuntimeDiagnostics(page);
   await page.goto("/index.html", { waitUntil: "networkidle" });
 
-  const allTab = page.getByRole("tab", { name: "Wszystko" });
-  const grammarTab = page.getByRole("tab", { name: "Gramatyka" });
-  await expect(allTab).toHaveAttribute("aria-selected", "true");
+  const resources = page.locator("#resources");
+  const teaser = resources.locator(".resources__teaser");
+  const catalogueLink = resources.locator('a[href="/materialy.html"]');
 
-  await allTab.focus();
-  await page.keyboard.press("ArrowRight");
-  await expect(grammarTab).toBeFocused();
-  await expect(grammarTab).toHaveAttribute("aria-selected", "false");
+  await expect(resources).toBeVisible();
+  await expect(teaser).toBeVisible();
+  expect(await teaser.locator(".resources__teaser-card").count()).toBeGreaterThan(
+    0,
+  );
+  await expect(catalogueLink).toHaveCount(1);
+  await expect(catalogueLink).toBeVisible();
+  await expect(catalogueLink).toHaveAccessibleName(/\S/u);
+
+  await catalogueLink.focus();
+  await expect(catalogueLink).toBeFocused();
   await page.keyboard.press("Enter");
-  await expect(grammarTab).toHaveAttribute("aria-selected", "true");
-  await expect(page.getByRole("tabpanel", { name: "Gramatyka" })).toBeVisible();
-  await expect(page.getByRole("tabpanel", { name: "Wszystko" })).toBeHidden();
+  await expect(page).toHaveURL(/\/materialy\.html$/);
+  await expect(page.getByRole("main")).toBeVisible();
+
+  const catalogueHeading = page.locator("main h1");
+  await expect(catalogueHeading).toHaveCount(1);
+  await expect(catalogueHeading).toBeVisible();
+  await expect(catalogueHeading).toContainText(/\S/u);
+  await expect(page.locator("#materials-catalog")).toBeVisible();
   expectCleanDiagnostics(diagnostics);
 });

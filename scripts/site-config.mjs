@@ -1,5 +1,5 @@
 export const SITE = Object.freeze({
-  origin: "https://education-pr-01-lauren-english.netlify.app",
+  origin: "https://education-pr01-laurenenglish.netlify.app",
   name: "Lauren English",
   language: "pl-PL",
   locale: "pl_PL",

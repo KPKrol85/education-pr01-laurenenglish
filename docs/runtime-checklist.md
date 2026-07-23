@@ -23,7 +23,7 @@
 - Otwórz każdą stronę (`index.html`, `uslugi.html`, `pakiety.html`, `materialy.html`, `postepy.html`, `thank-you.html`, `offline.html`, `404.html`) i w DevTools → Network upewnij się, że:
   - `/css/style.css` zwraca HTTP 200 z MIME `text/css`.
   - `/js/main.js` zwraca HTTP 200 z MIME JavaScript i jest ładowane jako moduł.
-  - Dokładny lokalny graf 27 plików CSS i 20 modułów JavaScript ładuje się bez 404, duplikatów i requestów zewnętrznych.
+  - Dokładny lokalny graf 29 plików CSS i 20 modułów JavaScript ładuje się bez 404, duplikatów i requestów zewnętrznych.
   - Nie ma requestów do `/assets/build/style.min.css` ani `/assets/build/main.min.js`.
   - `/assets/img/logo/logo.svg` zwraca HTTP 200 z MIME `image/svg+xml` i jest pobierane tylko raz mimo użycia w headerze i footerze.
   - Fonty Inter 400/600/700 i Literata 700 ładują się z `/assets/fonts/` jako `font/woff2`, bez odpowiedzi 404, duplikatów i zewnętrznych requestów; Inter 500 nie jest requestowany, a jedyny preload wskazuje Literata 700.
@@ -59,7 +59,7 @@
 
 ## SEO i routing
 
-- Potwierdź origin `https://education-pr-01-lauren-english.netlify.app` w `scripts/site-config.mjs`.
+- Potwierdź origin `https://education-pr01-laurenenglish.netlify.app` w `scripts/site-config.mjs`.
 - Potwierdź, że canonical i `og:url` są identyczne na pięciu stronach indeksowanych.
 - Potwierdź kanoniczny raster `assets/og/og.png` (`image/png`, `1200 × 630`) oraz odpowiedź HTTP `200`.
 - Potwierdź `noindex, nofollow` i brak canonical na `404.html`, `offline.html` i `thank-you.html`.

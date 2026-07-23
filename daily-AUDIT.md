@@ -65,15 +65,17 @@ None detected.
 - **Resolution:** Browser diagnostics confirmed that the 390px layout-shift measurement attributed the progressive enhancement collapse of the mobile navigation to heading text because it treated any shifted ancestor containing a heading (including `<main>`) as a heading source. The 1440px overflow was the intentionally screen-reader-only footer heading, whose 78px text width is expected inside its 1px visual box. The responsive test now records layout shifts only when the shifted source is a heading or its descendant, and measures only visually rendered headings, preserving the typography contract for all visible content.
 - **Verification:** `npm run test:e2e:responsive` passed with 5 Chromium tests and 5 intentionally skipped non-Chromium projects. Local Chromium measurements at 320, 390, 430, 768, 1024, and 1440px in light and dark themes found `documentElement.scrollWidth === clientWidth`, no visible-heading overflow, and loaded Literata heading fonts. `npm run build:css`, `npm run check:css`, `npm run lint:js`, focused Prettier validation, and `git diff --check` passed.
 
-## P2 — Minor refinements
-
 ### [P2-01] Runtime documentation has drifted from executable configuration
 
-- **Classification:** Maintenance risk
-- **Evidence:** `README.md:13`; `docs/runtime-checklist.md:82`; `scripts/site-config.mjs:2`; `scripts/pwa-config.mjs:19`
-- **Current behavior:** README links to `education-pr01-laurenenglish.netlify.app` while the canonical origin uses `education-pr-01-lauren-english.netlify.app`; the runtime checklist expects 26 CSS requests while the configured CSS graph now contains 27 files.
-- **Impact:** Reviewers and maintainers can be directed to a different origin or diagnose a correct runtime request graph as a failure.
-- **Recommended direction:** Update the documentation from the canonical site and PWA configuration values after confirming the intended deployment URL.
+- **Status:** Resolved after audit on 2026-07-23
+- **Original classification:** Maintenance risk
+- **Confirmed canonical origin:** `https://education-pr01-laurenenglish.netlify.app`
+- **Resolution:** Synchronized `SITE.origin` and the current legal-page deployment link with the confirmed origin, then regenerated canonical metadata, Open Graph URLs, sitemap, and robots through the HTML assembler. Updated `docs/runtime-checklist.md` from the executable `RUNTIME_CSS_PATHS` graph, which now contains 29 CSS paths. `README.md` already used the confirmed deployment URL and required no change.
+- **Verification:** `npm run build:html`, `npm run check:html`, and `npm run check:seo` passed.
+
+## P2 — Minor refinements
+
+None detected.
 
 ## Extra quality improvements
 

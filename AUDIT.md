@@ -3,13 +3,14 @@
 **Audit date:** 2026-07-23  
 **Project type:** static multi-page educational website with build-time HTML assembly, native CSS/ES modules, and PWA support  
 **Audit mode:** final repository and implementation review  
-**Current readiness:** Needs important fixes
+**Current readiness:** Ready with minor refinements
+**Unresolved findings:** P0: 0 · P1: 0 · P2: 1
 
 ## 1. Executive assessment
 
 Lauren English has a coherent source-first static architecture: route and SEO data are centralized, generated regions are guarded by project checks, and the public UI uses focused Vanilla JavaScript enhancements. Static data, content, HTML, CSS, contrast, and SEO contracts passed during this audit.
 
-One important release-readiness issue remains: the declared interaction suite contains assertions for superseded package, navigation, and homepage-resource UI. The current public implementation appears internally consistent in the inspected source, but that suite cannot serve as a reliable regression gate until it is synchronized. A smaller runtime cleanup remains for a retired resource-filter module that is still fetched and precached.
+The focused interaction suite now matches the current package navigation, mobile drawer, and homepage-resources experience. It verifies stable interaction, accessibility, focus, keyboard, and route contracts without coupling itself to mutable editorial copy or retired tabs. A smaller runtime cleanup remains for a retired resource-filter module that is still fetched and precached.
 
 ## 2. Audit scope and verification
 
@@ -30,13 +31,13 @@ One important release-readiness issue remains: the declared interaction suite co
 - `npm run check:css` — passed for 29 canonical CSS files and 40 deterministic light/dark contrast pairs.
 - `npm run check:seo` — passed for 6 indexable and 6 noindex routes, including metadata, JSON-LD, sitemap, robots, and 404 routing.
 - `node --check` — passed for 46 JavaScript source/script/test files and for `service-worker.js`.
+- `npm run lint:js` — passed.
+- `npm run test:e2e:interactions` — passed: 13 passed, 3 conditionally skipped, 0 failed, and 0 flaky across the configured Chromium projects.
 - Static source review confirmed no committed credential-like value outside the documented project-security guidance.
 
 ### Verification limitations
 
-- `npm run check:pwa` could not start because the local checkout has no installed `prettier` package; `scripts/build-service-worker.mjs` imports it.
-- `npm run lint:js` could not start because the local checkout has no installed `eslint` executable.
-- Dependencies were not installed, builds were not run, and browser/E2E suites were not run because this audit permits only `AUDIT.md` to be written.
+- `npm run check:pwa` and the dedicated PWA, responsive, theme, SEO, and full Playwright suites were not rerun as part of this focused correction.
 - The optional Netlify deployment URL was not independently tested; this audit evaluates the current repository rather than external deployment state.
 
 ## 3. Verified strengths
@@ -53,15 +54,7 @@ None detected.
 
 ## 5. P1 — Important issues worth fixing next
 
-### [P1-01] Interaction regression assertions no longer match the current public UI
-
-- **Classification:** Contract mismatch
-- **Affected area:** regression verification, mobile navigation, package-page navigation, homepage resources
-- **Evidence:** `tests/e2e/interactions.spec.mjs:281-284`, `tests/e2e/interactions.spec.mjs:407-410`, `tests/e2e/interactions.spec.mjs:580-593`; current counterparts are `pakiety.html:139-144`, `scripts/shared-shell.mjs:233-237`, and `js/modules/resourcesFilter.js:1-5`.
-- **Current behavior:** The interaction suite expects the retired package H1 `Wybierz plan pracy, który daje spokój.`, a drawer CTA named `Informacje o zapisach`, and homepage resource tabs. The current package H1 and shared CTA use different approved copy, and the current HTML contains no tablist, tab, or tab-panel markup for the retired homepage resources filter.
-- **Impact:** The declared `npm run test:e2e:interactions` gate is not a reliable release signal: it contains false-failure expectations and no longer protects the current homepage-resource interaction model.
-- **Recommended direction:** Rebaseline the affected interaction tests against the current package heading and shared CTA, and remove or replace the retired resource-tab scenario with coverage of the current resources teaser or catalogue behavior.
-- **Verification criteria:** With dependencies installed, `npm run test:e2e:interactions` completes without stale-copy or absent-tab assertions in both configured Chromium projects.
+None detected.
 
 ## 6. P2 — Minor refinements
 
@@ -81,12 +74,12 @@ None detected.
 
 ## 8. Current readiness conclusion
 
-**Status:** Needs important fixes
+**Status:** Ready with minor refinements
 
-Within the verified static scope, route generation, data, public-content, CSS, and SEO contracts are coherent. The project should synchronize its stale interaction test contract before relying on the declared browser regression suite for a portfolio or release review. The remaining P2 cleanup is small but should accompany that synchronization to keep the runtime graph aligned with active UI.
+Within the verified static scope, route generation, data, public-content, CSS, SEO, and focused interaction contracts are coherent. The remaining P2 cleanup is a small refinement to keep the runtime graph aligned with the active homepage UI.
 
 ## 9. Senior rating
 
-**Rating:** 7/10
+**Rating:** 8/10
 
-The repository shows strong modular ownership, defensive browser-state handling, deterministic static validation, and a well-defined generated-output contract for its chosen static architecture. The rating is held back by a currently stale interaction-test gate and an inactive module still included in the runtime/PWA graph, plus the audit environment's inability to execute dependency-backed PWA and lint checks.
+The repository shows strong modular ownership, defensive browser-state handling, deterministic static validation, a focused passing interaction gate, and a well-defined generated-output contract for its chosen static architecture. The remaining deduction reflects only the inactive module still included in the runtime/PWA graph and the intentionally unrerun broader PWA/browser verification scope.

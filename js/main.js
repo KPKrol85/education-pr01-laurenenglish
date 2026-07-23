@@ -3,7 +3,6 @@ import { initHeaderShrink } from "./modules/headerShrink.js";
 import { initMobileNav } from "./modules/mobileNav.js";
 import { initScrollSpy } from "./modules/scrollSpy.js";
 import { initAccordion } from "./modules/accordion.js";
-import { initResourcesFilter } from "./modules/resourcesFilter.js";
 import { initContactForm } from "./modules/contactForm.js";
 import { initMaterialsCatalog } from "./modules/materialsCatalog.js";
 import { initAnchorFocus } from "./modules/anchorFocus.js";
@@ -118,7 +117,6 @@ const registerServiceWorker = () => {
   ["Mobile navigation", initMobileNav],
   ["Scroll spy", initScrollSpy],
   ["Accordion", initAccordion],
-  ["Resource filters", initResourcesFilter],
   ["Materials catalogue", initMaterialsCatalog],
   ["Anchor focus", initAnchorFocus],
   ["Project disclosure", initProjectDisclosure],

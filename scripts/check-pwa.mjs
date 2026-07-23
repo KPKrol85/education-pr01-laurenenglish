@@ -149,7 +149,7 @@ const verifyModernImageAssets = async () => {
       if (asset.key === "homepage-hero") {
         assert(
           buffer.length <= CRITICAL_ASSET_BUDGET.maximumHeroImageBytes,
-          `${path} exceeds the configured critical hero image budget`,
+          `${path} is ${buffer.length} bytes; maximum is ${CRITICAL_ASSET_BUDGET.maximumHeroImageBytes} bytes`,
         );
       }
     }
@@ -588,7 +588,7 @@ const verifyHeroAndFonts = async () => {
   );
   assert(
     heroBuffer.length <= CRITICAL_ASSET_BUDGET.maximumHeroImageBytes,
-    `Hero image exceeds ${CRITICAL_ASSET_BUDGET.maximumHeroImageBytes} bytes`,
+    `${HERO_IMAGE_PATH} is ${heroBuffer.length} bytes; maximum is ${CRITICAL_ASSET_BUDGET.maximumHeroImageBytes} bytes`,
   );
 
   await Promise.all([verifyModernImageAssets(), verifyPictureMarkup()]);

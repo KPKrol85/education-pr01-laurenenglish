@@ -60,7 +60,6 @@ export const RUNTIME_JAVASCRIPT_PATHS = Object.freeze([
   "/js/modules/mobileNav.js",
   "/js/modules/scrollSpy.js",
   "/js/modules/accordion.js",
-  "/js/modules/resourcesFilter.js",
   "/js/modules/contactForm.js",
   "/js/modules/materialsCatalog.js",
   "/js/modules/anchorFocus.js",

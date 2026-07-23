@@ -1,5 +1,25 @@
+export const CANONICAL_IMAGE_SOURCE_ROOT = "/assets/image-sources/";
+const PUBLIC_IMAGE_ROOT = "/assets/img/";
+
+export const getCanonicalImageSourcePath = (fallbackPath) => {
+  if (!fallbackPath.startsWith(PUBLIC_IMAGE_ROOT)) {
+    throw new Error(`Unsupported public image path: ${fallbackPath}`);
+  }
+
+  return fallbackPath.replace(
+    PUBLIC_IMAGE_ROOT,
+    CANONICAL_IMAGE_SOURCE_ROOT,
+  );
+};
+
 const createImageAsset = ({ key, fallbackPath, width, height }) =>
-  Object.freeze({ key, fallbackPath, width, height });
+  Object.freeze({
+    key,
+    fallbackPath,
+    sourcePath: getCanonicalImageSourcePath(fallbackPath),
+    width,
+    height,
+  });
 
 export const MODERN_IMAGE_FORMATS = Object.freeze([
   Object.freeze({ extension: "avif", mimeType: "image/avif" }),

@@ -3,14 +3,14 @@
 **Audit date:** 2026-07-23  
 **Project type:** static multi-page educational website with build-time HTML assembly, native CSS/ES modules, and PWA support  
 **Audit mode:** final repository and implementation review  
-**Current readiness:** Ready with minor refinements
-**Unresolved findings:** P0: 0 · P1: 0 · P2: 1
+**Current readiness:** Ready for release
+**Unresolved findings:** P0: 0 · P1: 0 · P2: 0
 
 ## 1. Executive assessment
 
 Lauren English has a coherent source-first static architecture: route and SEO data are centralized, generated regions are guarded by project checks, and the public UI uses focused Vanilla JavaScript enhancements. Static data, content, HTML, CSS, contrast, and SEO contracts passed during this audit.
 
-The focused interaction suite now matches the current package navigation, mobile drawer, and homepage-resources experience. It verifies stable interaction, accessibility, focus, keyboard, and route contracts without coupling itself to mutable editorial copy or retired tabs. A smaller runtime cleanup remains for a retired resource-filter module that is still fetched and precached.
+The focused interaction suite matches the current package navigation, mobile drawer, and homepage-resources experience. It verifies stable interaction, accessibility, focus, keyboard, and route contracts without coupling itself to mutable editorial copy or retired tabs. The runtime and PWA precache graphs now contain only active features, and the optimized JPEG fallback meets the configured critical-asset budget.
 
 ## 2. Audit scope and verification
 
@@ -33,11 +33,14 @@ The focused interaction suite now matches the current package navigation, mobile
 - `node --check` — passed for 46 JavaScript source/script/test files and for `service-worker.js`.
 - `npm run lint:js` — passed.
 - `npm run test:e2e:interactions` — passed: 13 passed, 3 conditionally skipped, 0 failed, and 0 flaky across the configured Chromium projects.
+- `npm run images` — passed; the homepage hero JPEG fallback was generated at 476497 bytes with its 1600 × 1200 intrinsic dimensions preserved.
+- `npm run build:sw` — passed; generated a Service Worker with 77 validated precache entries.
+- `npm run check:pwa` — passed; verified the 476497-byte hero JPEG within the 1100000-byte budget.
 - Static source review confirmed no committed credential-like value outside the documented project-security guidance.
 
 ### Verification limitations
 
-- `npm run check:pwa` and the dedicated PWA, responsive, theme, SEO, and full Playwright suites were not rerun as part of this focused correction.
+- The dedicated responsive, theme, SEO, and full Playwright suites were not rerun as part of the focused corrections.
 - The optional Netlify deployment URL was not independently tested; this audit evaluates the current repository rather than external deployment state.
 
 ## 3. Verified strengths
@@ -58,15 +61,7 @@ None detected.
 
 ## 6. P2 — Minor refinements
 
-### [P2-01] Retired resource-filter module remains in the initial runtime and precache graph
-
-- **Classification:** Maintenance risk
-- **Affected area:** runtime JavaScript and PWA precache
-- **Evidence:** `js/main.js:6`, `js/main.js:121`, `js/modules/resourcesFilter.js:1-5`, `scripts/pwa-config.mjs:56-68`.
-- **Current behavior:** `js/main.js` imports and initializes `resourcesFilter.js`, and the PWA configuration precaches it. The module immediately returns unless it finds `data-tablist`, `data-tab`, and `data-tab-panel`; those hooks are absent from the current HTML routes.
-- **Impact:** Every page receives an unnecessary direct module dependency and the PWA caches an inactive feature module. The residual module also reinforces the stale test assumptions recorded in P1-01.
-- **Recommended direction:** Remove the runtime import, initializer, and precache entry when the homepage tabs are intentionally retired; retain the module only if matching interactive markup is restored as a documented feature.
-- **Verification criteria:** The runtime import graph and `RUNTIME_JAVASCRIPT_PATHS` agree with the active UI, while HTML, PWA, and focused interaction checks pass.
+None detected.
 
 ## 7. Extra quality improvements
 
@@ -74,12 +69,12 @@ None detected.
 
 ## 8. Current readiness conclusion
 
-**Status:** Ready with minor refinements
+**Status:** Ready for release
 
-Within the verified static scope, route generation, data, public-content, CSS, SEO, and focused interaction contracts are coherent. The remaining P2 cleanup is a small refinement to keep the runtime graph aligned with the active homepage UI.
+Within the verified scope, route generation, data, public content, CSS, SEO, PWA, and focused interaction contracts are coherent. No P0, P1, or P2 findings remain.
 
 ## 9. Senior rating
 
-**Rating:** 8/10
+**Rating:** 9/10
 
-The repository shows strong modular ownership, defensive browser-state handling, deterministic static validation, a focused passing interaction gate, and a well-defined generated-output contract for its chosen static architecture. The remaining deduction reflects only the inactive module still included in the runtime/PWA graph and the intentionally unrerun broader PWA/browser verification scope.
+The repository shows strong modular ownership, defensive browser-state handling, deterministic static validation, a focused passing interaction gate, an aligned runtime/PWA graph, and a well-defined generated-output contract for its chosen static architecture. The remaining deduction reflects only the intentionally unrerun broader browser suites and the absence of independent live-deployment verification.

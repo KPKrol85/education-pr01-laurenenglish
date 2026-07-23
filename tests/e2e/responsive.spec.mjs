@@ -324,7 +324,7 @@ test.describe("responsive production contracts", () => {
 
       await expectElementsContained(
         page.locator(
-          ".hero__actions .button, .grid--pricing .card, [data-tab-panel='all'] .card",
+          ".hero__actions .button, .grid--pricing .card",
         ),
       );
 

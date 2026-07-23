@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "lauren-english-v";
-const CACHE_REVISION = "1.0.0-ccfe0887ce4e";
+const CACHE_REVISION = "1.0.0-5e70ab2880fd";
 const CACHE_NAME = `${CACHE_PREFIX}${CACHE_REVISION}`;
 const OFFLINE_PATH = "/offline.html";
 const PRECACHE_PATHS = [
@@ -45,7 +45,6 @@ const PRECACHE_PATHS = [
   "/js/modules/mobileNav.js",
   "/js/modules/scrollSpy.js",
   "/js/modules/accordion.js",
-  "/js/modules/resourcesFilter.js",
   "/js/modules/contactForm.js",
   "/js/modules/materialsCatalog.js",
   "/js/modules/anchorFocus.js",
